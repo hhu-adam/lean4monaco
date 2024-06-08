@@ -12,31 +12,27 @@ import { AbbreviationRewriter } from './AbbreviationRewriter';
 export class AbbreviationRewriterFeature {
 	private readonly disposables = new Array<Disposable>();
 
-	@observable
-	private activeTextEditor: TextEditor | undefined;
+	private abbreviationRewriter: AbbreviationRewriter | undefined;
 
 	constructor(
 		private readonly config: AbbreviationConfig,
 		abbreviationProvider: AbbreviationProvider
 	) {
-		this.activeTextEditor = window.activeTextEditor;
-
 		this.disposables.push(
 			window.onDidChangeActiveTextEditor((e) => {
-				this.activeTextEditor = e;
-			}),
-			autorunDisposable((disposables) => {
-				if (this.activeTextEditor && this.shouldEnableRewriterForEditor(this.activeTextEditor)) {
+				if (this.abbreviationRewriter) {
+					this.abbreviationRewriter.dispose()
+				}
+				if (e && this.shouldEnableRewriterForEditor(e)) {
 					// This creates an abbreviation rewriter for the active text editor.
 					// Old rewriters are disposed automatically.
 					// This is also updated when this feature is turned off/on.
-					disposables.push(
-						new AbbreviationRewriter(
-							config,
-							abbreviationProvider,
-							this.activeTextEditor
-						)
-					);
+					this.abbreviationRewriter = new AbbreviationRewriter(
+						config,
+						abbreviationProvider,
+						e
+					)
+					this.disposables.push(this.abbreviationRewriter)
 				}
 			})
 		);
