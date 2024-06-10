@@ -251,6 +251,7 @@ export class InfoProvider implements Disposable {
                 session.dispose();
             }
         },
+        restartFile: async () => {}
     };
 
     constructor(private provider: LeanClientProvider, private readonly leanDocs: DocumentSelector, private context: ExtensionContext) {
@@ -290,8 +291,8 @@ export class InfoProvider implements Disposable {
                 () => this.webviewPanel?.api.requestedAction({kind: 'copyToComment'})),
             commands.registerCommand('lean4.infoView.toggleUpdating', () =>
                 this.webviewPanel?.api.requestedAction({kind: 'togglePaused'})),
-            commands.registerCommand('lean4.infoView.toggleExpectedType', () =>
-                this.webviewPanel?.api.requestedAction({kind: 'toggleExpectedType'})),
+            // commands.registerCommand('lean4.infoView.toggleExpectedType', () =>
+            //     this.webviewPanel?.api.requestedAction({kind: 'toggleExpectedType'})),
             commands.registerTextEditorCommand('lean4.infoView.toggleStickyPosition',
                 () => this.webviewPanel?.api.requestedAction({kind: 'togglePin'})),
         );

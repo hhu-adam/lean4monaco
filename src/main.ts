@@ -17,6 +17,8 @@ import { RegisteredFileSystemProvider, RegisteredMemoryFile, registerFileSystemO
 // import { Uri, workspace, ConfigurationTarget, EventEmitter } from 'vscode';
 // import { setDefaultApi } from '@codingame/monaco-vscode-extensions-service-override'
 
+async function go() {
+
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
     <div id="editor"></div>
@@ -76,3 +78,6 @@ new AbbreviationFeature();
 // editor.dispose()
 
 
+}
+
+go()
