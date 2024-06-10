@@ -5,17 +5,13 @@ import { ExtensionHostKind, registerExtension } from 'vscode/extensions'
 import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
 import getExtensionServiceOverride from '@codingame/monaco-vscode-extensions-service-override'
 import 'vscode/localExtensionHost'
-
+import { MonacoEditorLanguageClientWrapper, UserConfig } from 'monaco-editor-wrapper';
+import { EditorAppExtended } from 'monaco-editor-wrapper';
+import { Logger } from 'monaco-languageclient/tools';
+import { initServices } from 'monaco-languageclient/vscode/services';
+import { checkServiceConsistency, configureServices } from 'monaco-editor-wrapper/vscode/services';
 
 import * as monaco from 'monaco-editor'
-import { RegisteredFileSystemProvider, RegisteredMemoryFile, registerFileSystemOverlay } from '@codingame/monaco-vscode-files-service-override'
-
-
-// import getConfigurationServiceOverride, { IStoredWorkspace, initUserConfiguration } from '@codingame/monaco-vscode-configuration-service-override'
-
-// import getPreferencesServiceOverride from '@codingame/monaco-vscode-preferences-service-override'
-// import { Uri, workspace, ConfigurationTarget, EventEmitter } from 'vscode';
-// import { setDefaultApi } from '@codingame/monaco-vscode-extensions-service-override'
 
 async function go() {
 
@@ -25,39 +21,40 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `
 
-await initializeMonacoService({
-  ...getModelServiceOverride(),
-  ...getExtensionServiceOverride()
-})
-
-const res = await registerExtension({
-  name: 'monacotest2',
-  publisher: 'hhu-adam',
-  version: '1.0.0',
-  engines: {
-    vscode: '*'
+const userConfig : UserConfig = {
+  wrapperConfig: {
+    editorAppConfig: {
+      $type: 'extended', 
+      extensions: []
+    }
   }
-}, ExtensionHostKind.LocalProcess)
+}
 
+const logger = new Logger()
+
+const editorApp = new EditorAppExtended("myID", userConfig, logger);
+
+// editorApps init their own service thats why they have to be created first
+const specificServices = await editorApp.specifyServices();
+const serviceConfig = await configureServices({
+    serviceConfig: userConfig.wrapperConfig.serviceConfig,
+    specificServices,
+    logger: logger
+});
+await initServices({
+    serviceConfig,
+    caller: `lean4web`,
+    performChecks: checkServiceConsistency,
+    logger: logger
+});
 
 monaco.languages.register({
   id: 'lean4',
   extensions: ['.lean']
 })
 
-res.setAsDefaultApi()
-
-const vscode = await res.getApi()
-
-const model = monaco.editor.createModel("#check Nat", "lean4", vscode.Uri.file('/user/test.lean'))
+const model = monaco.editor.createModel("#check Nat", "lean4")
 console.log(model.getLanguageId())
-// Use model reference??
-// const fileSystemProvider = new RegisteredFileSystemProvider(false)
-// fileSystemProvider.registerFile(new RegisteredMemoryFile(vscode.Uri.file('/user/test.lean'), `#check Nat`
-// ))
-// registerFileSystemOverlay(1, fileSystemProvider)
-// const modelRef = await monaco.editor.createModelReference(vscode.Uri.file('/user/test.lean'))
-// const model = modelRef.object.textEditorModel
 
 const el = document.getElementById('editor')!
 monaco.editor.create(el, { model })
@@ -66,17 +63,6 @@ monaco.editor.create(el, { model })
 const { AbbreviationFeature } = (await import('./vscode-lean4/src/abbreviation'));
 
 new AbbreviationFeature();
-
-// const editor = vscode.window.activeTextEditor!
-
-// console.log(editor)
-
-// const config = new AbbreviationConfig()
-// const abbrevRewriter = new AbbreviationRewriter(config, new AbbreviationProvider(config), editor)
-
-// model.dispose()
-// editor.dispose()
-
 
 }
 
