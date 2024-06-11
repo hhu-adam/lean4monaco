@@ -37,7 +37,6 @@ const editorApp = new EditorAppExtended("myID", userConfig, logger);
 // editorApps init their own service thats why they have to be created first
 const specificServices = await editorApp.specifyServices();
 const serviceConfig = await configureServices({
-    serviceConfig: userConfig.wrapperConfig.serviceConfig,
     specificServices,
     logger: logger
 });
@@ -48,6 +47,14 @@ await initServices({
     logger: logger
 });
 
+// TODO:
+// this.languageClientWrapper = new LanguageClientWrapper();
+// await this.languageClientWrapper.init({
+//     languageClientConfig: userConfig.languageClientConfig,
+//     logger: this.logger
+// });
+
+// The wrapper does not do this. TODO: Check whether this is a wrapper bug!
 monaco.languages.register({
   id: 'lean4',
   extensions: ['.lean']
