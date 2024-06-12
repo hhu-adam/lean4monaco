@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import axios from 'axios';
-import cheerio = require('cheerio');
+import cheerio from 'cheerio';
 import { URL } from 'url';
 import { commands, Disposable, Uri, ViewColumn, WebviewPanel, window,
      workspace, WebviewOptions, WebviewPanelOptions, TextDocument, languages,

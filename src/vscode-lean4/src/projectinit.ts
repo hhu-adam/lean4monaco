@@ -1,5 +1,5 @@
 import { Disposable, Uri, commands, window, workspace, SaveDialogOptions, OutputChannel } from 'vscode';
-import path = require('path');
+import path from 'path';
 import { checkParentFoldersForLeanProject, isValidLeanProject } from './utils/projectInfo';
 import { elanSelfUpdate } from './utils/elan';
 import { lake } from './utils/lake';

@@ -31,7 +31,7 @@ import { SemVer } from 'semver';
 import { fileExists, isFileInFolder } from './utils/fsHelper';
 import { c2pConverter, p2cConverter, patchConverters } from './utils/converters'
 import { displayErrorWithOutput } from './utils/errors'
-import path = require('path')
+import path from 'path'
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 

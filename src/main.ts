@@ -21,9 +21,17 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 const el = document.getElementById('editor')!
 
 const main = {
-  text: "params.text",
+  text: "#check Nat",
   fileExt: 'lean'
 };
+
+
+const extensionFilesOrContents = new Map<string, string | URL>();
+extensionFilesOrContents.set('/language-configuration.json', new URL('./vscode-lean4/language-configuration.json', import.meta.url));
+extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./vscode-lean4/syntaxes/lean4.json', import.meta.url));
+extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
+extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./vscode-lean4/syntaxes/codeblock.json', import.meta.url));
+
 
 const userConfig : UserConfig = {
   wrapperConfig: {
@@ -38,22 +46,51 @@ const userConfig : UserConfig = {
             engines: {
                 vscode: '*'
             },
-            contributes: {
-                languages: [{
-                    id: 'lean4',
-                    extensions: ['.lean'],
-                    aliases: ['lean', 'lean4'],
-                    // configuration: './langium-configuration.json',
-                }],
-                // grammars: [{
-                //     language: 'langium',
-                //     scopeName: 'source.langium',
-                //     path: './langium-grammar.json'
-                // }]
+            "contributes": {
+              "languages": [
+                {
+                  "id": "lean4",
+                  "configuration": "./language-configuration.json",
+                  "extensions": [
+                    ".lean"
+                  ],
+                },
+                {
+                  "id": "lean4markdown",
+                  "aliases": [],
+                  "extensions": [
+                    ".lean4markdown"
+                  ],
+                  "configuration": "./language-configuration.json"
+                }
+              ],
+              "grammars": [
+                {
+                  "language": "lean4",
+                  "scopeName": "source.lean4",
+                  "path": "./syntaxes/lean4.json"
+                },
+                {
+                  "language": "lean4markdown",
+                  "scopeName": "source.lean4.markdown",
+                  "path": "./syntaxes/lean4-markdown.json"
+                },
+                {
+                  "scopeName": "markdown.lean4.codeblock",
+                  "path": "./syntaxes/codeblock.json",
+                  "injectTo": [
+                    "text.html.markdown"
+                  ],
+                  "embeddedLanguages": {
+                    "meta.embedded.block.lean4": "lean4"
+                  }
+                }
+              ],
             }
         },
-        // filesOrContents: extensionFilesOrContents
-    }]
+        filesOrContents: extensionFilesOrContents
+      }],
+      
     }
   },
 

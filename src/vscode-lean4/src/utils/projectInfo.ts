@@ -3,7 +3,7 @@ import { URL } from 'url';
 import { FileType, Uri, workspace, WorkspaceFolder } from 'vscode';
 import { fileExists } from './fsHelper';
 import { logger } from './logger'
-import path = require('path');
+import path from 'path';
 
 // Detect lean4 root directory (works for both lean4 repo and nightly distribution)
 

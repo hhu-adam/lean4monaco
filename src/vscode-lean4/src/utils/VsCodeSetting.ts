@@ -104,7 +104,15 @@ class VsCodeSettingResource {
 		private readonly id: string,
 		private readonly scope: Uri | undefined,
 		private readonly target: ConfigurationTarget | undefined
-	) {}
+	) {
+		this.stringifiedSettingValue = computed(
+			() => JSON.stringify(this.resource.current()),
+			{
+				name: `VsCodeSettingResource[${this.id}].value`,
+				context: this,
+			}
+		);
+	}
 
 	private readValue(): any {
 		const config = workspace.getConfiguration(undefined, this.scope);
@@ -129,13 +137,7 @@ class VsCodeSettingResource {
 	/**
 	 * This improves change detection.
 	 */
-	private readonly stringifiedSettingValue = computed(
-		() => JSON.stringify(this.resource.current()),
-		{
-			name: `VsCodeSettingResource[${this.id}].value`,
-			context: this,
-		}
-	);
+	private readonly stringifiedSettingValue;
 
 	get value(): unknown {
 		const v = this.stringifiedSettingValue.get();
