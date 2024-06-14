@@ -1,8 +1,11 @@
 import './style.css'
 
 import 'vscode/localExtensionHost'
-import { MonacoEditorLanguageClientWrapper, UserConfig } from 'monaco-editor-wrapper';
+import { MonacoEditorLanguageClientWrapper, UserConfig, EditorAppExtended, RegisterLocalProcessExtensionResult } from 'monaco-editor-wrapper';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
+import { LeanClientProvider } from './vscode-lean4/src/utils/clientProvider';
+import { LeanInstaller } from './vscode-lean4/src/utils/leanInstaller';
+import { LeanClient } from './vscode-lean4/src/leanclient';
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -94,25 +97,25 @@ const userConfig : UserConfig = {
     }
   },
 
-  languageClientConfig: {
-    languageId: 'lean4',
-    options: {
-      $type: 'WebSocketUrl',
-      url: 'ws://localhost:8080/websocket/mathlib-demo',
-      startOptions: {
-        onCall: () => {
-          console.log('Connected to socket.');
-        },
-        reportStatus: true
-      },
-      stopOptions: {
-        onCall: () => {
-          console.log('Disconnected from socket.');
-        },
-        reportStatus: true
-      }
-    }
-  }
+  // languageClientConfig: {
+  //   languageId: 'lean4',
+  //   options: {
+  //     $type: 'WebSocketUrl',
+  //     url: 'ws://localhost:8080/websocket/mathlib-demo',
+  //     startOptions: {
+  //       onCall: () => {
+  //         console.log('Connected to socket.');
+  //       },
+  //       reportStatus: true
+  //     },
+  //     stopOptions: {
+  //       onCall: () => {
+  //         console.log('Disconnected from socket.');
+  //       },
+  //       reportStatus: true
+  //     }
+  //   }
+  // }
 }
 
 const wrapper = new MonacoEditorLanguageClientWrapper()
@@ -127,7 +130,10 @@ new AbbreviationFeature();
 await wrapper.start(el)
 console.log(wrapper.getEditor().getModel().getLanguageId())
 
+const vscode = await ((wrapper.getMonacoEditorApp() as EditorAppExtended).getExtensionRegisterResult("lean4web") as RegisterLocalProcessExtensionResult).getApi()
 
+const leanClient = new LeanClient({uri : ""} as any, vscode.Uri.parse(""), {appendLine: () => {}} as any, "")
+leanClient.start()
 
 }
 

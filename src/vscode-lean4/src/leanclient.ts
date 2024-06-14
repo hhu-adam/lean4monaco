@@ -8,13 +8,15 @@ import {
     DidCloseTextDocumentParams,
     DocumentFilter,
     InitializeResult,
-    LanguageClient,
     LanguageClientOptions,
     PublishDiagnosticsParams,
     RevealOutputChannelOn,
     ServerOptions,
     State
 } from 'vscode-languageclient/node'
+import {
+    MonacoLanguageClient as LanguageClient,
+} from 'monaco-languageclient'
 import * as ls from 'vscode-languageserver-protocol'
 
 import { toolchainPath, lakePath, addServerEnvPaths, serverArgs, serverLoggingEnabled, serverLoggingPath, shouldAutofocusOutput, getElaborationDelay, lakeEnabled, automaticallyBuildDependencies } from './config'
@@ -32,6 +34,7 @@ import { fileExists, isFileInFolder } from './utils/fsHelper';
 import { c2pConverter, p2cConverter, patchConverters } from './utils/converters'
 import { displayErrorWithOutput } from './utils/errors'
 import path from 'path'
+import { LanguageClientWrapper } from 'monaco-editor-wrapper';
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -264,7 +267,7 @@ export class LeanClient implements Disposable {
         // Reveal the standard error output channel when the server prints something to stderr.
         // The vscode-languageclient library already takes care of writing it to the output channel.
         let stderrMsgBoxVisible = false;
-        (this.client as any)._serverProcess.stderr.on('data', async (chunk: Buffer) => {
+        (this.client as any)._serverProcess?.stderr.on('data', async (chunk: Buffer) => {
             if (shouldAutofocusOutput()) {
                 this.client?.outputChannel.show(true);
             } else if (!stderrMsgBoxVisible) {
@@ -663,17 +666,43 @@ export class LeanClient implements Disposable {
     }
 
     private async setupClient(): Promise<LanguageClient> {
-        const serverOptions: ServerOptions = await this.determineServerOptions()
-        const clientOptions: LanguageClientOptions = this.obtainClientOptions()
 
-        const client = new LanguageClient(
-            'lean4',
-            'Lean 4',
-            serverOptions,
-            clientOptions
-        )
+        const languageClientWrapper = new LanguageClientWrapper();
+        await languageClientWrapper.init({
+            languageClientConfig: {
+              languageId: 'lean4',
+              options: {
+                $type: 'WebSocketUrl',
+                url: 'ws://localhost:8080/websocket/mathlib-demo',
+                startOptions: {
+                  onCall: () => {
+                    console.log('Connected to socket.');
+                  },
+                  reportStatus: true
+                },
+                stopOptions: {
+                  onCall: () => {
+                    console.log('Disconnected from socket.');
+                  },
+                  reportStatus: true
+                }
+              }
+            }
+        });
+        await languageClientWrapper?.start();
+        return languageClientWrapper.getLanguageClient()
 
-        patchConverters(client.protocol2CodeConverter, client.code2ProtocolConverter)
-        return client
+        // const serverOptions: ServerOptions = await this.determineServerOptions()
+        // const clientOptions: LanguageClientOptions = this.obtainClientOptions()
+
+        // const client = new LanguageClient(
+        //     'lean4',
+        //     'Lean 4',
+        //     serverOptions,
+        //     clientOptions
+        // )
+
+        // patchConverters(client.protocol2CodeConverter, client.code2ProtocolConverter)
+        // return client
     }
 }

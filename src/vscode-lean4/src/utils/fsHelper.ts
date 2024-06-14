@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {promises, PathLike } from 'fs';
+import { PathLike } from 'fs';
+const promises = null
 
 /**
     Helper used to replace fs.existsSync (using existsSync to check for the existence

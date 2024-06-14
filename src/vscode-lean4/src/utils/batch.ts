@@ -1,5 +1,6 @@
 import { CancellationToken, Disposable, OutputChannel, ProgressLocation, ProgressOptions, window } from 'vscode'
-import { spawn } from 'child_process';
+// import { spawn } from 'child_process';
+const spawn = () => {}
 import { findProgramInPath, isRunningTest } from '../config'
 import { logger } from './logger'
 import { displayErrorWithOutput } from './errors';
