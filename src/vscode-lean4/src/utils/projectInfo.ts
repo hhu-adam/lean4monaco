@@ -40,6 +40,7 @@ export async function isCoreLean4Directory(path: Uri): Promise<boolean> {
 // Find the root of a Lean project and return an optional WorkspaceFolder for it,
 // the Uri for the package root and the Uri for the 'leanpkg.toml' or 'lean-toolchain' file found there.
 export async function findLeanPackageRoot(uri: Uri) : Promise<[WorkspaceFolder | undefined, Uri | null, Uri | null]> {
+    return [undefined, null, null];
     if (!uri || uri.scheme !== 'file') return [undefined, null, null];
 
     const toolchainFileName = 'lean-toolchain';

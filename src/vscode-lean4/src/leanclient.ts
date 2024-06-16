@@ -330,6 +330,7 @@ export class LeanClient implements Disposable {
     }
 
     async isSameWorkspace(uri: Uri) : Promise<boolean> {
+        return true;
         if (this.folderUri) {
             if (this.folderUri.scheme !== uri.scheme) return false;
             if (this.folderUri.scheme === 'file') {
@@ -580,7 +581,8 @@ export class LeanClient implements Disposable {
         return {
             outputChannel: this.outputChannel,
             revealOutputChannelOn: RevealOutputChannelOn.Never, // contrary to the name, this disables the message boxes
-            documentSelector: [documentSelector],
+            // documentSelector: [documentSelector],
+            documentSelector: ['lean4'],
             workspaceFolder: this.workspaceFolder,
             initializationOptions: {
                 editDelay: getElaborationDelay(), hasWidgets: true,
@@ -666,7 +668,6 @@ export class LeanClient implements Disposable {
     }
 
     private async setupClient(): Promise<LanguageClient> {
-
         const languageClientWrapper = new LanguageClientWrapper();
         await languageClientWrapper.init({
             languageClientConfig: {
@@ -686,23 +687,13 @@ export class LeanClient implements Disposable {
                   },
                   reportStatus: true
                 }
-              }
+              },
+              clientOptions: this.obtainClientOptions()
             }
         });
         await languageClientWrapper?.start();
-        return languageClientWrapper.getLanguageClient()
-
-        // const serverOptions: ServerOptions = await this.determineServerOptions()
-        // const clientOptions: LanguageClientOptions = this.obtainClientOptions()
-
-        // const client = new LanguageClient(
-        //     'lean4',
-        //     'Lean 4',
-        //     serverOptions,
-        //     clientOptions
-        // )
-
-        // patchConverters(client.protocol2CodeConverter, client.code2ProtocolConverter)
-        // return client
+        const client = languageClientWrapper.getLanguageClient();
+        patchConverters(client.protocol2CodeConverter, client.code2ProtocolConverter);
+        return client
     }
 }

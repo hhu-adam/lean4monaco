@@ -1,11 +1,20 @@
-import './style.css'
+// TODO: Why does extension->activate not work?
+// TODO: WHy do workspaces not work?
 
+import './style.css'
 import 'vscode/localExtensionHost'
+import * as vscode from 'vscode';
+import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
+import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
+import { useOpenEditorStub } from 'monaco-editor-wrapper/vscode/services';
+// import getKeybindingsServiceOverride from '@codingame/monaco-vscode-keybindings-service-override';
 import { MonacoEditorLanguageClientWrapper, UserConfig, EditorAppExtended, RegisterLocalProcessExtensionResult } from 'monaco-editor-wrapper';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { LeanClientProvider } from './vscode-lean4/src/utils/clientProvider';
 import { LeanInstaller } from './vscode-lean4/src/utils/leanInstaller';
 import { LeanClient } from './vscode-lean4/src/leanclient';
+import { Uri } from 'vscode';
+import { createModelReference } from 'vscode/monaco';
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -25,7 +34,7 @@ const el = document.getElementById('editor')!
 
 const main = {
   text: "#check Nat",
-  fileExt: 'lean'
+  uri: Uri.file('/workspace/model.lean')
 };
 
 
@@ -35,12 +44,10 @@ extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./vscode-lean4/syn
 extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
 extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./vscode-lean4/syntaxes/codeblock.json', import.meta.url));
 
-
 const userConfig : UserConfig = {
   wrapperConfig: {
     editorAppConfig: {
       $type: 'extended', 
-      codeResources: { main },
       extensions: [{
         config: {
             name: 'lean4web',
@@ -128,12 +135,27 @@ new AbbreviationFeature();
 
 
 await wrapper.start(el)
-console.log(wrapper.getEditor().getModel().getLanguageId())
 
-const vscode = await ((wrapper.getMonacoEditorApp() as EditorAppExtended).getExtensionRegisterResult("lean4web") as RegisterLocalProcessExtensionResult).getApi()
+// here the modelReference is created manually and given to the updateEditorModels of the wrapper
+const uri = vscode.Uri.parse('/workspace/test.lean');
+console.log(vscode.workspace.workspaceFolders)
+const modelRef = await createModelReference(uri, '#check Nat');
+wrapper.updateEditorModels({
+    modelRef
+});
 
-const leanClient = new LeanClient({uri : ""} as any, vscode.Uri.parse(""), {appendLine: () => {}} as any, "")
-leanClient.start()
+new LeanClientProvider({installChanged: () => {}, testLeanVersion: () => {return "lean4/stable"}, getElanDefaultToolchain: () => {return "lean4/stable"}} as any, {appendLine: () => {}} as any)
+
+// const infoProvider = new InfoProvider(client)
+// const div: HTMLElement = infoviewRef.current!
+// const imports = {
+//   '@leanprover/infoview': `${window.location.origin}/index.production.min.js`,
+//   'react': `${window.location.origin}/react.production.min.js`,
+//   'react/jsx-runtime': `${window.location.origin}/react-jsx-runtime.production.min.js`,
+//   'react-dom': `${window.location.origin}/react-dom.production.min.js`,
+//   'react-popper': `${window.location.origin}/react-popper.production.min.js`
+// }
+// loadRenderInfoview(imports, [infoProvider.getApi(), div], setInfoviewApi)
 
 }
 
