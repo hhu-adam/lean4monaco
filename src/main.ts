@@ -1,5 +1,8 @@
 // TODO: Why does extension->activate not work?
 // TODO: WHy do workspaces not work?
+// TODO: Infoview does probably not need index.html entrypoint. iframe.open() iframe.wrtie(innerHtml) should also work. (using infoview loader)
+// TODO: "initInfoView got null client."
+
 
 import './style.css'
 import 'vscode/localExtensionHost'
