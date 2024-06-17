@@ -5,7 +5,7 @@ import './style.css'
 import 'vscode/localExtensionHost'
 import * as vscode from 'vscode';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
-import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override';
+import getViewsServiceOverride from '@codingame/monaco-vscode-views-service-override';
 import { useOpenEditorStub } from 'monaco-editor-wrapper/vscode/services';
 // import getKeybindingsServiceOverride from '@codingame/monaco-vscode-keybindings-service-override';
 import { MonacoEditorLanguageClientWrapper, UserConfig, EditorAppExtended, RegisterLocalProcessExtensionResult } from 'monaco-editor-wrapper';
@@ -15,6 +15,12 @@ import { LeanInstaller } from './vscode-lean4/src/utils/leanInstaller';
 import { LeanClient } from './vscode-lean4/src/leanclient';
 import { Uri } from 'vscode';
 import { createModelReference } from 'vscode/monaco';
+import { InfoProvider } from './vscode-lean4/src/infoview';
+import { loadRenderInfoview } from '@leanprover/infoview/loader'
+
+import type { EditorApi } from '@leanprover/infoview';
+import { Rpc } from './vscode-lean4/src/rpc';
+
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -27,6 +33,7 @@ async function go() {
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
     <div id="editor"></div>
+    <div id="infoview"></div>
   </div>
 `
 
@@ -144,10 +151,31 @@ wrapper.updateEditorModels({
     modelRef
 });
 
-new LeanClientProvider({installChanged: () => {}, testLeanVersion: () => {return "lean4/stable"}, getElanDefaultToolchain: () => {return "lean4/stable"}} as any, {appendLine: () => {}} as any)
+const clientProvider = new LeanClientProvider({installChanged: () => {}, testLeanVersion: () => {return "lean4/stable"}, getElanDefaultToolchain: () => {return "lean4/stable"}} as any, {appendLine: () => {}} as any)
 
-// const infoProvider = new InfoProvider(client)
-// const div: HTMLElement = infoviewRef.current!
+const infoProvider = new InfoProvider(clientProvider, {language: 'lean4'}, {} as any)
+
+
+// const vscodeApi = wrapper.getApi()
+
+// const rpc = new Rpc((m: any) => vscodeApi.postMessage(m));
+// window.addEventListener('message', e => rpc.messageReceived(e.data))
+// const editorApi: EditorApi = rpc.getApi();
+
+// const div: HTMLElement | null = document.querySelector('#react_root');
+// const script: HTMLOrSVGScriptElement | null = document.currentScript
+// if (div && script) {
+//     const imports = {
+//         '@leanprover/infoview': script.getAttribute('data-importmap-leanprover-infoview')!,
+//         'react': script.getAttribute('data-importmap-react')!,
+//         'react/jsx-runtime': script.getAttribute('data-importmap-react-jsx-runtime')!,
+//         'react-dom': script.getAttribute('data-importmap-react-dom')!,
+//     }
+//     loadRenderInfoview(imports, [editorApi, div], api => rpc.register(api));
+// }
+
+
+// const infoviewEl = document.getElementById('editor')!
 // const imports = {
 //   '@leanprover/infoview': `${window.location.origin}/index.production.min.js`,
 //   'react': `${window.location.origin}/react.production.min.js`,
@@ -155,7 +183,7 @@ new LeanClientProvider({installChanged: () => {}, testLeanVersion: () => {return
 //   'react-dom': `${window.location.origin}/react-dom.production.min.js`,
 //   'react-popper': `${window.location.origin}/react-popper.production.min.js`
 // }
-// loadRenderInfoview(imports, [infoProvider.getApi(), div], setInfoviewApi)
+// loadRenderInfoview(imports, [infoProvider.getApi(), infoviewEl])
 
 }
 

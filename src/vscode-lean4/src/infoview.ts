@@ -55,7 +55,7 @@ class RpcSessionAtPos implements Disposable {
 
 export class InfoProvider implements Disposable {
     /** Instance of the panel, if it is open. Otherwise `undefined`. */
-    private webviewPanel?: WebviewPanel & {rpc: Rpc, api: InfoviewApi};
+    private webviewPanel?: HTMLIFrameElement & {rpc: Rpc, api: InfoviewApi};
     private subscriptions: Disposable[] = [];
     private clientSubscriptions: Disposable[] = [];
 
@@ -415,7 +415,8 @@ export class InfoProvider implements Disposable {
     }
 
     isOpen() : boolean {
-        return this.webviewPanel?.visible === true;
+        // return this.webviewPanel?.visible === true;
+        return this.webviewPanel !== undefined;
     }
 
     async runTestScript(javaScript: string) : Promise<void> {
@@ -494,7 +495,7 @@ export class InfoProvider implements Disposable {
 
     private async toggleInfoview() {
         if (this.webviewPanel) {
-            this.webviewPanel.dispose();
+            // this.webviewPanel.dispose();
             // the onDispose handler sets this.webviewPanel = undefined
         } else if (window.activeTextEditor && window.activeTextEditor.document.languageId === 'lean4') {
             await this.openPreview(window.activeTextEditor);
@@ -507,16 +508,22 @@ export class InfoProvider implements Disposable {
         let column = editor && editor.viewColumn ? editor.viewColumn + 1 : ViewColumn.Two;
         if (column === 4) { column = ViewColumn.Three; }
         if (this.webviewPanel) {
-            this.webviewPanel.reveal(column, true);
+            // this.webviewPanel.reveal(column, true);
         } else {
-            const webviewPanel = window.createWebviewPanel('lean4', 'Lean Infoview',
-                { viewColumn: column, preserveFocus: true },
-                {
-                    enableFindWidget: true,
-                    retainContextWhenHidden: true,
-                    enableScripts: true,
-                    enableCommandUris: true,
-                }) as WebviewPanel & {rpc: Rpc, api: InfoviewApi};
+            const div : HTMLElement = document.getElementById('infoview');
+            const iframe : HTMLIFrameElement = document.createElement("iframe");
+            iframe.src = `${new URL('../webview/index.html', import.meta.url)}`;
+            div.append(iframe);
+            const webviewPanel = iframe as HTMLIFrameElement & {rpc: Rpc, api: InfoviewApi}
+
+            // const webviewPanel = window.createWebviewPanel('lean4', 'Lean Infoview',
+            //     { viewColumn: column, preserveFocus: true },
+            //     {
+            //         enableFindWidget: true,
+            //         retainContextWhenHidden: true,
+            //         enableScripts: true,
+            //         enableCommandUris: true,
+            //     }) as WebviewPanel & {rpc: Rpc, api: InfoviewApi};
 
             // Note that an extension can send data to its webviews using webview.postMessage().
             // This method sends any JSON serializable data to the webview. The message is received
@@ -525,7 +532,7 @@ export class InfoProvider implements Disposable {
             // calls window.addEventListener('message',...
             webviewPanel.rpc = new Rpc(m => {
                 try {
-                    void webviewPanel.webview.postMessage(m)
+                    void webviewPanel.contentWindow.postMessage(m)
                 } catch (e) {
                     // ignore any disposed object exceptions
                 }
@@ -533,21 +540,20 @@ export class InfoProvider implements Disposable {
             webviewPanel.rpc.register(this.editorApi);
 
             // Similarly, we can received data from the webview by listening to onDidReceiveMessage.
-            webviewPanel.webview.onDidReceiveMessage(m => {
+            document.addEventListener('message', (m => {
                 try {
                     webviewPanel.rpc.messageReceived(m)
                 } catch {
                     // ignore any disposed object exceptions
                 }
-            });
+            }));
             webviewPanel.api = webviewPanel.rpc.getApi();
-            webviewPanel.onDidDispose(() => {
-                this.webviewPanel = undefined;
-                this.clearNotificationHandlers();
-                this.clearRpcSessions(null); // should be after `webviewPanel = undefined`
-            });
+            // webviewPanel.onDidDispose(() => {
+            //     this.webviewPanel = undefined;
+            //     this.clearNotificationHandlers();
+            //     this.clearRpcSessions(null); // should be after `webviewPanel = undefined`
+            // });
             this.webviewPanel = webviewPanel;
-            webviewPanel.webview.html = this.initialHtml();
 
             const uri = editor.document?.uri?.toString();
             const client = this.clientProvider.findClient(uri);
@@ -742,33 +748,15 @@ export class InfoProvider implements Disposable {
 
     private getLocalPath(path: string): string | undefined {
         if (this.webviewPanel) {
-            return this.webviewPanel.webview.asWebviewUri(
-                Uri.file(join(this.context.extensionPath, path))).toString();
+            return path;
+            // return this.webviewPanel.webview.asWebviewUri(
+            //     Uri.file(join(this.context.extensionPath, path))).toString();
         }
         return undefined;
     }
 
     private initialHtml() {
         const libPostfix = `.${prodOrDev}${minIfProd}.js`
-        return `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8" />
-                <meta http-equiv="Content-type" content="text/html;charset=utf-8">
-                <title>Infoview</title>
-                <style>${this.stylesheet}</style>
-                <link rel="stylesheet" href="${this.getLocalPath('dist/lean4-infoview/index.css')}">
-            </head>
-            <body>
-                <div id="react_root"></div>
-                <script
-                    data-importmap-leanprover-infoview="${this.getLocalPath(`dist/lean4-infoview/index${libPostfix}`)}"
-                    data-importmap-react="${this.getLocalPath(`dist/lean4-infoview/react${libPostfix}`)}"
-                    data-importmap-react-jsx-runtime="${this.getLocalPath(`dist/lean4-infoview/react-jsx-runtime${libPostfix}`)}"
-                    data-importmap-react-dom="${this.getLocalPath(`dist/lean4-infoview/react-dom${libPostfix}`)}"
-                    src="${this.getLocalPath('dist/webview.js')}"></script>
-            </body>
-            </html>`
+        return ""
     }
 }
