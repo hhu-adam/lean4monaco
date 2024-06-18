@@ -1,7 +1,7 @@
 // TODO: Why does extension->activate not work?
 // TODO: WHy do workspaces not work?
 // TODO: Infoview does probably not need index.html entrypoint. iframe.open() iframe.wrtie(innerHtml) should also work. (using infoview loader)
-// TODO: "initInfoView got null client."
+// TODO: _character bug in monaco-vscode-api?
 
 
 import './style.css'
@@ -34,10 +34,8 @@ self.MonacoEnvironment = {
 async function go() {
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
     <div id="editor"></div>
     <div id="infoview"></div>
-  </div>
 `
 
 const el = document.getElementById('editor')!

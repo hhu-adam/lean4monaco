@@ -23,6 +23,7 @@ export async function fileExists(pathFile: PathLike): Promise<boolean> {
  * @returns a boolean that says if the file exists in folder
  */
 export function isFileInFolder(file: string, folder: string){
+    return true;
     if (process.platform === 'win32') {
         // windows paths are case insensitive.
         return file.toLowerCase().startsWith(folder.toLowerCase());

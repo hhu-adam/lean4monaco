@@ -638,8 +638,8 @@ export class InfoProvider implements Disposable {
         return {
             uri: uri.toString(),
             range: {
-                start: selection.start,
-                end: selection.end
+                start: {line: (selection.start as any)._line, character: (selection.start as any)._character},
+                end: {line: (selection.end as any)._line, character: (selection.end as any)._character}
             }
         };
     }
