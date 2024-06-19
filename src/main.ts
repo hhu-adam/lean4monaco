@@ -19,11 +19,6 @@ clientProvider: LeanClientProvider
 infoProvider: InfoProvider
 
 async init () {
-  self.MonacoEnvironment = {
-    getWorker(_, label) {
-      return new editorWorker()
-    }
-  }
 
   const extensionFilesOrContents = new Map<string, string | URL>();
   extensionFilesOrContents.set('/language-configuration.json', new URL('./vscode-lean4/language-configuration.json', import.meta.url));
