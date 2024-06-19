@@ -254,7 +254,8 @@ export class InfoProvider implements Disposable {
         restartFile: async () => {}
     };
 
-    constructor(private provider: LeanClientProvider, private readonly leanDocs: DocumentSelector, private context: ExtensionContext) {
+    constructor(private provider: LeanClientProvider, private readonly leanDocs: DocumentSelector, private context: ExtensionContext,
+            private el: HTMLElement) {
         this.clientProvider = provider;
         this.updateStylesheet();
 
@@ -510,10 +511,9 @@ export class InfoProvider implements Disposable {
         if (this.webviewPanel) {
             // this.webviewPanel.reveal(column, true);
         } else {
-            const div : HTMLElement = document.getElementById('infoview');
             const iframe : HTMLIFrameElement = document.createElement("iframe");
             iframe.src = `${new URL('../webview/index.html', import.meta.url)}`;
-            div.append(iframe);
+            this.el.append(iframe);
             const webviewPanel = iframe as HTMLIFrameElement & {rpc: Rpc, api: InfoviewApi}
 
             // const webviewPanel = vswindow.createWebviewPanel('lean4', 'Lean Infoview',
@@ -541,7 +541,6 @@ export class InfoProvider implements Disposable {
 
             // Similarly, we can received data from the webview by listening to onDidReceiveMessage.
             window.addEventListener('message', (m => {
-                console.log("top", m.data)
                 try {
                     webviewPanel.rpc.messageReceived(m.data)
                 } catch {
