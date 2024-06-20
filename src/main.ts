@@ -2,7 +2,7 @@
 // TODO: WHy do workspaces not work?
 // TODO: Infoview does probably not need index.html entrypoint. iframe.open() iframe.wrtie(innerHtml) should also work. (using infoview loader)
 // TODO: _character bug in monaco-vscode-api?
-
+// TODO: Why does wrapper.init() not call editorApp.init()?
 
 import './style.css'
 import 'vscode/localExtensionHost'
@@ -95,6 +95,7 @@ async init () {
 
   this.wrapper = new MonacoEditorLanguageClientWrapper()
   await this.wrapper.init(userConfig)
+  await this.wrapper.getMonacoEditorApp().init()
 
 
   const { AbbreviationFeature } = (await import('./vscode-lean4/src/abbreviation'));
@@ -112,14 +113,16 @@ async init () {
 
 async start(editorEl, infoviewEl) {
   this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, infoviewEl)
-  await this.wrapper.start(editorEl)
+  await this.wrapper.getMonacoEditorApp().createEditors(editorEl) // Circumventing wrapper.start() because it calls editorApp.init()
   this.wrapper.getEditor().focus()
 }
 
 async dispose() {
   //TODO: Wait for start
+  await this.clientProvider.dispose()
   await this.infoProvider.dispose()
-  await this.wrapper.dispose()
+  await this.wrapper.getModelRefs().modelRef.dispose()
+  await this.wrapper.getEditor().dispose()
 }
 }
 
@@ -128,9 +131,10 @@ async dispose() {
 const lean = new LeanEditorProvider()
 await lean.init();
 await lean.start(document.getElementById('editor')!, document.getElementById('infoview')!);
-// await lean.dispose();
+await lean.dispose();
 
-// await lean.init();
-// await lean.start(document.getElementById('editor')!, document.getElementById('infoview')!);
+console.log("---")
+
+await lean.start(document.getElementById('editor')!, document.getElementById('infoview')!);
 
 })()
