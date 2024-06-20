@@ -539,14 +539,16 @@ export class InfoProvider implements Disposable {
             });
             webviewPanel.rpc.register(this.editorApi);
 
-            // Similarly, we can received data from the webview by listening to onDidReceiveMessage.
-            document.defaultView.addEventListener('message', (m => {
-                try {
-                    webviewPanel.rpc.messageReceived(m.data)
-                } catch {
-                    // ignore any disposed object exceptions
+            // Similarly, we can receive data from the webview
+            document.defaultView.addEventListener('message', m => {
+                if (m.source == webviewPanel.contentWindow) {
+                    try {
+                        webviewPanel.rpc.messageReceived(m.data)
+                    } catch {
+                        // ignore any disposed object exceptions
+                    }
                 }
-            }));
+            })
             webviewPanel.api = webviewPanel.rpc.getApi();
             // webviewPanel.onDidDispose(() => {
             //     this.webviewPanel = undefined;
