@@ -117,7 +117,7 @@ async start(editorEl, infoviewEl) {
   this.wrapper.getEditor().focus()
 }
 
-async dispose() {
+async stop() {
   //TODO: Wait for start
   await this.clientProvider.dispose()
   await this.infoProvider.dispose()
@@ -131,7 +131,7 @@ async dispose() {
 const lean = new LeanEditorProvider()
 await lean.init();
 await lean.start(document.getElementById('editor')!, document.getElementById('infoview')!);
-await lean.dispose();
+await lean.stop();
 
 console.log("---")
 

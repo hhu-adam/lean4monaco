@@ -3,7 +3,7 @@ import {
     commands, Disposable, DocumentSelector,
     ExtensionContext, languages, Range,
     Selection, TextEditor, TextEditorRevealType,
-    Uri, ViewColumn, WebviewPanel, window as vswindow, workspace, env, Position,
+    Uri, ViewColumn, WebviewPanel, window, workspace, env, Position,
 } from 'vscode';
 import { EditorApi, InfoviewApi, LeanFileProgressParams, TextInsertKind,
     RpcConnectParams, RpcConnected, RpcKeepAliveParams, ServerStoppedReason, RpcErrorCode } from '@leanprover/infoview-api';
@@ -209,7 +209,7 @@ export class InfoProvider implements Disposable {
         },
         copyToClipboard: async (text) => {
             await env.clipboard.writeText(text);
-            await vswindow.showInformationMessage(`Copied to clipboard: ${text}`);
+            await window.showInformationMessage(`Copied to clipboard: ${text}`);
         },
         insertText: async (text, kind, tdpp) => {
             let uri: Uri | undefined
@@ -272,8 +272,8 @@ export class InfoProvider implements Disposable {
         });
 
         this.subscriptions.push(
-            vswindow.onDidChangeActiveTextEditor(() => this.sendPosition()),
-            vswindow.onDidChangeTextEditorSelection(() => this.sendPosition()),
+            window.onDidChangeActiveTextEditor(() => this.sendPosition()),
+            window.onDidChangeTextEditorSelection(() => this.sendPosition()),
             workspace.onDidChangeConfiguration(async (_e) => {
                 // regression; changing the style needs a reload. :/
                 this.updateStylesheet();
@@ -329,7 +329,7 @@ export class InfoProvider implements Disposable {
         if (this.clientsFailed.has(folder)){
             this.clientsFailed.delete(folder);
         }
-        await this.initInfoView(vswindow.activeTextEditor, client);
+        await this.initInfoView(window.activeTextEditor, client);
     }
 
     private async onClientAdded(client: LeanClient) {
@@ -461,12 +461,12 @@ export class InfoProvider implements Disposable {
     }
 
     private async autoOpen() : Promise<boolean> {
-        if (!this.webviewPanel && !this.autoOpened && getInfoViewAutoOpen() && vswindow.activeTextEditor) {
+        if (!this.webviewPanel && !this.autoOpened && getInfoViewAutoOpen() && window.activeTextEditor) {
             // only auto-open for lean files, not for markdown.
-            if (languages.match(this.leanDocs, vswindow.activeTextEditor.document)) {
+            if (languages.match(this.leanDocs, window.activeTextEditor.document)) {
                 // remember we've auto opened during this session so if user closes it it remains closed.
                 this.autoOpened = true;
-                await this.openPreview(vswindow.activeTextEditor);
+                await this.openPreview(window.activeTextEditor);
                 return true;
             }
         }
@@ -498,10 +498,10 @@ export class InfoProvider implements Disposable {
         if (this.webviewPanel) {
             // this.webviewPanel.dispose();
             // the onDispose handler sets this.webviewPanel = undefined
-        } else if (vswindow.activeTextEditor && vswindow.activeTextEditor.document.languageId === 'lean4') {
-            await this.openPreview(vswindow.activeTextEditor);
+        } else if (window.activeTextEditor && window.activeTextEditor.document.languageId === 'lean4') {
+            await this.openPreview(window.activeTextEditor);
         } else {
-            void vswindow.showErrorMessage('No active Lean editor tab. Make sure to focus the Lean editor tab for which you want to open the infoview.')
+            void window.showErrorMessage('No active Lean editor tab. Make sure to focus the Lean editor tab for which you want to open the infoview.')
         }
     }
 
@@ -516,7 +516,7 @@ export class InfoProvider implements Disposable {
             this.el.append(iframe);
             const webviewPanel = iframe as HTMLIFrameElement & {rpc: Rpc, api: InfoviewApi}
 
-            // const webviewPanel = vswindow.createWebviewPanel('lean4', 'Lean Infoview',
+            // const webviewPanel = window.createWebviewPanel('lean4', 'Lean Infoview',
             //     { viewColumn: column, preserveFocus: true },
             //     {
             //         enableFindWidget: true,
@@ -529,7 +529,7 @@ export class InfoProvider implements Disposable {
             // This method sends any JSON serializable data to the webview. The message is received
             // inside the webview through the standard message event.
             // The receiving of these messages is done inside webview\index.ts where it
-            // calls vswindow.addEventListener('message',...
+            // calls window.addEventListener('message',...
             webviewPanel.rpc = new Rpc(m => {
                 try {
                     void webviewPanel.contentWindow.postMessage(m)
@@ -540,7 +540,7 @@ export class InfoProvider implements Disposable {
             webviewPanel.rpc.register(this.editorApi);
 
             // Similarly, we can received data from the webview by listening to onDidReceiveMessage.
-            window.addEventListener('message', (m => {
+            document.defaultView.addEventListener('message', (m => {
                 try {
                     webviewPanel.rpc.messageReceived(m.data)
                 } catch {
@@ -644,7 +644,7 @@ export class InfoProvider implements Disposable {
     }
 
     private async sendPosition() {
-        const editor = vswindow.activeTextEditor;
+        const editor = window.activeTextEditor;
         if (!editor) return
         const loc = this.getLocation(editor);
         if (languages.match(this.leanDocs, editor.document) === 0){
@@ -657,7 +657,7 @@ export class InfoProvider implements Disposable {
         if (this.clientsFailed.size > 0 || this.workersFailed.size > 0) {
             const client = this.clientProvider.findClient(editor.document.uri.toString())
             if (client) {
-                const uri = vswindow.activeTextEditor?.document.uri.toString() ?? '';
+                const uri = window.activeTextEditor?.document.uri.toString() ?? '';
                 const folder = client.getWorkspaceFolder();
                 let reason : ServerStoppedReason | undefined;
                 if (this.clientsFailed.has(folder)){
@@ -687,32 +687,32 @@ export class InfoProvider implements Disposable {
 
     private async revealEditorSelection(uri: Uri, selection?: Range) {
         let editor: TextEditor | undefined;
-        for (const e of vswindow.visibleTextEditors) {
+        for (const e of window.visibleTextEditors) {
             if (e.document.uri.toString() === uri.toString()) {
                 editor = e;
                 break;
             }
         }
         if (!editor) {
-            const c = vswindow.activeTextEditor ? vswindow.activeTextEditor.viewColumn : ViewColumn.One;
-            editor = await vswindow.showTextDocument(uri, { viewColumn: c, preserveFocus: false });
+            const c = window.activeTextEditor ? window.activeTextEditor.viewColumn : ViewColumn.One;
+            editor = await window.showTextDocument(uri, { viewColumn: c, preserveFocus: false });
         }
         if (selection !== undefined) {
             editor.revealRange(selection, TextEditorRevealType.InCenterIfOutsideViewport);
             editor.selection = new Selection(selection.start, selection.end);
             // ensure the text document has the keyboard focus.
-            await vswindow.showTextDocument(editor.document, { viewColumn: editor.viewColumn, preserveFocus: false });
+            await window.showTextDocument(editor.document, { viewColumn: editor.viewColumn, preserveFocus: false });
         }
     }
 
     private async handleInsertText(text: string, kind: TextInsertKind, uri?: Uri, pos?: Position) {
         let editor: TextEditor | undefined
         if (uri) {
-           editor = vswindow.visibleTextEditors.find(e => e.document.uri.toString() === uri.toString());
+           editor = window.visibleTextEditors.find(e => e.document.uri.toString() === uri.toString());
         } else {
-            editor = vswindow.activeTextEditor;
+            editor = window.activeTextEditor;
             if (!editor) { // sometimes activeTextEditor is null.
-                editor = vswindow.visibleTextEditors.find(e => e.document.languageId === 'lean4');
+                editor = window.visibleTextEditors.find(e => e.document.languageId === 'lean4');
             }
         }
         if (!editor) {
@@ -743,7 +743,7 @@ export class InfoProvider implements Disposable {
             editor.selection = new Selection(pos, pos)
         }
         // ensure the text document has the keyboard focus.
-        await vswindow.showTextDocument(editor.document, { viewColumn: editor.viewColumn, preserveFocus: false });
+        await window.showTextDocument(editor.document, { viewColumn: editor.viewColumn, preserveFocus: false });
     }
 
     private getLocalPath(path: string): string | undefined {
