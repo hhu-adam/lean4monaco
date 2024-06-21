@@ -517,8 +517,10 @@ export class InfoProvider implements Disposable {
             // this.webviewPanel.reveal(column, true);
         } else {
             const iframe : HTMLIFrameElement = document.createElement("iframe");
-            iframe.src = `${new URL('../webview/index.html', import.meta.url)}`;
             this.infoviewElement.append(iframe);
+            iframe.contentWindow.document.open();
+            iframe.contentWindow.document.write(this.initialHtml());
+            iframe.contentWindow.document.close();
             const webviewPanel = iframe as HTMLIFrameElement & {rpc: Rpc, api: InfoviewApi}
 
             // const webviewPanel = window.createWebviewPanel('lean4', 'Lean Infoview',
@@ -764,6 +766,26 @@ export class InfoProvider implements Disposable {
 
     private initialHtml() {
         const libPostfix = `.${prodOrDev}${minIfProd}.js`
-        return ""
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8" />
+                <meta http-equiv="Content-type" content="text/html;charset=utf-8">
+                <title>Infoview</title>
+                <style>${this.stylesheet}</style>
+                <link rel="stylesheet" href="${new URL(`../webview/vscode.css`, import.meta.url)}">
+                <link rel="stylesheet" href="${new URL(`../../@leanprover/infoview/dist/index.css`, import.meta.url)}">
+            </head>
+            <body>
+                <div id="react_root"></div>
+                <script type="module"
+                    data-importmap-leanprover-infoview="${new URL(`../../@leanprover/infoview/dist/lean4-infoview/index${libPostfix}`, import.meta.url)}"
+                    data-importmap-react="${new URL(`../../@leanprover/infoview/dist/lean4-infoview/react${libPostfix}`, import.meta.url)}"
+                    data-importmap-react-jsx-runtime="${new URL(`../../@leanprover/infoview/dist/lean4-infoview/react-jsx-runtime${libPostfix}`, import.meta.url)}"
+                    data-importmap-react-dom="${new URL(`../../@leanprover/infoview/dist/lean4-infoview/react-dom${libPostfix}`, import.meta.url)}"
+                    src="${new URL(`../webview/index.ts`, import.meta.url)}"></script>
+            </body>
+            </html>`
     }
 }

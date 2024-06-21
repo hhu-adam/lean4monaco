@@ -1,6 +1,6 @@
 // TODO: Why does extension->activate not work?
 // TODO: WHy do workspaces not work?
-// TODO: Infoview does probably not need index.html entrypoint. iframe.open() iframe.wrtie(innerHtml) should also work. (using infoview loader)
+// TODO: Infoview using infoview loader?
 // TODO: _character bug in monaco-vscode-api?
 // TODO: Why does wrapper.init() not call editorApp.init()?
 
