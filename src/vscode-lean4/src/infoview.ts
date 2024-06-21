@@ -75,6 +75,8 @@ export class InfoProvider implements Disposable {
     // the key is the uri of the file who's worker has failed.
     private workersFailed: Map<string, ServerStoppedReason> = new Map();
 
+    private infoviewElement : HTMLElement
+
     private subscribeDidChangeNotification(client: LeanClient, method: string){
         const h = client.didChange((params) => {
             void this.webviewPanel?.api.sentClientNotification(method, params);
@@ -254,8 +256,7 @@ export class InfoProvider implements Disposable {
         restartFile: async () => {}
     };
 
-    constructor(private provider: LeanClientProvider, private readonly leanDocs: DocumentSelector, private context: ExtensionContext,
-            private el: HTMLElement) {
+    constructor(private provider: LeanClientProvider, private readonly leanDocs: DocumentSelector, private context: ExtensionContext) {
         this.clientProvider = provider;
         this.updateStylesheet();
 
@@ -297,6 +298,10 @@ export class InfoProvider implements Disposable {
             commands.registerTextEditorCommand('lean4.infoView.toggleStickyPosition',
                 () => this.webviewPanel?.api.requestedAction({kind: 'togglePin'})),
         );
+    }
+
+    setInfoviewElement(infoviewElement) {
+        this.infoviewElement = infoviewElement
     }
 
     private async onClientRestarted(client: LeanClient){
@@ -513,7 +518,7 @@ export class InfoProvider implements Disposable {
         } else {
             const iframe : HTMLIFrameElement = document.createElement("iframe");
             iframe.src = `${new URL('../webview/index.html', import.meta.url)}`;
-            this.el.append(iframe);
+            this.infoviewElement.append(iframe);
             const webviewPanel = iframe as HTMLIFrameElement & {rpc: Rpc, api: InfoviewApi}
 
             // const webviewPanel = window.createWebviewPanel('lean4', 'Lean Infoview',

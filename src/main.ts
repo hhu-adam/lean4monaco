@@ -12,7 +12,7 @@ import { LeanClientProvider } from './vscode-lean4/src/utils/clientProvider';
 import { Uri } from 'vscode';
 import { InfoProvider } from './vscode-lean4/src/infoview';
 
-class LeanEditorProvider {
+class LeanMonaco {
 
 wrapper: MonacoEditorLanguageClientWrapper
 clientProvider: LeanClientProvider
@@ -97,7 +97,6 @@ async init () {
   await this.wrapper.init(userConfig)
   await this.wrapper.getMonacoEditorApp().init()
 
-
   const { AbbreviationFeature } = (await import('./vscode-lean4/src/abbreviation'));
 
   new AbbreviationFeature();
@@ -109,10 +108,12 @@ async init () {
     {appendLine: () => {}
   } as any)
 
+  this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any)
+
 }
 
 async start(editorEl, infoviewEl) {
-  this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, infoviewEl)
+  this.infoProvider.setInfoviewElement(infoviewEl)
   await this.wrapper.getMonacoEditorApp().createEditors(editorEl) // Circumventing wrapper.start() because it calls editorApp.init()
   this.wrapper.getEditor().focus()
 }
@@ -120,7 +121,6 @@ async start(editorEl, infoviewEl) {
 async stop() {
   //TODO: Wait for start
   await this.clientProvider.dispose()
-  await this.infoProvider.dispose()
   await this.wrapper.getModelRefs().modelRef.dispose()
   await this.wrapper.getEditor().dispose()
 }
@@ -128,7 +128,7 @@ async stop() {
 
 (async () => {
 
-const lean = new LeanEditorProvider()
+const lean = new LeanMonaco()
 await lean.init();
 await lean.start(document.getElementById('editor')!, document.getElementById('infoview')!);
 await lean.stop();
