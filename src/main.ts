@@ -8,9 +8,9 @@ import './style.css'
 import 'vscode/localExtensionHost'
 import { MonacoEditorLanguageClientWrapper, UserConfig } from 'monaco-editor-wrapper';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
-import { LeanClientProvider } from './vscode-lean4/src/utils/clientProvider';
+import { LeanClientProvider } from './monaco-lean4/vscode-lean4/src/utils/clientProvider';
 import { Uri } from 'vscode';
-import { InfoProvider } from './vscode-lean4/src/infoview';
+import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
 
 class LeanMonaco {
 

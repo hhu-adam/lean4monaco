@@ -1,0 +1,3 @@
+[submodule "src/monaco-lean4"]
+	path = src/monaco-lean4
+	url = git@github.com:hhu-adam/monaco-lean4.git
