@@ -42,19 +42,17 @@ h1 {
   grid-auto-columns: auto;
   height: 100vh;
   width: 100%;
-  background-color: #333333;
 }
 
 #editor {
   grid-column: 1 / 2;
   grid-row: 1;
-  background-color: #f2f2f2;
 }
 #infoview { 
   grid-column: 2 / 2;
   grid-row: 1;
-  background-color: #c0c0c0;
 }
+
 #infoview iframe {
   height:100%;
   width: 100%;
