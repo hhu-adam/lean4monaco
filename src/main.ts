@@ -21,10 +21,10 @@ infoProvider: InfoProvider
 async init () {
 
   const extensionFilesOrContents = new Map<string, string | URL>();
-  extensionFilesOrContents.set('/language-configuration.json', new URL('./vscode-lean4/language-configuration.json', import.meta.url));
-  extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./vscode-lean4/syntaxes/lean4.json', import.meta.url));
-  extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
-  extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./vscode-lean4/syntaxes/codeblock.json', import.meta.url));
+  extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
+  extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
+  extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
+  extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
 
   const userConfig : UserConfig = {
     wrapperConfig: {
@@ -97,9 +97,9 @@ async init () {
   await this.wrapper.init(userConfig)
   await this.wrapper.getMonacoEditorApp().init()
 
-  const { AbbreviationFeature } = (await import('./vscode-lean4/src/abbreviation'));
+  const { AbbreviationFeature } = (await import('./monaco-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature'));
 
-  new AbbreviationFeature();
+  new AbbreviationFeature({} as any);
 
   this.clientProvider = new LeanClientProvider({
     installChanged: () => {},
