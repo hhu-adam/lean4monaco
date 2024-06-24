@@ -12,6 +12,7 @@ import { LeanClientProvider } from './monaco-lean4/vscode-lean4/src/utils/client
 import { Uri } from 'vscode';
 import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
 import { AbbreviationFeature } from './monaco-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
+import { LeanTaskGutter } from './monaco-lean4/vscode-lean4/src/taskgutter';
 
 class LeanMonaco {
 
@@ -106,6 +107,8 @@ async init () {
     getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
     {appendLine: () => {}
   } as any)
+
+  new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => path} as any)
 
   this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any)
 
