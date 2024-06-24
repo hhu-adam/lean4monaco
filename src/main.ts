@@ -11,6 +11,7 @@ import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { LeanClientProvider } from './monaco-lean4/vscode-lean4/src/utils/clientProvider';
 import { Uri } from 'vscode';
 import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
+import { AbbreviationFeature } from './monaco-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
 
 class LeanMonaco {
 
@@ -96,9 +97,7 @@ async init () {
   this.wrapper = new MonacoEditorLanguageClientWrapper()
   await this.wrapper.init(userConfig)
   await this.wrapper.getMonacoEditorApp().init()
-
-  const { AbbreviationFeature } = (await import('./monaco-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature'));
-
+  
   new AbbreviationFeature({} as any);
 
   this.clientProvider = new LeanClientProvider({
