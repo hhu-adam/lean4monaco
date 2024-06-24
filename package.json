@@ -16,6 +16,7 @@
     "vite-plugin-node-polyfills": "^0.22.0"
   },
   "dependencies": {
+    "@leanprover/unicode-input": "https://gitpkg.now.sh/hhu-adam/monaco-lean4/lean4-unicode-input?5bbcb22b89fdd6869e49d8bb9fef934d282afae8",
     "@codingame/esbuild-import-meta-url-plugin": "^1.0.2",
     "@codingame/monaco-vscode-views-service-override": "^6.0.1",
     "@leanprover/infoview": "^0.7.0",
