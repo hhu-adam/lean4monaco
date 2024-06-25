@@ -1,6 +1,6 @@
 import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
+import commonjs from 'vite-plugin-commonjs'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import { fileURLToPath } from 'url'
 
 export default {
   optimizeDeps: {
@@ -10,5 +10,6 @@ export default {
   },
   plugins: [
     nodePolyfills(),
+    commonjs()
   ],
 }

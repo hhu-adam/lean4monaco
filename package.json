@@ -16,16 +16,17 @@
     "vite-plugin-node-polyfills": "^0.22.0"
   },
   "dependencies": {
-    "@leanprover/unicode-input": "https://gitpkg.now.sh/hhu-adam/monaco-lean4/lean4-unicode-input?5bbcb22b89fdd6869e49d8bb9fef934d282afae8",
     "@codingame/esbuild-import-meta-url-plugin": "^1.0.2",
     "@codingame/monaco-vscode-views-service-override": "^6.0.1",
     "@leanprover/infoview": "^0.7.0",
     "@leanprover/infoview-api": "^0.4.0",
+    "@leanprover/unicode-input": "https://gitpkg.now.sh/hhu-adam/monaco-lean4/lean4-unicode-input?5bbcb22b89fdd6869e49d8bb9fef934d282afae8",
     "axios": "^1.7.2",
     "cheerio": "^1.0.0-rc.12",
     "mobx": "5.15.7",
     "monaco-editor-wrapper": "^5.2.0",
     "react-dom": "^18.3.1",
+    "vite-plugin-commonjs": "^0.10.1",
     "zod": "^3.23.8"
   }
 }
