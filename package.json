@@ -20,7 +20,7 @@
     "@codingame/monaco-vscode-views-service-override": "^6.0.1",
     "@leanprover/infoview": "^0.7.0",
     "@leanprover/infoview-api": "^0.4.0",
-    "@leanprover/unicode-input": "https://gitpkg.now.sh/hhu-adam/monaco-lean4/lean4-unicode-input?5bbcb22b89fdd6869e49d8bb9fef934d282afae8",
+    "@leanprover/unicode-input": "^0.1.0",
     "axios": "^1.7.2",
     "cheerio": "^1.0.0-rc.12",
     "mobx": "5.15.7",
