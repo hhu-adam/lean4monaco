@@ -13,12 +13,14 @@ import { Uri } from 'vscode';
 import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
 import { AbbreviationFeature } from './monaco-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
 import { LeanTaskGutter } from './monaco-lean4/vscode-lean4/src/taskgutter';
+import { IFrameInfoWebviewFactory } from './infowebview'
 
 class LeanMonaco {
 
 wrapper: MonacoEditorLanguageClientWrapper
 clientProvider: LeanClientProvider
 infoProvider: InfoProvider
+iframeWebviewFactory : IFrameInfoWebviewFactory
 
 async init () {
   self.MonacoEnvironment = {
@@ -115,12 +117,13 @@ async init () {
 
   new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
 
-  this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any)
+  this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
+  this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)
 
 }
 
 async start(editorEl, infoviewEl) {
-  this.infoProvider.setInfoviewElement(infoviewEl)
+  this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
   await this.wrapper.getMonacoEditorApp().createEditors(editorEl) // Circumventing wrapper.start() because it calls editorApp.init()
   this.wrapper.getEditor().focus()
 }
