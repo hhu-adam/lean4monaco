@@ -1,6 +1,6 @@
 import { LanguageClientWrapper } from 'monaco-editor-wrapper'
 
-export async function setupMonacoClient() {
+export async function setupMonacoClient(clientOptions) {
     const languageClientWrapper = new LanguageClientWrapper();
     await languageClientWrapper.init({
         languageClientConfig: {
@@ -21,7 +21,7 @@ export async function setupMonacoClient() {
                 reportStatus: true
                 }
             },
-            clientOptions: this.obtainClientOptions()
+            clientOptions
         }
     });
     await languageClientWrapper?.start();
