@@ -1,7 +1,30 @@
 import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
-import { InfoWebviewFactory } from "./monaco-lean4/vscode-lean4/src/infoview"
+import { InfoWebviewFactory, InfoWebview } from "./monaco-lean4/vscode-lean4/src/infoview"
 import { Rpc } from "./monaco-lean4/vscode-lean4/src/rpc"
-import { ViewColumn, Disposable } from "vscode"
+import { ViewColumn, Disposable, EventEmitter } from "vscode"
+
+export class IFrameInfoWebview implements InfoWebview {
+
+    visible = true
+    
+    private onDidDisposeEmitter = new EventEmitter<void>()
+    onDidDispose = this.onDidDisposeEmitter.event
+
+    api: InfoviewApi
+
+    constructor(private iframe: HTMLIFrameElement, public rpc: Rpc) {
+        this.api = rpc.getApi<InfoviewApi>()
+    }
+
+    dispose() {
+        this.iframe.remove()
+        this.onDidDisposeEmitter.fire()
+    }
+    
+    reveal(viewColumn?: ViewColumn, preserveFocus?: boolean) {
+
+    }
+}
 
 export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     private infoviewElement
@@ -15,7 +38,6 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
         this.infoviewElement.append(iframe)
         iframe.contentWindow.document.open()
         iframe.contentWindow.document.write(this.initialHtml(stylesheet))
-
         iframe.contentWindow.document.close()
         
         // Note that an extension can send data to its webviews using webview.postMessage().
@@ -42,23 +64,8 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
                 // ignore any disposed object exceptions
             }
         })
-        const api = rpc.getApi<InfoviewApi>()
 
-        return {
-            rpc,
-            api,
-            visible: true,
-            dispose: () => {
-                // TODO
-            },
-            reveal: (viewColumn?: ViewColumn, preserveFocus?: boolean) => {},
-            onDidDispose: (listener: (e: void) => any, thisArgs?: any, disposables?: Disposable[]) => {
-                // TODO
-                return {dispose: () => {
-                    // TODO
-                }}
-            }
-        }
+        return new IFrameInfoWebview(iframe, rpc)
     }
 
     private initialHtml(stylesheet) {
