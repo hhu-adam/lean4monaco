@@ -14,6 +14,7 @@ import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
 import { AbbreviationFeature } from './monaco-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
 import { LeanTaskGutter } from './monaco-lean4/vscode-lean4/src/taskgutter';
 import { IFrameInfoWebviewFactory } from './infowebview'
+import { setupMonacoClient } from './monacoleanclient';
 
 class LeanMonaco {
 
@@ -108,12 +109,15 @@ async init () {
   
   new AbbreviationFeature({} as any);
 
-  this.clientProvider = new LeanClientProvider({
-    installChanged: () => {},
-    testLeanVersion: () => {return "lean4/stable"},
-    getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
-    {appendLine: () => {}
-  } as any)
+  this.clientProvider = new LeanClientProvider(
+    {
+      installChanged: () => {},
+      testLeanVersion: () => {return "lean4/stable"},
+      getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
+      {appendLine: () => {}
+    } as any,
+    setupMonacoClient
+  )
 
   new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
 
