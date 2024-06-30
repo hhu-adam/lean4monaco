@@ -1,16 +1,16 @@
 import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
 import { InfoWebviewFactory } from "./monaco-lean4/vscode-lean4/src/infoview"
 import { Rpc } from "./monaco-lean4/vscode-lean4/src/rpc"
-import { ViewColumn } from "vscode"
+import { ViewColumn, Disposable } from "vscode"
 
 export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     private infoviewElement
 
     setInfoviewElement(infoviewElement: HTMLElement) {
-    this.infoviewElement = infoviewElement
+        this.infoviewElement = infoviewElement
     }
 
-    make(editorApi: EditorApi, stylesheet: string) {
+    make(editorApi: EditorApi, stylesheet: string, column: number) {
         const iframe : HTMLIFrameElement = document.createElement("iframe")
         this.infoviewElement.append(iframe)
         iframe.contentWindow.document.open()
@@ -51,7 +51,13 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
             dispose: () => {
                 // TODO
             },
-            reveal: (viewColumn?: ViewColumn, preserveFocus?: boolean) => {}
+            reveal: (viewColumn?: ViewColumn, preserveFocus?: boolean) => {},
+            onDidDispose: (listener: (e: void) => any, thisArgs?: any, disposables?: Disposable[]) => {
+                // TODO
+                return {dispose: () => {
+                    // TODO
+                }}
+            }
         }
     }
 
