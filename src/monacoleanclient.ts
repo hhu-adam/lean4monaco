@@ -1,6 +1,10 @@
 import { LanguageClientWrapper } from 'monaco-editor-wrapper'
+import { ExtUri } from './monaco-lean4/vscode-lean4/src/utils/exturi'
+import {
+    LanguageClientOptions,
+} from 'vscode-languageclient/node'
 
-export async function setupMonacoClient(clientOptions) {
+export async function setupMonacoClient(clientOptions: LanguageClientOptions, folderUri: ExtUri, elanDefaultToolchain: string) {
     const languageClientWrapper = new LanguageClientWrapper();
     await languageClientWrapper.init({
         languageClientConfig: {
