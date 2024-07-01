@@ -23,6 +23,7 @@
     "@leanprover/unicode-input": "^0.1.0",
     "axios": "^1.7.2",
     "cheerio": "^1.0.0-rc.12",
+    "memfs": "^4.9.3",
     "mobx": "5.15.7",
     "monaco-editor-wrapper": "^5.2.0",
     "react-dom": "^18.3.1",

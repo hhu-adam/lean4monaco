@@ -43,7 +43,11 @@ export default {
     }
   },
   plugins: [
-    nodePolyfills(),
+    nodePolyfills({
+      overrides: {
+        fs: 'memfs',
+      },
+    }),
     commonjs()
   ],
 }
