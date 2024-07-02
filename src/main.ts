@@ -17,6 +17,7 @@ import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
 import { checkLean4ProjectPreconditions } from './preconditions'
 import { fs } from 'memfs';
+import { ExtUri } from './monaco-lean4/vscode-lean4/src/utils/exturi';
 
 class LeanMonaco {
 
@@ -122,7 +123,8 @@ async init () {
       {appendLine: () => {}
     } as any,
     setupMonacoClient,
-    checkLean4ProjectPreconditions
+    checkLean4ProjectPreconditions,
+    (docUri: ExtUri) => { return true }
   )
 
   new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
