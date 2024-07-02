@@ -15,6 +15,8 @@ import { AbbreviationFeature } from './monaco-lean4/vscode-lean4/src/abbreviatio
 import { LeanTaskGutter } from './monaco-lean4/vscode-lean4/src/taskgutter';
 import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
+import { checkLean4ProjectPreconditions } from './preconditions'
+import { fs } from 'memfs';
 
 class LeanMonaco {
 
@@ -30,6 +32,9 @@ async init () {
     }
   }
 
+
+  fs.writeFileSync('/test.lean', '');
+
   const extensionFilesOrContents = new Map<string, string | URL>();
   extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
   extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
@@ -42,7 +47,7 @@ async init () {
         $type: 'extended',
         codeResources: {
           main: {
-            uri: '/workspace/test.lean',
+            uri: '/test.lean',
             text: '#check Nat'
           }
         },
@@ -116,7 +121,8 @@ async init () {
       getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
       {appendLine: () => {}
     } as any,
-    setupMonacoClient
+    setupMonacoClient,
+    checkLean4ProjectPreconditions
   )
 
   new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
