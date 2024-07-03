@@ -7,7 +7,6 @@
 import './style.css'
 import 'vscode/localExtensionHost'
 import { MonacoEditorLanguageClientWrapper, UserConfig } from 'monaco-editor-wrapper';
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { LeanClientProvider } from './monaco-lean4/vscode-lean4/src/utils/clientProvider';
 import { Uri } from 'vscode';
 import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
@@ -19,22 +18,40 @@ import { checkLean4ProjectPreconditions } from './preconditions'
 import { fs } from 'memfs';
 import { ExtUri } from './monaco-lean4/vscode-lean4/src/utils/exturi';
 
+
 class LeanMonaco {
 
 wrapper: MonacoEditorLanguageClientWrapper
 clientProvider: LeanClientProvider
 infoProvider: InfoProvider
 iframeWebviewFactory : IFrameInfoWebviewFactory
+abbreviationFeature: AbbreviationFeature
+taskGutter: LeanTaskGutter
+
 
 async init () {
-  self.MonacoEnvironment = {
-    getWorker(_, label) {
-      return new editorWorker()
+
+  if (! window.MonacoEnvironment?.getWorker) {
+    type WorkerLoader = () => Worker
+    const workerLoaders: Partial<Record<string, WorkerLoader>> = {
+      editorWorkerService: () => new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url), { type: 'module' }),
+      textMateWorker: () => new Worker(new URL('@codingame/monaco-vscode-textmate-service-override/worker', import.meta.url), { type: 'module' }),
+    }
+    window.MonacoEnvironment = {
+      getWorker: function (moduleId, label) {
+        const workerFactory = workerLoaders[label]
+        if (workerFactory != null) {
+          return workerFactory()
+        }
+        throw new Error(`Unimplemented worker ${label} (${moduleId})`)
+      }
     }
   }
 
+  const fileName = '/test.lean'
 
-  fs.writeFileSync('/test.lean', '');
+
+  fs.writeFileSync(fileName, '');
 
   const extensionFilesOrContents = new Map<string, string | URL>();
   extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
@@ -48,7 +65,7 @@ async init () {
         $type: 'extended',
         codeResources: {
           main: {
-            uri: '/test.lean',
+            uri: fileName,
             text: '#check Nat'
           }
         },
@@ -113,7 +130,7 @@ async init () {
   await this.wrapper.init(userConfig)
   await this.wrapper.getMonacoEditorApp().init()
   
-  new AbbreviationFeature({} as any);
+  this.abbreviationFeature = new AbbreviationFeature({} as any);
 
   this.clientProvider = new LeanClientProvider(
     {
@@ -127,7 +144,7 @@ async init () {
     (docUri: ExtUri) => { return true }
   )
 
-  new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
+  this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
 
   this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
   this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)
@@ -146,6 +163,18 @@ async stop() {
   await this.wrapper.getModelRefs().modelRef.dispose()
   await this.wrapper.getEditor().dispose()
 }
+
+async dispose() {
+  //TODO: Wait for init / start
+  await this.stop()
+  await this.wrapper.dispose()
+  await this.infoProvider.dispose()
+  await this.taskGutter.dispose()
+  await this.clientProvider.dispose()
+  await this.abbreviationFeature.dispose()
+
+  await this.editorWorker?.terminate()
+}
 }
 
 (async () => {
@@ -153,10 +182,13 @@ async stop() {
 const lean = new LeanMonaco()
 await lean.init();
 await lean.start(document.getElementById('editor')!, document.getElementById('infoview')!);
-await lean.stop();
+
+await lean.dispose();
 
 console.log("---")
 
-await lean.start(document.getElementById('editor')!, document.getElementById('infoview')!);
+const lean2 = new LeanMonaco()
+await lean2.init();
+await lean2.start(document.getElementById('editor')!, document.getElementById('infoview')!);
 
 })()
