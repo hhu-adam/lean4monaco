@@ -172,8 +172,6 @@ async dispose() {
   await this.taskGutter.dispose()
   await this.clientProvider.dispose()
   await this.abbreviationFeature.dispose()
-
-  await this.editorWorker?.terminate()
 }
 }
 
