@@ -45,7 +45,7 @@ export namespace LeanMonaco {
     ready = resolve
   })
 
-  export async function start() {
+  export async function start(websocketUrl: string) {
     if (started) {
       console.error('LeanMonaco can only be started once')
       return
@@ -175,7 +175,24 @@ export namespace LeanMonaco {
         getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
         {appendLine: () => {}
       } as any,
-      setupMonacoClient,
+      setupMonacoClient(
+          {
+              $type: 'WebSocketUrl',
+              url: websocketUrl,
+              startOptions: {
+              onCall: () => {
+                  console.log('Connected to socket.');
+              },
+              reportStatus: true
+              },
+              stopOptions: {
+              onCall: () => {
+                  console.log('Disconnected from socket.');
+              },
+              reportStatus: true
+              }
+          }
+      ),
       checkLean4ProjectPreconditions,
       (docUri: ExtUri) => { return true }
     )
@@ -237,7 +254,7 @@ class LeanMonacoEditor {
 
 (async () => {
 
-LeanMonaco.start()
+LeanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
 LeanMonaco.setInfoviewElement(document.getElementById('infoview')!)
 
 await LeanMonaco.whenReady
