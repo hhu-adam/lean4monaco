@@ -16,6 +16,7 @@ export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketCon
         });
         await languageClientWrapper?.start();
         const client = languageClientWrapper.getLanguageClient()!;
+        (client as any)._serverProcess = {stderr: {on: () => {}}}
         return client
     }
 }
