@@ -1,12 +1,6 @@
-// TODO: Why does extension->activate not work?
-// TODO: WHy do workspaces not work?
-// TODO: Infoview using infoview loader?
-// TODO: _character bug in monaco-vscode-api?
-// TODO: Why does wrapper.init() not call editorApp.init()?
-
 import './style.css'
 import 'vscode/localExtensionHost'
-import { RegisterExtensionResult } from 'monaco-editor-wrapper';
+import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper';
 import { LeanClientProvider } from './monaco-lean4/vscode-lean4/src/utils/clientProvider';
 import { Uri } from 'vscode';
 import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
@@ -22,36 +16,136 @@ import { Logger } from 'monaco-languageclient/tools';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
-import { initServices } from 'monaco-languageclient/vscode/services';
+import { initServices, InitializeServiceConfig } from 'monaco-languageclient/vscode/services';
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
 import { DisposableStore, ITextFileEditorModel, createModelReference } from 'vscode/monaco';
 import * as monaco from 'monaco-editor';
 import { IReference } from '@codingame/monaco-vscode-editor-service-override';
 import path from 'path'
 
-export namespace LeanMonaco {
 
-  var clientProvider: LeanClientProvider
-  var infoProvider: InfoProvider
-  var iframeWebviewFactory : IFrameInfoWebviewFactory
-  var abbreviationFeature: AbbreviationFeature
-  var taskGutter: LeanTaskGutter
-  var logger = new Logger()
-  var registerFileUrlResults = new DisposableStore()
-  var extensionRegisterResult: RegisterExtensionResult
-  var started = false
-  var ready
-  export const whenReady = new Promise<void>((resolve) => {
-    ready = resolve
+const extensionFilesOrContents = new Map<string, URL>();
+extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
+extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
+extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
+extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
+
+const extensionConfig: IExtensionManifest = {
+    name: 'lean4web',
+    publisher: 'leanprover-community',
+    version: '1.0.0',
+    engines: {
+        vscode: '*'
+    },
+    "contributes": {
+      "languages": [
+        {
+          "id": "lean4",
+          "configuration": "./language-configuration.json",
+          "extensions": [
+            ".lean"
+          ],
+        },
+        {
+          "id": "lean4markdown",
+          "aliases": [],
+          "extensions": [
+            ".lean4markdown"
+          ],
+          "configuration": "./language-configuration.json"
+        }
+      ],
+      "grammars": [
+        {
+          "language": "lean4",
+          "scopeName": "source.lean4",
+          "path": "./syntaxes/lean4.json"
+        },
+        {
+          "language": "lean4markdown",
+          "scopeName": "source.lean4.markdown",
+          "path": "./syntaxes/lean4-markdown.json"
+        },
+        {
+          "language": "lean4",
+          "scopeName": "markdown.lean4.codeblock",
+          "path": "./syntaxes/codeblock.json",
+          "injectTo": [
+            "text.html.markdown"
+          ],
+          "embeddedLanguages": {
+            "meta.embedded.block.lean4": "lean4"
+          }
+        }
+      ],
+    }
+}
+
+const serviceConfig: InitializeServiceConfig = {
+  userServices: {
+    ...getTextmateServiceOverride(),
+    ...getThemeServiceOverride(),
+    ...getConfigurationServiceOverride()
+  },
+  workspaceConfig: {
+    workspaceProvider: {
+        trusted: true,
+        workspace: {
+            workspaceUri: Uri.file('/workspace')
+        },
+        async open() {
+            return false;
+        }
+    }
+  }
+}
+
+const websocketOptions: WebSocketConfigOptionsUrl = {
+    $type: 'WebSocketUrl',
+    url: '',
+    startOptions: {
+    onCall: () => {
+        console.log('Connected to socket.');
+    },
+    reportStatus: true
+    },
+    stopOptions: {
+    onCall: () => {
+        console.log('Disconnected from socket.');
+    },
+    reportStatus: true
+    }
+}
+
+class LeanMonaco {
+  ready
+  whenReady = new Promise<void>((resolve) => {
+    this.ready = resolve
   })
 
-  export async function start(websocketUrl: string) {
-    if (started) {
-      console.error('LeanMonaco can only be started once')
+  static activeInstance: LeanMonaco | null = null
+
+  logger = new Logger()
+  registerFileUrlResults = new DisposableStore()
+  extensionRegisterResult: RegisterExtensionResult
+  clientProvider: LeanClientProvider
+  infoProvider: InfoProvider
+  iframeWebviewFactory : IFrameInfoWebviewFactory
+  abbreviationFeature: AbbreviationFeature
+  taskGutter: LeanTaskGutter
+  disposed = false
+
+  async start(websocketUrl) {
+
+    if (LeanMonaco.activeInstance == this) {
+      console.warn('A LeanMonaco instance cannot be started twice.')
       return
     }
-
-    started = true
+    if (LeanMonaco.activeInstance) {
+      console.warn('There can only be one active LeanMonaco instance at a time. Disposing previous instance.')
+      LeanMonaco.activeInstance?.dispose()
+    }
+    LeanMonaco.activeInstance = this
 
     if (! window.MonacoEnvironment?.getWorker) {
       type WorkerLoader = () => Worker
@@ -69,162 +163,81 @@ export namespace LeanMonaco {
         }
       }
     }
-
-    const extensionFilesOrContents = new Map<string, URL>();
-    extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
-    extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
-    extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
-    extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
-
-    const extensionConfig: IExtensionManifest = {
-        name: 'lean4web',
-        publisher: 'leanprover-community',
-        version: '1.0.0',
-        engines: {
-            vscode: '*'
-        },
-        "contributes": {
-          "languages": [
-            {
-              "id": "lean4",
-              "configuration": "./language-configuration.json",
-              "extensions": [
-                ".lean"
-              ],
-            },
-            {
-              "id": "lean4markdown",
-              "aliases": [],
-              "extensions": [
-                ".lean4markdown"
-              ],
-              "configuration": "./language-configuration.json"
-            }
-          ],
-          "grammars": [
-            {
-              "language": "lean4",
-              "scopeName": "source.lean4",
-              "path": "./syntaxes/lean4.json"
-            },
-            {
-              "language": "lean4markdown",
-              "scopeName": "source.lean4.markdown",
-              "path": "./syntaxes/lean4-markdown.json"
-            },
-            {
-              "language": "lean4",
-              "scopeName": "markdown.lean4.codeblock",
-              "path": "./syntaxes/codeblock.json",
-              "injectTo": [
-                "text.html.markdown"
-              ],
-              "embeddedLanguages": {
-                "meta.embedded.block.lean4": "lean4"
-              }
-            }
-          ],
-        }
-    }
-
-    const serviceConfig = {
-      userServices: {
-        ...getTextmateServiceOverride(),
-        ...getThemeServiceOverride(),
-        ...getConfigurationServiceOverride()
-      },
-      workspaceConfig: {
-        workspaceProvider: {
-            trusted: true,
-            workspace: {
-                workspaceUri: Uri.file('/workspace')
-            },
-            async open() {
-                return false;
-            }
-        }
-      }
-    }
     
     await initServices({
         serviceConfig,
         caller: `Lean monaco-editor`,
         performChecks: checkServiceConsistency,
-        logger: logger
+        logger: this.logger
     });
 
     await (await import('@codingame/monaco-vscode-theme-defaults-default-extension')).whenReady;
+
+    if (this.disposed) return;
     
-    const manifest = extensionConfig
-    extensionRegisterResult = registerExtension(extensionConfig, ExtensionHostKind.LocalProcess);
+    this.extensionRegisterResult = registerExtension(extensionConfig, ExtensionHostKind.LocalProcess);
     
     if (extensionFilesOrContents) {
         for (const entry of extensionFilesOrContents) {
-            const registerFileUrlResult = (extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
-            registerFileUrlResults.add(registerFileUrlResult);
+            const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
+            this.registerFileUrlResults.add(registerFileUrlResult);
         }
     }
-    await extensionRegisterResult.whenReady()
-    
-    abbreviationFeature = new AbbreviationFeature({} as any);
 
-    clientProvider = new LeanClientProvider(
+    await this.extensionRegisterResult.whenReady()
+
+    if (this.disposed) return;
+
+    this.abbreviationFeature = new AbbreviationFeature({} as any);
+  
+    this.clientProvider = new LeanClientProvider(
       {
-        installChanged: () => {},
+        installChanged: () => {return {dispose: ()  => {}}},
         testLeanVersion: () => {return "lean4/stable"},
         getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
         {appendLine: () => {}
       } as any,
-      setupMonacoClient(
-          {
-              $type: 'WebSocketUrl',
-              url: websocketUrl,
-              startOptions: {
-              onCall: () => {
-                  console.log('Connected to socket.');
-              },
-              reportStatus: true
-              },
-              stopOptions: {
-              onCall: () => {
-                  console.log('Disconnected from socket.');
-              },
-              reportStatus: true
-              }
-          }
-      ),
+      setupMonacoClient({
+        ...websocketOptions,
+        url: websocketUrl,
+      }),
       checkLean4ProjectPreconditions,
       (docUri: ExtUri) => { return true }
     )
-
-    taskGutter = new LeanTaskGutter(clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
-
-    if (!iframeWebviewFactory) iframeWebviewFactory = new IFrameInfoWebviewFactory()
+  
+    this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
+  
+    if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
       
-    infoProvider = new InfoProvider(clientProvider, {language: 'lean4'}, {} as any, iframeWebviewFactory)
+    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)  
 
-    ready()
+    this.ready()
   }
 
-  export function setInfoviewElement(infoviewEl){
-    if (!iframeWebviewFactory) iframeWebviewFactory = new IFrameInfoWebviewFactory()
-    iframeWebviewFactory.setInfoviewElement(infoviewEl)
+
+  setInfoviewElement(infoviewEl){
+    if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
+      this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
   }
 
-  // export async function stop() {
-  //   registerFileUrlResults.dispose()
-  //   registerFileUrlResults = new DisposableStore()
-  //   extensionRegisterResult.dispose()
-  //   extensionRegisterResult = undefined
-  //   infoProvider.dispose()
-  //   infoProvider = undefined
-  //   taskGutter.dispose()
-  //   taskGutter = undefined
-  //   clientProvider.dispose()
-  //   clientProvider = undefined
-  //   abbreviationFeature.dispose()
-  //   abbreviationFeature = undefined
-  // }
+  dispose() {
+    if (LeanMonaco.activeInstance == this) {
+      LeanMonaco.activeInstance = null
+    }
+    this.registerFileUrlResults?.dispose()
+    this.registerFileUrlResults = new DisposableStore()
+    this.extensionRegisterResult?.dispose()
+    this.extensionRegisterResult = undefined
+    this.disposed = true
+    this.infoProvider?.dispose()
+    this.infoProvider = undefined
+    this.taskGutter?.dispose()
+    this.taskGutter = undefined
+    this.clientProvider?.dispose()
+    this.clientProvider = undefined
+    this.abbreviationFeature?.dispose()
+    this.abbreviationFeature = undefined
+  }
 }
 
 class LeanMonacoEditor {
@@ -238,7 +251,8 @@ class LeanMonacoEditor {
     fs.writeFileSync(fileName, '');
     
     // Create editor and model
-    this.editor = monaco.editor.create(editorEl, { automaticLayout: true });
+    const theme = "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
+    this.editor = monaco.editor.create(editorEl, { automaticLayout: true, theme });
     this.modelRef = await createModelReference(Uri.parse(fileName), code);
     this.editor.setModel(this.modelRef.object.textEditorModel);
 
@@ -254,10 +268,16 @@ class LeanMonacoEditor {
 
 (async () => {
 
-LeanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
-LeanMonaco.setInfoviewElement(document.getElementById('infoview')!)
+var leanMonaco = new LeanMonaco()
+leanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
+leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
+leanMonaco.dispose()
 
-await LeanMonaco.whenReady
+leanMonaco = new LeanMonaco()
+leanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
+leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
+
+await leanMonaco.whenReady
 const lean = new LeanMonacoEditor()
 lean.start(document.getElementById('editor')!, "/sss/test.lean", "#check 1")
 const lean2 = new LeanMonacoEditor()
