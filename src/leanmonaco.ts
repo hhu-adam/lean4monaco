@@ -1,4 +1,3 @@
-import './style.css'
 import 'vscode/localExtensionHost'
 import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper';
 import { LeanClientProvider } from './monaco-lean4/vscode-lean4/src/utils/clientProvider';
@@ -9,7 +8,6 @@ import { LeanTaskGutter } from './monaco-lean4/vscode-lean4/src/taskgutter';
 import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
 import { checkLean4ProjectPreconditions } from './preconditions'
-import { fs } from 'memfs';
 import { ExtUri } from './monaco-lean4/vscode-lean4/src/utils/exturi';
 import { checkServiceConsistency } from 'monaco-editor-wrapper/vscode/services';
 import { Logger } from 'monaco-languageclient/tools';
@@ -18,11 +16,7 @@ import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-servic
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
 import { initServices, InitializeServiceConfig } from 'monaco-languageclient/vscode/services';
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
-import { DisposableStore, ITextFileEditorModel, createModelReference } from 'vscode/monaco';
-import * as monaco from 'monaco-editor';
-import { IReference } from '@codingame/monaco-vscode-editor-service-override';
-import path from 'path'
-
+import { DisposableStore } from 'vscode/monaco';
 
 const extensionFilesOrContents = new Map<string, URL>();
 extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
@@ -117,7 +111,7 @@ const websocketOptions: WebSocketConfigOptionsUrl = {
     }
 }
 
-class LeanMonaco {
+export class LeanMonaco {
   ready
   whenReady = new Promise<void>((resolve) => {
     this.ready = resolve
@@ -127,12 +121,12 @@ class LeanMonaco {
 
   logger = new Logger()
   registerFileUrlResults = new DisposableStore()
-  extensionRegisterResult: RegisterExtensionResult
-  clientProvider: LeanClientProvider
-  infoProvider: InfoProvider
-  iframeWebviewFactory : IFrameInfoWebviewFactory
-  abbreviationFeature: AbbreviationFeature
-  taskGutter: LeanTaskGutter
+  extensionRegisterResult: RegisterExtensionResult | undefined
+  clientProvider: LeanClientProvider | undefined
+  infoProvider: InfoProvider | undefined
+  iframeWebviewFactory : IFrameInfoWebviewFactory | undefined
+  abbreviationFeature: AbbreviationFeature | undefined
+  taskGutter: LeanTaskGutter | undefined
   disposed = false
 
   async start(websocketUrl) {
@@ -239,48 +233,3 @@ class LeanMonaco {
     this.abbreviationFeature = undefined
   }
 }
-
-class LeanMonacoEditor {
-
-  editor: monaco.editor.IStandaloneCodeEditor
-  modelRef: IReference<ITextFileEditorModel>
-
-  async start(editorEl: HTMLElement, fileName: string, code: string) {
-    // Create file for clientProvider to find
-    fs.mkdirSync(path.dirname(fileName), {recursive: true});
-    fs.writeFileSync(fileName, '');
-    
-    // Create editor and model
-    const theme = "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
-    this.editor = monaco.editor.create(editorEl, { automaticLayout: true, theme });
-    this.modelRef = await createModelReference(Uri.parse(fileName), code);
-    this.editor.setModel(this.modelRef.object.textEditorModel);
-
-    // Set focus on editor to trigger infoview to open
-    this.editor.focus()
-  }
-
-  dispose(){
-    if (this.modelRef) this.modelRef.dispose()
-    if (this.editor) this.editor.dispose()
-  }
-}
-
-(async () => {
-
-var leanMonaco = new LeanMonaco()
-leanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
-leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
-leanMonaco.dispose()
-
-leanMonaco = new LeanMonaco()
-leanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
-leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
-
-await leanMonaco.whenReady
-const lean = new LeanMonacoEditor()
-lean.start(document.getElementById('editor')!, "/sss/test.lean", "#check 1")
-const lean2 = new LeanMonacoEditor()
-lean2.start(document.getElementById('editor2')!, "/sss/test2.lean", "#check 2")
-
-})()

@@ -1,8 +1,9 @@
 {
-  "name": "monacotest2",
+  "name": "lean4monaco",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
