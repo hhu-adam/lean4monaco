@@ -9,8 +9,11 @@ export class LeanMonacoEditor {
 
   editor: monaco.editor.IStandaloneCodeEditor
   modelRef: IReference<ITextFileEditorModel>
+  disposed = false
 
   async start(editorEl: HTMLElement, fileName: string, code: string) {
+    if (this.disposed) return
+
     // Create file for clientProvider to find
     fs.mkdirSync(path.dirname(fileName), {recursive: true});
     fs.writeFileSync(fileName, '');
@@ -28,5 +31,6 @@ export class LeanMonacoEditor {
   dispose(){
     if (this.modelRef) this.modelRef.dispose()
     if (this.editor) this.editor.dispose()
+    this.disposed = true
   }
 }

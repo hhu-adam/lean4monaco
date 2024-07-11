@@ -1,2 +1,2 @@
-import './editor'
-import './leanmonaco'
+export * from './editor'
+export * from './leanmonaco'
