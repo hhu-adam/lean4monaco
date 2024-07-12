@@ -5,21 +5,22 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite serve dev",
     "build": "tsc && npm run copyfiles",
     "preview": "vite preview",
     "copyfiles": "cd src && copyfiles \"**/*.json\" \"**/*.css\" ../dist/"
   },
   "devDependencies": {
+    "@chialab/esbuild-plugin-meta-url": "^0.18.2",
+    "@codingame/esbuild-import-meta-url-plugin": "https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?main",
     "@types/node": "^20.14.2",
     "@types/vscode": "^1.89.0",
+    "copyfiles": "^2.4.1",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
-    "vite-plugin-node-polyfills": "^0.22.0",
-    "copyfiles": "^2.4.1"
+    "vite-plugin-node-polyfills": "^0.22.0"
   },
   "dependencies": {
-    "@codingame/esbuild-import-meta-url-plugin": "^1.0.2",
     "@codingame/monaco-vscode-views-service-override": "^6.0.1",
     "@leanprover/infoview": "^0.7.0",
     "@leanprover/infoview-api": "^0.4.0",
