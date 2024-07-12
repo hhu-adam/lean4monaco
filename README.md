@@ -1,10 +1,18 @@
+# Lean 4 Monaco
 
+## Usage
+
+Install this package in your npm project. Once this repo is published on npm, it should work as follows:
 ```
 npm install lean4monaco
 ```
-
 (TODO: This repo must be published on npm for this to work)
 
+The package contains two main classes: `LeanMonaco` and `LeanMonacoEditor`. The
+class `LeanMonaco` can only have exactly one active instance and arranges the
+correct setup of the Monaco Services and the VSCode API. When it is started,
+one or more editors can be created using `LeanMonacoEditor`. Here is an example
+how to use the classes using React:
 
 ```ts
 import { LeanMonaco, LeanMonacoEditor } from 'lean4monaco'
@@ -28,29 +36,19 @@ useEffect(() => {
 })
 ```
 
-For some reason, the file (here `test.lean`) cannot be at the root of the file system, i.e., not `/test.lean` instead of `/project/test.lean`.
+For some reason, the file (here `test.lean`) cannot be at the root of the file system, i.e., not `/test.lean` instead of `/project/test.lean`. (TODO: find out why)
 
-
+The package uses the Lean 4 VSCode extension, which is intended to run in a nodejs runtime. Therefore, we need to install node polyfills.
+Here is how this can be done if your project uses Vite:
 ```
 npm install vite-plugin-node-polyfills memfs 
 ```
 
-```
-npm install 'https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?main' --save-dev
-```
-
-
 ```ts
 // vite.config.ts
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
 
 export default {
-  optimizeDeps: {
-    esbuildOptions: {
-      plugins: [importMetaUrlPlugin]
-    }
-  },
   plugins: [
     nodePolyfills({
       overrides: {
@@ -59,3 +57,24 @@ export default {
     }),
   ],
 }
+```
+
+For Vite dev mode to work properly, the following plugin is necessary:
+```
+npm install 'https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?main' --save-dev
+```
+This could be replaced by `@codingame/esbuild-import-meta-url-plugin` when this PR is accepted: https://github.com/CodinGame/esbuild-import-meta-url-plugin/pull/5
+
+```ts
+// vite.config.ts
+import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
+
+export default {
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [importMetaUrlPlugin]
+    }
+  },
+  [...]
+}
+```
