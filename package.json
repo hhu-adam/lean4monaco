@@ -11,7 +11,7 @@
     "start_server": "cd server && npm start",
     "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
     "build": "tsc && cd src && copyfiles \"**/*.json\" \"**/*.css\" ../dist/",
-    "test": "concurrently --kill-others \"cd demo && npm install && npm start\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress "
+    "test": "concurrently --kill-others \"cd demo && npm install && npm start\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "^0.18.2",
