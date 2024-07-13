@@ -14,6 +14,8 @@ jobs:
           ./elan-init -y
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - uses: actions/setup-node@v3
       - name: print lean and lake versions
         run: |
