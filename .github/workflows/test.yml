@@ -20,4 +20,5 @@ jobs:
           lean --version
           lake --version
       - run: npm install
+      - run: npm run build
       - run: npm run test
