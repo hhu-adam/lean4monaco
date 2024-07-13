@@ -27,7 +27,7 @@ export class IFrameInfoWebview implements InfoWebview {
 }
 
 export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
-    private infoviewElement
+    private infoviewElement: HTMLElement
 
     setInfoviewElement(infoviewElement: HTMLElement) {
         this.infoviewElement = infoviewElement
@@ -36,9 +36,9 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     make(editorApi: EditorApi, stylesheet: string, column: number) {
         const iframe : HTMLIFrameElement = document.createElement("iframe")
         this.infoviewElement.append(iframe)
-        iframe.contentWindow.document.open()
-        iframe.contentWindow.document.write(this.initialHtml(stylesheet))
-        iframe.contentWindow.document.close()
+        iframe.contentWindow!.document.open()
+        iframe.contentWindow!.document.write(this.initialHtml(stylesheet))
+        iframe.contentWindow!.document.close()
         
         // Note that an extension can send data to its webviews using webview.postMessage().
         // This method sends any JSON serializable data to the webview. The message is received
@@ -48,7 +48,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
         const rpc = new Rpc(m => {
             try {
                 // JSON.stringify is needed here to serialize getters such as `Position.line` and `Position.character`
-                void iframe.contentWindow.postMessage(JSON.stringify(m))
+                void iframe.contentWindow!.postMessage(JSON.stringify(m))
             } catch (e) {
                 // ignore any disposed object exceptions
             }
@@ -56,7 +56,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
         rpc.register(editorApi)
 
         // Similarly, we can received data from the webview by listening to onDidReceiveMessage.
-        document.defaultView.addEventListener('message', m => {
+        document.defaultView!.addEventListener('message', m => {
             if (m.source != iframe.contentWindow) { return }
             try {
                 rpc.messageReceived(JSON.parse(m.data))
@@ -68,7 +68,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
         return new IFrameInfoWebview(iframe, rpc)
     }
 
-    private initialHtml(stylesheet) {
+    private initialHtml(stylesheet: string) {
         return `
             <!DOCTYPE html>
             <html>

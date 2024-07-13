@@ -112,7 +112,7 @@ const websocketOptions: WebSocketConfigOptionsUrl = {
 }
 
 export class LeanMonaco {
-  ready
+  ready: (value: void | PromiseLike<void>) => void
   whenReady = new Promise<void>((resolve) => {
     this.ready = resolve
   })
@@ -129,7 +129,7 @@ export class LeanMonaco {
   taskGutter: LeanTaskGutter | undefined
   disposed = false
 
-  async start(websocketUrl) {
+  async start(websocketUrl: string) {
 
     if (LeanMonaco.activeInstance == this) {
       console.warn('A LeanMonaco instance cannot be started twice.')
@@ -199,7 +199,7 @@ export class LeanMonaco {
       (docUri: ExtUri) => { return true }
     )
   
-    this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
+    this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
   
     if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
       
@@ -209,7 +209,7 @@ export class LeanMonaco {
   }
 
 
-  setInfoviewElement(infoviewEl){
+  setInfoviewElement(infoviewEl: HTMLElement){
     if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
       this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
   }

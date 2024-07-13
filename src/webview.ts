@@ -1,3 +1,4 @@
+//@ts-nocheck
 import type { EditorApi } from '@leanprover/infoview'
 import { renderInfoview } from '@leanprover/infoview'
 import { Rpc } from './monaco-lean4/vscode-lean4/src/rpc'

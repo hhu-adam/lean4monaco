@@ -13,10 +13,9 @@
     "declaration": true,
 
     /* Linting */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": false,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
     
     "experimentalDecorators": true,
 
