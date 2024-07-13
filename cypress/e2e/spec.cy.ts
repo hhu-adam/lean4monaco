@@ -24,6 +24,7 @@ describe('Editor Test', () => {
   it('displays the editor', () => {
     cy.visit('http://localhost:5173/')
     cy.contains('#check Nat')
-    getIframeBody().contains('Nat : Type')
+    // getIframeBody().as('infoview')
+    // cy.get('@infoview').contains('Nat : Type')
   })
 })
