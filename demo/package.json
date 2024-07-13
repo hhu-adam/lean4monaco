@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "vite",
+    "start_client": "vite",
+    "start_server": "cd ../server && npm start",
+    "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
