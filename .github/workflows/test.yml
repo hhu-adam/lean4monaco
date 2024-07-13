@@ -23,4 +23,5 @@ jobs:
           lake --version
       - run: npm install
       - run: npm run build
+      - run: npm run build_server
       - run: npm run test

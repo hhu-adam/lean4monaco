@@ -7,6 +7,7 @@
   "scripts": {
     "postinstall": "cd server && npm install",
     "start_client": "vite serve dev",
+    "build_server": "cd server/LeanProject && lake build",
     "start_server": "cd server && npm start",
     "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
     "build": "tsc && cd src && copyfiles \"**/*.json\" \"**/*.css\" ../dist/",
