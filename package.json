@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "^0.18.2",
-    "@codingame/esbuild-import-meta-url-plugin": "https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?main",
+    "@codingame/esbuild-import-meta-url-plugin": "https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?ec9666e",
     "@types/node": "^20.14.2",
     "@types/vscode": "^1.89.0",
     "copyfiles": "^2.4.1",
