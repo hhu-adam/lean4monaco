@@ -9,7 +9,8 @@
     "start_client": "vite serve dev",
     "start_server": "cd server && npm start",
     "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
-    "build": "tsc && cd src && copyfiles \"**/*.json\" \"**/*.css\" ../dist/"
+    "build": "tsc && cd src && copyfiles \"**/*.json\" \"**/*.css\" ../dist/",
+    "test": "concurrently --kill-others \"cd demo && npm install && npm start\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress "
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "^0.18.2",
@@ -17,9 +18,11 @@
     "@types/node": "^20.14.2",
     "@types/vscode": "^1.89.0",
     "copyfiles": "^2.4.1",
+    "cypress": "^13.13.0",
     "typescript": "^5.2.2",
     "vite": "^5.2.0",
-    "vite-plugin-node-polyfills": "^0.22.0"
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "wait-on": "^7.2.0"
   },
   "dependencies": {
     "@codingame/monaco-vscode-views-service-override": "^6.0.1",

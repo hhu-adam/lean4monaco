@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start_client": "vite",
+    "start_client": "vite --host",
     "start_server": "cd ../server && npm start",
     "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
     "build": "tsc -b && vite build",
