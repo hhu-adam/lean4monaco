@@ -5,7 +5,10 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "start": "vite serve dev",
+    "postinstall": "cd server && npm install",
+    "start_client": "vite serve dev",
+    "start_server": "cd server && npm start",
+    "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
     "build": "tsc && cd src && copyfiles \"**/*.json\" \"**/*.css\" ../dist/"
   },
   "devDependencies": {
@@ -25,6 +28,7 @@
     "@leanprover/unicode-input": "^0.1.0",
     "axios": "^1.7.2",
     "cheerio": "^1.0.0-rc.12",
+    "concurrently": "^8.2.2",
     "memfs": "^4.9.3",
     "mobx": "5.15.7",
     "monaco-editor-wrapper": "^5.3.1",

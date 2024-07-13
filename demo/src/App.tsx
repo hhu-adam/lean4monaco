@@ -11,7 +11,7 @@ function App() {
     const leanMonacoEditor = new LeanMonacoEditor()
     
     ;(async () => {
-        await leanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
+        await leanMonaco.start('ws://localhost:8080/')
         leanMonaco.setInfoviewElement(infoviewRef.current)
         await leanMonacoEditor.start(codeviewRef.current!, '/project/test.lean', '#check Nat')
     })()

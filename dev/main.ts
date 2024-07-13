@@ -5,12 +5,12 @@ import { LeanMonacoEditor } from '../src/editor'
 (async () => {
 
 var leanMonaco = new LeanMonaco()
-leanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
+leanMonaco.start('ws://localhost:8080/')
 leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
 leanMonaco.dispose()
 
 leanMonaco = new LeanMonaco()
-leanMonaco.start('ws://localhost:8080/websocket/mathlib-demo')
+leanMonaco.start('ws://localhost:8080/')
 leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
 
 await leanMonaco.whenReady
