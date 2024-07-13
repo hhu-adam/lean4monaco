@@ -17,14 +17,14 @@ const getIframeBody = () => {
   .its('body').should('not.be.undefined')
   // wraps "body" DOM element to allow
   // chaining more Cypress commands, like ".find(...)"
-  .then(cy.wrap)
+  .as('infoview')
 }
 
 describe('Editor Test', () => {
   it('displays the editor', () => {
     cy.visit('http://localhost:5173/')
     cy.contains('#check Nat')
-    getIframeBody().as('infoview')
+    getIframeBody()
     cy.get('@infoview').contains('Nat : Type')
   })
 })
