@@ -61,7 +61,7 @@ export default {
 
 For Vite dev mode to work properly, the following plugin is necessary:
 ```
-npm install 'https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?main' --save-dev
+npm install 'https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?ec9666e' --save-dev
 ```
 This could be replaced by `@codingame/esbuild-import-meta-url-plugin` when this PR is accepted: https://github.com/CodinGame/esbuild-import-meta-url-plugin/pull/5
 
