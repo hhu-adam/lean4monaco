@@ -1,11 +1,11 @@
 {
   "name": "lean4monaco",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "dist/index.js",
   "files": ["dist"],
   "scripts": {
-    "postinstall": "cd server && npm install",
+    "postinstall": "if [ -d \"server\" ]; then cd server && npm install; fi",
     "start_client": "vite serve dev",
     "build_server": "cd server/LeanProject && lake build",
     "start_server": "cd server && npm start",
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@codingame/monaco-vscode-views-service-override": "^6.0.1",
-    "@leanprover/infoview": "^0.7.0",
+    "@leanprover/infoview": "=0.7.0",
     "@leanprover/infoview-api": "^0.4.0",
     "@leanprover/unicode-input": "^0.1.0",
     "axios": "^1.7.2",
