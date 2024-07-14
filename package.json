@@ -1,9 +1,9 @@
 {
   "name": "lean4monaco",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
+  "files": ["dist"],
   "scripts": {
     "postinstall": "cd server && npm install",
     "start_client": "vite serve dev",

@@ -2,11 +2,10 @@
 
 ## Usage
 
-Install this package in your npm project. Once this repo is published on npm, it should work as follows:
+Install this package in your npm project.
 ```
 npm install lean4monaco
 ```
-(TODO: This repo must be published on npm for this to work)
 
 The package contains two main classes: `LeanMonaco` and `LeanMonacoEditor`. The
 class `LeanMonaco` can only have exactly one active instance and arranges the
