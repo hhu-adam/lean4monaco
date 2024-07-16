@@ -1,6 +1,6 @@
 {
   "name": "lean4monaco",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "type": "module",
   "main": "dist/index.js",
   "files": [
@@ -30,7 +30,6 @@
     "wait-on": "^7.2.0"
   },
   "dependencies": {
-    "@codingame/monaco-vscode-views-service-override": "^6.0.1",
     "@leanprover/infoview": "=0.7.0",
     "@leanprover/infoview-api": "^0.4.0",
     "@leanprover/unicode-input": "^0.1.0",
