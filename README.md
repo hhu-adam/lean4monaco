@@ -77,3 +77,11 @@ export default {
   [...]
 }
 ```
+
+## Troubleshooting
+
+* Make sure that only one version of the npm package `monaco-vscode-api` is installed.
+The error I typically got is:
+```
+this._configurationService.onDidChangeConfiguration is not a function
+```
