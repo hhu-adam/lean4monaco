@@ -3,7 +3,9 @@
   "version": "1.0.1",
   "type": "module",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "postinstall": "if [ -d \"server\" ]; then cd server && npm install; fi",
     "start_client": "vite serve dev",
