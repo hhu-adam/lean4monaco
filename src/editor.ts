@@ -27,9 +27,9 @@ export class LeanMonacoEditor {
       folding: false,
       lineNumbers: 'on',
       lineNumbersMinChars: 1,
-      lightbulb: {
-        enabled: true
-      },
+      // lightbulb: {
+      //   enabled: true
+      // },
       unicodeHighlight: {
           ambiguousCharacters: false,
       },
