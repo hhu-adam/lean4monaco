@@ -20,12 +20,42 @@ export class LeanMonacoEditor {
     
     // Create editor and model
     const theme = "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
-    this.editor = monaco.editor.create(editorEl, { automaticLayout: true, theme });
+    this.editor = monaco.editor.create(editorEl, {
+      theme,
+      glyphMargin: true,
+      lineDecorationsWidth: 5,
+      folding: false,
+      lineNumbers: 'on',
+      lineNumbersMinChars: 1,
+      lightbulb: {
+        enabled: true
+      },
+      unicodeHighlight: {
+          ambiguousCharacters: false,
+      },
+      automaticLayout: true,
+      minimap: {
+        enabled: false
+      },
+      tabSize: 2,
+      'semanticHighlighting.enabled': true,
+      // wordWrap: config.wordWrap ? "on" : "off",
+      // acceptSuggestionOnEnter: config.acceptSuggestionOnEnter ? "on" : "off",
+      fontFamily: "JuliaMono",
+      wrappingStrategy: "advanced",
+    });
     this.modelRef = await createModelReference(Uri.parse(fileName), code);
     this.editor.setModel(this.modelRef.object.textEditorModel);
 
     // Set focus on editor to trigger infoview to open
     this.editor.focus()
+
+    const fontFile = new FontFace(
+      "JuliaMono",
+      `url(${new URL("./JuliaMono-Regular.ttf", import.meta.url)})`,
+    );
+    document.fonts.add(fontFile);
+    fontFile.load()
   }
 
   dispose(){
