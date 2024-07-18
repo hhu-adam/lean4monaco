@@ -32,6 +32,12 @@ const extensionConfig: IExtensionManifest = {
         vscode: '*'
     },
     "contributes": {
+      "configurationDefaults": {
+        "[lean4]": {
+          "editor.tabSize": 2,
+          "editor.detectIndentation": false,
+        }
+      },
       "languages": [
         {
           "id": "lean4",
