@@ -19,7 +19,7 @@ export class LeanMonacoEditor {
     fs.writeFileSync(fileName, '');
     
     // Create editor and model
-    const theme = "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
+    const theme = "Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
     this.editor = monaco.editor.create(editorEl, {
       theme,
       glyphMargin: true,

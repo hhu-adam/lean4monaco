@@ -23,6 +23,7 @@ extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-l
 extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
 extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
 extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
+extensionFilesOrContents.set('/themes/cobalt2.json', new URL('./themes/cobalt2.json', import.meta.url));
 
 const extensionConfig: IExtensionManifest = {
     name: 'lean4web',
@@ -32,12 +33,6 @@ const extensionConfig: IExtensionManifest = {
         vscode: '*'
     },
     "contributes": {
-      "configurationDefaults": {
-        "[lean4]": {
-          "editor.tabSize": 2,
-          "editor.detectIndentation": false,
-        }
-      },
       "languages": [
         {
           "id": "lean4",
@@ -78,7 +73,21 @@ const extensionConfig: IExtensionManifest = {
           }
         }
       ],
-    }
+      "configurationDefaults": {
+        "[lean4]": {
+          "editor.tabSize": 2,
+          "editor.detectIndentation": false,
+        }
+      },
+      "themes": [
+        {
+            "id": "Cobalt",
+            "label": "Cobalt",
+            "uiTheme": "vs",
+            "path": "./themes/cobalt2.json"
+          }
+      ],
+    },
 }
 
 const serviceConfig: InitializeServiceConfig = {
