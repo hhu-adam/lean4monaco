@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 import type { EditorApi } from '@leanprover/infoview'
 import { loadRenderInfoview } from '@leanprover/infoview/loader'
 import { Rpc } from './monaco-lean4/vscode-lean4/src/rpc'
@@ -14,10 +14,10 @@ const div: HTMLElement | null = document.querySelector('#react_root')
 if (div) {
     const imports = 
      {
-     '@leanprover/infoview': 'https://unpkg.com/@leanprover/infoview/dist/index.production.min.js',
-     'react': 'https://unpkg.com/@leanprover/infoview/dist/react.production.min.js',
-     'react/jsx-runtime': 'https://unpkg.com/@leanprover/infoview/dist/react-jsx-runtime.production.min.js',
-     'react-dom': 'https://unpkg.com/@leanprover/infoview/dist/react-dom.production.min.js',
+     '@leanprover/infoview': '/infoview/index.production.min.js',
+     'react': '/infoview/react.production.min.js',
+     'react/jsx-runtime': '/infoview/react-jsx-runtime.production.min.js',
+     'react-dom': '/infoview/react-dom.production.min.js',
      }
     console.log(imports)
     loadRenderInfoview(imports, [editorApi, div], api => rpc.register(api))

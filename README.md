@@ -78,6 +78,27 @@ export default {
 }
 ```
 
+Moreover, the infoview javascript files need to be served:
+```ts
+// vite.config.ts
+import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { normalizePath } from 'vite'
+import path from 'node:path'
+
+export default {
+  plugins: [
+    viteStaticCopy({
+      targets: [
+        {
+          src: normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*.production.min.js')),
+          dest: 'infoview'
+        }
+      ]
+    })
+  ]
+}
+```
+
 ## Troubleshooting
 
 * Make sure that only one version of the npm package `monaco-vscode-api` is installed.
