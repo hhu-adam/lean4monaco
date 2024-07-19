@@ -75,8 +75,22 @@ const extensionConfig: IExtensionManifest = {
       ],
       "configurationDefaults": {
         "[lean4]": {
+          "editor.folding": false,
+          "editor.lineNumbers": 'on',
+          "editor.lineNumbersMinChars": 1,
+          "editor.glyphMargin": true,
+          "editor.lineDecorationsWidth": 5,
           "editor.tabSize": 2,
           "editor.detectIndentation": false,
+          "editor.lightbulb.enabled": "on",
+          "editor.unicodeHighlight.ambiguousCharacters": false,
+          "minimap.enabled": false,
+          "semanticHighlighting.enabled": true,
+          "wordWrap": "off",
+          "acceptSuggestionOnEnter": "off",
+          "fontFamily": "JuliaMono",
+          "wrappingStrategy": "advanced",
+          "editor.theme": "Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
         }
       },
       "themes": [
@@ -218,7 +232,16 @@ export class LeanMonaco {
   
     if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
       
-    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)  
+    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory) 
+    
+    const fontFile = new FontFace(
+      "JuliaMono",
+      `url(${new URL("./JuliaMono-Regular.ttf", import.meta.url)})`,
+    );
+    document.fonts.add(fontFile);
+    await fontFile.load()
+
+    if (this.disposed) return;
 
     this.ready()
   }
