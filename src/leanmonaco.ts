@@ -18,128 +18,6 @@ import { initServices, InitializeServiceConfig } from 'monaco-languageclient/vsc
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
 import { DisposableStore } from 'vscode/monaco';
 
-const extensionFilesOrContents = new Map<string, URL>();
-extensionFilesOrContents.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
-extensionFilesOrContents.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
-extensionFilesOrContents.set('/syntaxes/lean4-markdown.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
-extensionFilesOrContents.set('/syntaxes/codeblock.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
-extensionFilesOrContents.set('/themes/cobalt2.json', new URL('./themes/cobalt2.json', import.meta.url));
-
-const extensionConfig: IExtensionManifest = {
-    name: 'lean4web',
-    publisher: 'leanprover-community',
-    version: '1.0.0',
-    engines: {
-        vscode: '*'
-    },
-    "contributes": {
-      "languages": [
-        {
-          "id": "lean4",
-          "configuration": "./language-configuration.json",
-          "extensions": [
-            ".lean"
-          ],
-        },
-        {
-          "id": "lean4markdown",
-          "aliases": [],
-          "extensions": [
-            ".lean4markdown"
-          ],
-          "configuration": "./language-configuration.json"
-        }
-      ],
-      "grammars": [
-        {
-          "language": "lean4",
-          "scopeName": "source.lean4",
-          "path": "./syntaxes/lean4.json"
-        },
-        {
-          "language": "lean4markdown",
-          "scopeName": "source.lean4.markdown",
-          "path": "./syntaxes/lean4-markdown.json"
-        },
-        {
-          "language": "lean4",
-          "scopeName": "markdown.lean4.codeblock",
-          "path": "./syntaxes/codeblock.json",
-          "injectTo": [
-            "text.html.markdown"
-          ],
-          "embeddedLanguages": {
-            "meta.embedded.block.lean4": "lean4"
-          }
-        }
-      ],
-      "configurationDefaults": {
-        "[lean4]": {
-          "editor.folding": false,
-          "editor.lineNumbers": 'on',
-          "editor.lineNumbersMinChars": 1,
-          "editor.glyphMargin": true,
-          "editor.lineDecorationsWidth": 5,
-          "editor.tabSize": 2,
-          "editor.detectIndentation": false,
-          "editor.lightbulb.enabled": "on",
-          "editor.unicodeHighlight.ambiguousCharacters": false,
-          "editor.minimap.enabled": false,
-          "editor.semanticHighlighting.enabled": true,
-          "editor.wordWrap": "off",
-          "editor.acceptSuggestionOnEnter": "off",
-          "editor.fontFamily": "JuliaMono",
-          "editor.wrappingStrategy": "advanced",
-          "editor.theme": "Visual Studio Light" //"Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
-        }
-      },
-      "themes": [
-        {
-            "id": "Cobalt",
-            "label": "Cobalt",
-            "uiTheme": "vs",
-            "path": "./themes/cobalt2.json"
-          }
-      ],
-    },
-}
-
-const serviceConfig: InitializeServiceConfig = {
-  userServices: {
-    ...getTextmateServiceOverride(),
-    ...getThemeServiceOverride(),
-    ...getConfigurationServiceOverride()
-  },
-  workspaceConfig: {
-    workspaceProvider: {
-        trusted: true,
-        workspace: {
-            workspaceUri: Uri.file('/workspace')
-        },
-        async open() {
-            return false;
-        }
-    }
-  }
-}
-
-const websocketOptions: WebSocketConfigOptionsUrl = {
-    $type: 'WebSocketUrl',
-    url: '',
-    startOptions: {
-    onCall: () => {
-        console.log('Connected to socket.');
-    },
-    reportStatus: true
-    },
-    stopOptions: {
-    onCall: () => {
-        console.log('Disconnected from socket.');
-    },
-    reportStatus: true
-    }
-}
-
 export class LeanMonaco {
   ready: (value: void | PromiseLike<void>) => void
   whenReady = new Promise<void>((resolve) => {
@@ -188,7 +66,7 @@ export class LeanMonaco {
     }
     
     await initServices({
-        serviceConfig,
+        serviceConfig: this.getInitializeServiceConfig(),
         caller: `Lean monaco-editor`,
         performChecks: checkServiceConsistency,
         logger: this.logger
@@ -198,13 +76,11 @@ export class LeanMonaco {
 
     if (this.disposed) return;
     
-    this.extensionRegisterResult = registerExtension(extensionConfig, ExtensionHostKind.LocalProcess);
-    
-    if (extensionFilesOrContents) {
-        for (const entry of extensionFilesOrContents) {
-            const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
-            this.registerFileUrlResults.add(registerFileUrlResult);
-        }
+    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(), ExtensionHostKind.LocalProcess);
+
+    for (const entry of this.getExtensionFiles()) {
+      const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
+      this.registerFileUrlResults.add(registerFileUrlResult);
     }
 
     await this.extensionRegisterResult.whenReady()
@@ -220,10 +96,7 @@ export class LeanMonaco {
         getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
         {appendLine: () => {}
       } as any,
-      setupMonacoClient({
-        ...websocketOptions,
-        url: websocketUrl,
-      }),
+      setupMonacoClient(this.getWebSocketOptions(websocketUrl)),
       checkLean4ProjectPreconditions,
       (docUri: ExtUri) => { return true }
     )
@@ -250,6 +123,137 @@ export class LeanMonaco {
   setInfoviewElement(infoviewEl: HTMLElement){
     if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
       this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
+  }
+
+  protected getExtensionFiles() {
+    const extensionFiles = new Map<string, URL>();
+    extensionFiles.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
+    extensionFiles.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
+    extensionFiles.set('/syntaxes/lean4-markdown.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
+    extensionFiles.set('/syntaxes/codeblock.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
+    extensionFiles.set('/themes/cobalt2.json', new URL('./themes/cobalt2.json', import.meta.url));
+    return extensionFiles
+  }
+
+  protected getExtensionManifest(): IExtensionManifest {
+    return {
+      name: 'lean4web',
+      publisher: 'leanprover-community',
+      version: '1.0.0',
+      engines: {
+          vscode: '*'
+      },
+      "contributes": {
+        "languages": [
+          {
+            "id": "lean4",
+            "configuration": "./language-configuration.json",
+            "extensions": [
+              ".lean"
+            ],
+          },
+          {
+            "id": "lean4markdown",
+            "aliases": [],
+            "extensions": [
+              ".lean4markdown"
+            ],
+            "configuration": "./language-configuration.json"
+          }
+        ],
+        "grammars": [
+          {
+            "language": "lean4",
+            "scopeName": "source.lean4",
+            "path": "./syntaxes/lean4.json"
+          },
+          {
+            "language": "lean4markdown",
+            "scopeName": "source.lean4.markdown",
+            "path": "./syntaxes/lean4-markdown.json"
+          },
+          {
+            "language": "lean4",
+            "scopeName": "markdown.lean4.codeblock",
+            "path": "./syntaxes/codeblock.json",
+            "injectTo": [
+              "text.html.markdown"
+            ],
+            "embeddedLanguages": {
+              "meta.embedded.block.lean4": "lean4"
+            }
+          }
+        ],
+        "configurationDefaults": {
+          "[lean4]": {
+            "editor.folding": false,
+            "editor.lineNumbers": 'on',
+            "editor.lineNumbersMinChars": 1,
+            "editor.glyphMargin": true,
+            "editor.lineDecorationsWidth": 5,
+            "editor.tabSize": 2,
+            "editor.detectIndentation": false,
+            "editor.lightbulb.enabled": "on",
+            "editor.unicodeHighlight.ambiguousCharacters": false,
+            "editor.minimap.enabled": false,
+            "editor.semanticHighlighting.enabled": true,
+            "editor.wordWrap": "off",
+            "editor.acceptSuggestionOnEnter": "off",
+            "editor.fontFamily": "JuliaMono",
+            "editor.wrappingStrategy": "advanced",
+            "editor.theme": "Visual Studio Light" //"Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
+          }
+        },
+        "themes": [
+          {
+              "id": "Cobalt",
+              "label": "Cobalt",
+              "uiTheme": "vs",
+              "path": "./themes/cobalt2.json"
+            }
+        ],
+      },
+    }
+  }
+
+  protected getInitializeServiceConfig(): InitializeServiceConfig {
+    return {
+      userServices: {
+        ...getTextmateServiceOverride(),
+        ...getThemeServiceOverride(),
+        ...getConfigurationServiceOverride()
+      },
+      workspaceConfig: {
+        workspaceProvider: {
+            trusted: true,
+            workspace: {
+                workspaceUri: Uri.file('/workspace')
+            },
+            async open() {
+                return false;
+            }
+        }
+      }
+    }
+  }
+
+  protected getWebSocketOptions(websocketUrl: string): WebSocketConfigOptionsUrl {
+    return {
+      $type: 'WebSocketUrl',
+      url: websocketUrl,
+      startOptions: {
+      onCall: () => {
+          console.log('Connected to socket.');
+      },
+      reportStatus: true
+      },
+      stopOptions: {
+      onCall: () => {
+          console.log('Disconnected from socket.');
+      },
+      reportStatus: true
+      }
+    }
   }
 
   dispose() {
