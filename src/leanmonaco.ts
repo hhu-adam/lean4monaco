@@ -18,7 +18,7 @@ import { initServices, InitializeServiceConfig } from 'monaco-languageclient/vsc
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
 import { DisposableStore } from 'vscode/monaco';
 
-type LeanMonacoOptions = {
+export type LeanMonacoOptions = {
   websocket: {
     url: string
   }
