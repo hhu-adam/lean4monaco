@@ -84,13 +84,13 @@ const extensionConfig: IExtensionManifest = {
           "editor.detectIndentation": false,
           "editor.lightbulb.enabled": "on",
           "editor.unicodeHighlight.ambiguousCharacters": false,
-          "minimap.enabled": false,
-          "semanticHighlighting.enabled": true,
-          "wordWrap": "off",
-          "acceptSuggestionOnEnter": "off",
-          "fontFamily": "JuliaMono",
-          "wrappingStrategy": "advanced",
-          "editor.theme": "Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
+          "editor.minimap.enabled": false,
+          "editor.semanticHighlighting.enabled": true,
+          "editor.wordWrap": "off",
+          "editor.acceptSuggestionOnEnter": "off",
+          "editor.fontFamily": "JuliaMono",
+          "editor.wrappingStrategy": "advanced",
+          "editor.theme": "Visual Studio Light" //"Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
         }
       },
       "themes": [
