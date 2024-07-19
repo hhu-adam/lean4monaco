@@ -18,6 +18,15 @@ import { initServices, InitializeServiceConfig } from 'monaco-languageclient/vsc
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
 import { DisposableStore } from 'vscode/monaco';
 
+type LeanMonacoOptions = {
+  websocket: {
+    url: string
+  }
+  vscode?: {
+    [id: string]: any
+  }
+}
+
 export class LeanMonaco {
   ready: (value: void | PromiseLike<void>) => void
   whenReady = new Promise<void>((resolve) => {
@@ -36,7 +45,7 @@ export class LeanMonaco {
   taskGutter: LeanTaskGutter | undefined
   disposed = false
 
-  async start(websocketUrl: string) {
+  async start(options: LeanMonacoOptions) {
 
     if (LeanMonaco.activeInstance == this) {
       console.warn('A LeanMonaco instance cannot be started twice.')
@@ -76,7 +85,7 @@ export class LeanMonaco {
 
     if (this.disposed) return;
     
-    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(), ExtensionHostKind.LocalProcess);
+    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(options), ExtensionHostKind.LocalProcess);
 
     for (const entry of this.getExtensionFiles()) {
       const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
@@ -96,7 +105,7 @@ export class LeanMonaco {
         getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
         {appendLine: () => {}
       } as any,
-      setupMonacoClient(this.getWebSocketOptions(websocketUrl)),
+      setupMonacoClient(this.getWebSocketOptions(options)),
       checkLean4ProjectPreconditions,
       (docUri: ExtUri) => { return true }
     )
@@ -135,7 +144,7 @@ export class LeanMonaco {
     return extensionFiles
   }
 
-  protected getExtensionManifest(): IExtensionManifest {
+  protected getExtensionManifest(options: LeanMonacoOptions): IExtensionManifest {
     return {
       name: 'lean4web',
       publisher: 'leanprover-community',
@@ -201,7 +210,8 @@ export class LeanMonaco {
             "editor.acceptSuggestionOnEnter": "off",
             "editor.fontFamily": "JuliaMono",
             "editor.wrappingStrategy": "advanced",
-            "editor.theme": "Visual Studio Light" //"Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
+            "editor.theme": "Visual Studio Light", //"Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
+            ...options.vscode
           }
         },
         "themes": [
@@ -237,22 +247,22 @@ export class LeanMonaco {
     }
   }
 
-  protected getWebSocketOptions(websocketUrl: string): WebSocketConfigOptionsUrl {
+  protected getWebSocketOptions(options: LeanMonacoOptions): WebSocketConfigOptionsUrl {
     return {
       $type: 'WebSocketUrl',
-      url: websocketUrl,
       startOptions: {
-      onCall: () => {
-          console.log('Connected to socket.');
-      },
-      reportStatus: true
+        onCall: () => {
+            console.log('Connected to socket.');
+        },
+        reportStatus: true
       },
       stopOptions: {
-      onCall: () => {
-          console.log('Disconnected from socket.');
+        onCall: () => {
+            console.log('Disconnected from socket.');
+        },
+        reportStatus: true
       },
-      reportStatus: true
-      }
+      ...options.websocket
     }
   }
 
