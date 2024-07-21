@@ -19,9 +19,9 @@ export class LeanMonacoEditor {
     fs.writeFileSync(fileName, '');
     
     // Create editor and model
-    this.editor = monaco.editor.create(editorEl, { automaticLayout: true });
     this.modelRef = await createModelReference(Uri.parse(fileName), code);
-    this.editor.setModel(this.modelRef.object.textEditorModel);
+    this.editor = monaco.editor.create(editorEl, { automaticLayout: true });
+    this.editor.setModel(this.modelRef.object.textEditorModel)
 
     // Set focus on editor to trigger infoview to open
     this.editor.focus()
