@@ -17,6 +17,7 @@ import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-over
 import { initServices, InitializeServiceConfig } from 'monaco-languageclient/vscode/services';
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
 import { DisposableStore } from 'vscode/monaco';
+import packageJson from './monaco-lean4/vscode-lean4/package.json'
 
 export type LeanMonacoOptions = {
   websocket: {
@@ -145,6 +146,11 @@ export class LeanMonaco {
   }
 
   protected getExtensionManifest(options: LeanMonacoOptions): IExtensionManifest {
+    for (let o in options.vscode) {
+      if ((packageJson.contributes.configuration.properties as any)[o]) {
+        (packageJson.contributes.configuration.properties as any)[o].default = options.vscode[o]
+      }
+    }
     return {
       name: 'lean4web',
       publisher: 'leanprover-community',
@@ -153,6 +159,7 @@ export class LeanMonaco {
           vscode: '*'
       },
       "contributes": {
+        "configuration": packageJson.contributes.configuration as any,
         "languages": [
           {
             "id": "lean4",
@@ -196,6 +203,7 @@ export class LeanMonaco {
         "configurationDefaults": {
           "[lean4]": {
             "editor.folding": false,
+            "editor.wordSeparators": "`~@$%^&*()-=+[{]}⟨⟩⦃⦄⟦⟧⟮⟯‹›\\|;:\",.<>/",
             "editor.lineNumbers": 'on',
             "editor.lineNumbersMinChars": 1,
             "editor.glyphMargin": true,
