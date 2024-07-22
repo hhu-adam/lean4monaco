@@ -9,12 +9,12 @@ import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
 import { checkLean4ProjectPreconditions } from './preconditions'
 import { ExtUri } from './monaco-lean4/vscode-lean4/src/utils/exturi';
-import { checkServiceConsistency } from 'monaco-editor-wrapper/vscode/services';
-import { Logger } from 'monaco-languageclient/tools';
+import { initialize } from 'vscode/services';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
-import { initServices, InitializeServiceConfig } from 'monaco-languageclient/vscode/services';
+import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-service-override';
+import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override';
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
 import { DisposableStore } from 'vscode/monaco';
 import packageJson from './monaco-lean4/vscode-lean4/package.json'
@@ -36,7 +36,6 @@ export class LeanMonaco {
 
   static activeInstance: LeanMonaco | null = null
 
-  logger = new Logger()
   registerFileUrlResults = new DisposableStore()
   extensionRegisterResult: RegisterExtensionResult | undefined
   clientProvider: LeanClientProvider | undefined
@@ -58,7 +57,7 @@ export class LeanMonaco {
     }
     LeanMonaco.activeInstance = this
 
-    if (! window.MonacoEnvironment?.getWorker) {
+    if (! window.MonacoEnvironment) {
       type WorkerLoader = () => Worker
       const workerLoaders: Partial<Record<string, WorkerLoader>> = {
         editorWorkerService: () => new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url), { type: 'module' }),
@@ -73,15 +72,30 @@ export class LeanMonaco {
           throw new Error(`Unimplemented worker ${label} (${moduleId})`)
         }
       }
-    }
     
-    await initServices({
-        serviceConfig: this.getInitializeServiceConfig(),
-        caller: `Lean monaco-editor`,
-        performChecks: checkServiceConsistency,
-        logger: this.logger
-    });
+      await initialize(
+        {
+          ...getTextmateServiceOverride(),
+          ...getThemeServiceOverride(),
+          ...getConfigurationServiceOverride(),
+          ...getLanguagesServiceOverride(),
+          ...getModelServiceOverride()
+        }, 
+        undefined, 
+        { 
+          workspaceProvider: {
+            trusted: true,
+            workspace: {
+                workspaceUri: Uri.file('/workspace.code-workspace')
+            },
+            async open() {
+                return false;
+            }
+          }
+        }
+      )
 
+    }
     await (await import('@codingame/monaco-vscode-theme-defaults-default-extension')).whenReady;
 
     if (this.disposed) return;
@@ -231,27 +245,6 @@ export class LeanMonaco {
             }
         ],
       },
-    }
-  }
-
-  protected getInitializeServiceConfig(): InitializeServiceConfig {
-    return {
-      userServices: {
-        ...getTextmateServiceOverride(),
-        ...getThemeServiceOverride(),
-        ...getConfigurationServiceOverride()
-      },
-      workspaceConfig: {
-        workspaceProvider: {
-            trusted: true,
-            workspace: {
-                workspaceUri: Uri.file('/workspace')
-            },
-            async open() {
-                return false;
-            }
-        }
-      }
     }
   }
 
