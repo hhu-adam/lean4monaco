@@ -111,7 +111,7 @@ export class LeanMonaco {
 
     if (this.disposed) return;
 
-    this.abbreviationFeature = new AbbreviationFeature({} as any);
+    this.abbreviationFeature = new AbbreviationFeature({} as any, { kind: 'MoveAllSelections' });
   
     this.clientProvider = new LeanClientProvider(
       {
