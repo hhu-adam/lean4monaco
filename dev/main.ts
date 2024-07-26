@@ -10,7 +10,7 @@ leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
 leanMonaco.dispose()
 
 leanMonaco = new LeanMonaco()
-leanMonaco.start({websocket: {url: 'ws://localhost:8080/'}})
+leanMonaco.start({websocket: {url: 'ws://localhost:8080/'}, vscode: {"editor.theme": "Visual Studio Dark"}})
 leanMonaco.setInfoviewElement(document.getElementById('infoview')!)
 
 await leanMonaco.whenReady

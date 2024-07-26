@@ -2,8 +2,9 @@ import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
 import { InfoWebviewFactory, InfoWebview } from "./vscode-lean4/vscode-lean4/src/infoview"
 import { Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
-import { IThemeService } from "vscode/services"
+import { IColorTheme, IThemeService } from "vscode/services"
 import * as colorUtils from 'vscode/vscode/vs/platform/theme/common/colorUtils';
+import { ColorScheme } from 'vscode/vscode/vs/platform/theme/common/theme';
 
 export class IFrameInfoWebview implements InfoWebview {
 
@@ -85,7 +86,18 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
             }
             return colors
         }, '');
+        console.log(theme.type)
         this.iframe.contentDocument?.documentElement.setAttribute('style', vscodeColors)
+        this.iframe.contentDocument?.documentElement.setAttribute('class', this.apiThemeClassName(theme))
+    }
+
+    private apiThemeClassName(theme: IColorTheme) {
+        switch (theme.type) {
+            case ColorScheme.LIGHT: return 'vscode-light';
+            case ColorScheme.DARK: return 'vscode-dark';
+            case ColorScheme.HIGH_CONTRAST_DARK: return 'vscode-high-contrast';
+            case ColorScheme.HIGH_CONTRAST_LIGHT: return 'vscode-high-contrast-light';
+        }
     }
 
     private initialHtml(stylesheet: string) {
@@ -100,6 +112,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
                 <style>
                     body {
                         background-color: var(--vscode-editor-background);
+                        color: var(--vscode-editor-foreground);
                     }
                 </style>
                 <link rel="stylesheet" href="${new URL('./vscode.css', import.meta.url)}">
