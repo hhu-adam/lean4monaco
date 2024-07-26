@@ -9,8 +9,8 @@ import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
 import { checkLean4ProjectPreconditions } from './preconditions'
 import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi';
-import { initialize } from 'vscode/services';
-import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
+import { initialize, getService, IThemeService } from 'vscode/services';
+import getConfigurationServiceOverride, { updateUserConfiguration, initUserConfiguration } from '@codingame/monaco-vscode-configuration-service-override';
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
 import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-service-override';
@@ -43,9 +43,17 @@ export class LeanMonaco {
   iframeWebviewFactory : IFrameInfoWebviewFactory | undefined
   abbreviationFeature: AbbreviationFeature | undefined
   taskGutter: LeanTaskGutter | undefined
+  infoviewEl: HTMLElement | undefined
   disposed = false
 
   async start(options: LeanMonacoOptions) {
+
+    // initUserConfiguration(`{
+    //   "editor.theme": "Cobalt",
+    //   "[lean4]": {
+    //     "editor.theme": "Cobalt",
+    //   }
+    // }`)
 
     if (LeanMonaco.activeInstance == this) {
       console.warn('A LeanMonaco instance cannot be started twice.')
@@ -111,6 +119,10 @@ export class LeanMonaco {
 
     if (this.disposed) return;
 
+    const themeService = await getService(IThemeService)
+
+    if (this.disposed) return;
+
     this.abbreviationFeature = new AbbreviationFeature({} as any, { kind: 'MoveAllSelections' });
   
     this.clientProvider = new LeanClientProvider(
@@ -126,8 +138,9 @@ export class LeanMonaco {
   
     this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('vscode-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
   
-    if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
-      
+    this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService)
+    if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
+    
     this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory) 
     
     const fontFile = new FontFace(
@@ -144,8 +157,8 @@ export class LeanMonaco {
 
 
   setInfoviewElement(infoviewEl: HTMLElement){
-    if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
-      this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
+    if (this.iframeWebviewFactory) this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
+    this.infoviewEl = infoviewEl
   }
 
   protected getExtensionFiles() {

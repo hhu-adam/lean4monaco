@@ -2,6 +2,8 @@ import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
 import { InfoWebviewFactory, InfoWebview } from "./vscode-lean4/vscode-lean4/src/infoview"
 import { Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
+import { IThemeService } from "vscode/services"
+import * as colorUtils from 'vscode/vscode/vs/platform/theme/common/colorUtils';
 
 export class IFrameInfoWebview implements InfoWebview {
 
@@ -28,17 +30,23 @@ export class IFrameInfoWebview implements InfoWebview {
 
 export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     private infoviewElement: HTMLElement
+    private iframe: HTMLIFrameElement
+
+    constructor(private themeService: IThemeService) { }
 
     setInfoviewElement(infoviewElement: HTMLElement) {
         this.infoviewElement = infoviewElement
     }
 
     make(editorApi: EditorApi, stylesheet: string, column: number) {
-        const iframe : HTMLIFrameElement = document.createElement("iframe")
-        this.infoviewElement.append(iframe)
-        iframe.contentWindow!.document.open()
-        iframe.contentWindow!.document.write(this.initialHtml(stylesheet))
-        iframe.contentWindow!.document.close()
+        this.iframe = document.createElement("iframe")
+        this.infoviewElement.append(this.iframe)
+        this.iframe.contentWindow!.document.open()
+        this.iframe.contentWindow!.document.write(this.initialHtml(stylesheet))
+        this.iframe.contentWindow!.document.close()
+
+        this.updateCssVars()
+        this.themeService.onDidColorThemeChange(() => { this.updateCssVars() })
         
         // Note that an extension can send data to its webviews using webview.postMessage().
         // This method sends any JSON serializable data to the webview. The message is received
@@ -48,7 +56,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
         const rpc = new Rpc(m => {
             try {
                 // JSON.stringify is needed here to serialize getters such as `Position.line` and `Position.character`
-                void iframe.contentWindow!.postMessage(JSON.stringify(m))
+                void this.iframe.contentWindow!.postMessage(JSON.stringify(m))
             } catch (e) {
                 // ignore any disposed object exceptions
             }
@@ -57,7 +65,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
 
         // Similarly, we can received data from the webview by listening to onDidReceiveMessage.
         document.defaultView!.addEventListener('message', m => {
-            if (m.source != iframe.contentWindow) { return }
+            if (m.source != this.iframe.contentWindow) { return }
             try {
                 rpc.messageReceived(JSON.parse(m.data))
             } catch {
@@ -65,7 +73,19 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
             }
         })
 
-        return new IFrameInfoWebview(iframe, rpc)
+        return new IFrameInfoWebview(this.iframe, rpc)
+    }
+
+    private updateCssVars() {
+        const theme = this.themeService.getColorTheme();
+        const vscodeColors = ((colorUtils as any).getColorRegistry().getColors() as Array<{id:string}>).reduce<string>((colors, entry) => {
+            const color = theme.getColor(entry.id);
+            if (color) {
+                colors = colors + '--vscode-' + entry.id.replace('.', '-') + ': ' + color.toString() + "; ";
+            }
+            return colors
+        }, '');
+        this.iframe.contentDocument?.documentElement.setAttribute('style', vscodeColors)
     }
 
     private initialHtml(stylesheet: string) {
@@ -77,6 +97,11 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
                 <meta http-equiv="Content-type" content="text/html;charset=utf-8">
                 <title>Infoview</title>
                 <style>${stylesheet}</style>
+                <style>
+                    body {
+                        background-color: var(--vscode-editor-background);
+                    }
+                </style>
                 <link rel="stylesheet" href="${new URL('./vscode.css', import.meta.url)}">
                 <link rel="stylesheet" href="${new URL('./vscode-lean4/lean4-infoview/src/infoview/index.css', import.meta.url)}">
             </head>
