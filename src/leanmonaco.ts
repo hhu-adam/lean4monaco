@@ -48,13 +48,6 @@ export class LeanMonaco {
 
   async start(options: LeanMonacoOptions) {
 
-    // initUserConfiguration(`{
-    //   "editor.theme": "Cobalt",
-    //   "[lean4]": {
-    //     "editor.theme": "Cobalt",
-    //   }
-    // }`)
-
     if (LeanMonaco.activeInstance == this) {
       console.warn('A LeanMonaco instance cannot be started twice.')
       return
@@ -108,7 +101,7 @@ export class LeanMonaco {
 
     if (this.disposed) return;
     
-    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(options), ExtensionHostKind.LocalProcess);
+    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(), ExtensionHostKind.LocalProcess);
 
     for (const entry of this.getExtensionFiles()) {
       const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
@@ -152,6 +145,10 @@ export class LeanMonaco {
 
     if (this.disposed) return;
 
+    updateUserConfiguration(JSON.stringify({
+      "[lean4]": options.vscode
+    }))
+
     this.ready()
   }
 
@@ -171,12 +168,7 @@ export class LeanMonaco {
     return extensionFiles
   }
 
-  protected getExtensionManifest(options: LeanMonacoOptions): IExtensionManifest {
-    for (let o in options.vscode) {
-      if ((packageJson.contributes.configuration.properties as any)[o]) {
-        (packageJson.contributes.configuration.properties as any)[o].default = options.vscode[o]
-      }
-    }
+  protected getExtensionManifest(): IExtensionManifest {
     return {
       name: 'lean4web',
       publisher: 'leanprover-community',
@@ -245,7 +237,6 @@ export class LeanMonaco {
             "editor.fontFamily": "JuliaMono",
             "editor.wrappingStrategy": "advanced",
             "editor.theme": "Visual Studio Light", //"Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
-            ...options.vscode
           }
         },
         "themes": [

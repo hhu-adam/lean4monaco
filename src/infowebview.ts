@@ -86,7 +86,6 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
             }
             return colors
         }, '');
-        console.log(theme.type)
         this.iframe.contentDocument?.documentElement.setAttribute('style', vscodeColors)
         this.iframe.contentDocument?.documentElement.setAttribute('class', this.apiThemeClassName(theme))
     }
