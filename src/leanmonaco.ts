@@ -143,15 +143,18 @@ export class LeanMonaco {
     document.fonts.add(fontFile);
     await fontFile.load()
 
-    if (this.disposed) return;
+    this.updateVSCodeOptions(options.vscode ?? {})
 
-    updateUserConfiguration(JSON.stringify({
-      "[lean4]": options.vscode
-    }))
+    if (this.disposed) return;
 
     this.ready()
   }
 
+  updateVSCodeOptions(vsCodeOptions: { [id: string]: any }){
+    updateUserConfiguration(JSON.stringify({
+      "[lean4]": vsCodeOptions
+    }))
+  }
 
   setInfoviewElement(infoviewEl: HTMLElement){
     if (this.iframeWebviewFactory) this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
