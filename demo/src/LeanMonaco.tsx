@@ -12,7 +12,7 @@ function LeanMonacoComponent({options} : {options: LeanMonacoOptions}) {
     ;(async () => {
         await leanMonaco.start(options)
         leanMonaco.setInfoviewElement(infoviewRef.current!)
-        await leanMonacoEditor.start(codeviewRef.current!, `/project/test${Math.random()}.lean`, '#check Nat', options.vscode!["editor.theme"]!)
+        await leanMonacoEditor.start(codeviewRef.current!, `/project/test${Math.random()}.lean`, '#check Nat')
     })()
     
     return () => {

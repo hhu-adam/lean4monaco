@@ -4,16 +4,16 @@ import LeanMonacoComponent from './LeanMonaco'
 import { LeanMonacoOptions } from 'lean4monaco'
 
 function App() {
-  const [options, setOptions] = useState<LeanMonacoOptions>({websocket: {url: 'ws://localhost:8080/'}, vscode: {"editor.theme": "Visual Studio Light"}})
+  const [options, setOptions] = useState<LeanMonacoOptions>({websocket: {url: 'ws://localhost:8080/'}, vscode: {"workbench.colorTheme": "Visual Studio Light"}})
 
   return (
     <>
       <button
-        onClick={() => {setOptions({...options, vscode: {...options.vscode, "editor.theme": "Visual Studio Light"}})}}
+        onClick={() => {setOptions({...options, vscode: {...options.vscode, "workbench.colorTheme": "Visual Studio Light"}})}}
         data-cy="theme-light"
       >Light</button>
       <button
-        onClick={() => {setOptions({...options, vscode: {...options.vscode, "editor.theme": "Visual Studio Dark"}})}}
+        onClick={() => {setOptions({...options, vscode: {...options.vscode, "workbench.colorTheme": "Visual Studio Dark"}})}}
         data-cy="theme-dark"
       >Dark</button>
       <button
