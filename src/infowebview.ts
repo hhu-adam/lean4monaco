@@ -119,7 +119,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
             </head>
             <body>
                 <div id="react_root"></div>
-                <script type="module" src="${new URL('./webview.js', import.meta.url)}"></script>
+                <script type="module" src="/infoview/webview.js"></script>
             </body>
             </html>`
     }

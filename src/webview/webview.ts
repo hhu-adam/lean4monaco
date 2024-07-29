@@ -1,7 +1,7 @@
 // @ts-nocheck
 import type { EditorApi } from '@leanprover/infoview'
 import { loadRenderInfoview } from '@leanprover/infoview/loader'
-import { Rpc } from './vscode-lean4/vscode-lean4/src/rpc'
+import { Rpc } from '../vscode-lean4/vscode-lean4/src/rpc'
 
 const vscodeApi = window.parent
 

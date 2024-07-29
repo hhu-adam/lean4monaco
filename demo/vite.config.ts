@@ -23,7 +23,10 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: normalizePath(path.resolve(__dirname, '../node_modules/@leanprover/infoview/dist/*.production.min.js')),
+          src: [
+            normalizePath(path.resolve(__dirname, '../node_modules/@leanprover/infoview/dist/*.production.min.js')),
+            normalizePath(path.resolve(__dirname, '../dist/webview/webview.js')),
+          ],
           dest: 'infoview'
         }
       ]

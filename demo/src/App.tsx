@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import LeanMonacoComponent from './LeanMonaco'
 import { LeanMonacoOptions } from 'lean4monaco'

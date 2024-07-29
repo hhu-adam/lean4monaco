@@ -21,5 +21,5 @@
 
     "outDir": "./dist",  
   },
-  "include": ["src/index.ts", "src/webview.ts"]
+  "include": ["src/index.ts"]
 }

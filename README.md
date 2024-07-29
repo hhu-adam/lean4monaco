@@ -97,7 +97,10 @@ export default {
     viteStaticCopy({
       targets: [
         {
-          src: normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*.production.min.js')),
+          src: [
+            normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*.production.min.js')),
+            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/webview/webview.js')),
+          ],
           dest: 'infoview'
         }
       ]
