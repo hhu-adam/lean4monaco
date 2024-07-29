@@ -47,8 +47,10 @@ For some reason, the file (here `test.lean`) cannot be at the root of the file s
 The package uses the Lean 4 VSCode extension, which is intended to run in a nodejs runtime. Therefore, we need to install node polyfills.
 Here is how this can be done if your project uses Vite:
 ```
-npm install vite-plugin-node-polyfills memfs 
+npm install vite-plugin-node-polyfills@0.17.0 --save-exact
+npm install memfs 
 ```
+(We use version 0.17.0 due to this bug: https://github.com/davidmyersdev/vite-plugin-node-polyfills/issues/81)
 
 ```ts
 // vite.config.ts
