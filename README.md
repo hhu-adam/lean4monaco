@@ -2,7 +2,7 @@
 
 Provides browser support for running Lean in a Monaco editor.
 
-This package is based on the [VSCode extension
+This package uses the [VSCode extension
 "Lean 4"](https://marketplace.visualstudio.com/items?itemName=leanprover.lean4) and the
 [Lean Infoview](https://www.npmjs.com/package/@leanprover/infoview).
 
