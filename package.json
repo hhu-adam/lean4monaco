@@ -6,6 +6,10 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hhu-adam/lean4monaco"
+  },
   "scripts": {
     "postinstall": "if [ -d \"server\" ]; then cd server && npm install; fi",
     "start_client": "vite serve dev",
