@@ -1,5 +1,5 @@
 import { LanguageClientWrapper, WorkerConfigDirect, WebSocketConfigOptions, WebSocketConfigOptionsUrl, WorkerConfigOptions } from 'monaco-editor-wrapper'
-import { ExtUri } from './monaco-lean4/vscode-lean4/src/utils/exturi'
+import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi'
 import {
     LanguageClientOptions,
 } from 'vscode-languageclient/node'

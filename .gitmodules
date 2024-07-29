@@ -1,3 +1,4 @@
-[submodule "src/monaco-lean4"]
-	path = src/monaco-lean4
-	url = git@github.com:hhu-adam/monaco-lean4.git
+[submodule "src/vscode-lean4"]
+	path = src/vscode-lean4
+	url = git@github.com:hhu-adam/vscode-lean4.git
+	branch = monaco

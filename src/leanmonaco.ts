@@ -1,14 +1,14 @@
 import 'vscode/localExtensionHost'
 import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper';
-import { LeanClientProvider } from './monaco-lean4/vscode-lean4/src/utils/clientProvider';
+import { LeanClientProvider } from './vscode-lean4/vscode-lean4/src/utils/clientProvider';
 import { Uri } from 'vscode';
-import { InfoProvider } from './monaco-lean4/vscode-lean4/src/infoview';
-import { AbbreviationFeature } from './monaco-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
-import { LeanTaskGutter } from './monaco-lean4/vscode-lean4/src/taskgutter';
+import { InfoProvider } from './vscode-lean4/vscode-lean4/src/infoview';
+import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
+import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter';
 import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
 import { checkLean4ProjectPreconditions } from './preconditions'
-import { ExtUri } from './monaco-lean4/vscode-lean4/src/utils/exturi';
+import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi';
 import { initialize } from 'vscode/services';
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
@@ -17,7 +17,7 @@ import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-serv
 import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override';
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
 import { DisposableStore } from 'vscode/monaco';
-import packageJson from './monaco-lean4/vscode-lean4/package.json'
+import packageJson from './vscode-lean4/vscode-lean4/package.json'
 
 export type LeanMonacoOptions = {
   websocket: {
@@ -125,7 +125,7 @@ export class LeanMonaco {
       (docUri: ExtUri) => { return true }
     )
   
-    this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('monaco-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
+    this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('vscode-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
   
     if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
       
@@ -151,10 +151,10 @@ export class LeanMonaco {
 
   protected getExtensionFiles() {
     const extensionFiles = new Map<string, URL>();
-    extensionFiles.set('/language-configuration.json', new URL('./monaco-lean4/vscode-lean4/language-configuration.json', import.meta.url));
-    extensionFiles.set('/syntaxes/lean4.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
-    extensionFiles.set('/syntaxes/lean4-markdown.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
-    extensionFiles.set('/syntaxes/codeblock.json', new URL('./monaco-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
+    extensionFiles.set('/language-configuration.json', new URL('./vscode-lean4/vscode-lean4/language-configuration.json', import.meta.url));
+    extensionFiles.set('/syntaxes/lean4.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
+    extensionFiles.set('/syntaxes/lean4-markdown.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
+    extensionFiles.set('/syntaxes/codeblock.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
     extensionFiles.set('/themes/cobalt2.json', new URL('./themes/cobalt2.json', import.meta.url));
     return extensionFiles
   }

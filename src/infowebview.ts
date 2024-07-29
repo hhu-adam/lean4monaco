@@ -1,6 +1,6 @@
 import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
-import { InfoWebviewFactory, InfoWebview } from "./monaco-lean4/vscode-lean4/src/infoview"
-import { Rpc } from "./monaco-lean4/vscode-lean4/src/rpc"
+import { InfoWebviewFactory, InfoWebview } from "./vscode-lean4/vscode-lean4/src/infoview"
+import { Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
 
 export class IFrameInfoWebview implements InfoWebview {
@@ -78,7 +78,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
                 <title>Infoview</title>
                 <style>${stylesheet}</style>
                 <link rel="stylesheet" href="${new URL('./vscode.css', import.meta.url)}">
-                <link rel="stylesheet" href="${new URL('./monaco-lean4/lean4-infoview/src/infoview/index.css', import.meta.url)}">
+                <link rel="stylesheet" href="${new URL('./vscode-lean4/lean4-infoview/src/infoview/index.css', import.meta.url)}">
             </head>
             <body>
                 <div id="react_root"></div>
