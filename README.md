@@ -48,7 +48,7 @@ The package uses the Lean 4 VSCode extension, which is intended to run in a node
 Here is how this can be done if your project uses Vite:
 ```
 npm install vite-plugin-node-polyfills@0.17.0 --save-exact
-npm install memfs 
+npm install memfs
 ```
 (We use version 0.17.0 due to this bug: https://github.com/davidmyersdev/vite-plugin-node-polyfills/issues/81)
 
@@ -69,7 +69,7 @@ export default {
 
 For Vite dev mode to work properly, the following plugin is necessary:
 ```
-npm install 'https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?ec9666e' --save-dev
+npm install 'https://gitpkg.vercel.app/hhu-adam/lean4monaco/esbuild-import-meta-url-plugin?ec9666e' --save-dev
 ```
 This could be replaced by `@codingame/esbuild-import-meta-url-plugin` when this PR is accepted: https://github.com/CodinGame/esbuild-import-meta-url-plugin/pull/5
 
