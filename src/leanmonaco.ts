@@ -121,8 +121,7 @@ export class LeanMonaco {
         {appendLine: () => {}
       } as any,
       setupMonacoClient(this.getWebSocketOptions(options)),
-      checkLean4ProjectPreconditions,
-      (docUri: ExtUri) => { return true }
+      checkLean4ProjectPreconditions
     )
   
     this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('vscode-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
