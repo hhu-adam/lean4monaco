@@ -4,12 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "postinstall": "cd server && npm install",
+    "build_server": "cd server/LeanProject && lake build",
+    "start_server": "cd server && npm start",
     "start_client": "vite --host",
-    "start_server": "cd ../server && npm start",
     "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
-    "build": "tsc -b && vite build",
+    "build_client": "tsc -b && vite build",
+    "build": "npm run build_client && npm run build_server",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "concurrently \"vite preview\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\""
   },
   "dependencies": {
     "lean4monaco": "file:..",
@@ -18,7 +21,6 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "vite-plugin-node-polyfills": "^0.22.0",
     "@codingame/esbuild-import-meta-url-plugin": "https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?ec9666e",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -29,6 +31,8 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "vite-plugin-node-polyfills": "=0.17.0",
+    "vite-plugin-static-copy": "^1.0.6"
   }
 }

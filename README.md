@@ -2,8 +2,8 @@
 
 Provides browser support for running Lean in a Monaco editor.
 
-This package is based on the VSCode extension
-[Lean 4](https://marketplace.visualstudio.com/items?itemName=leanprover.lean4) and the
+This package uses the [VSCode extension
+"Lean 4"](https://marketplace.visualstudio.com/items?itemName=leanprover.lean4) and the
 [Lean Infoview](https://www.npmjs.com/package/@leanprover/infoview).
 
 ## Usage
@@ -47,8 +47,10 @@ For some reason, the file (here `test.lean`) cannot be at the root of the file s
 The package uses the Lean 4 VSCode extension, which is intended to run in a nodejs runtime. Therefore, we need to install node polyfills.
 Here is how this can be done if your project uses Vite:
 ```
-npm install vite-plugin-node-polyfills memfs 
+npm install vite-plugin-node-polyfills@0.17.0 --save-exact
+npm install memfs 
 ```
+(We use version 0.17.0 due to this bug: https://github.com/davidmyersdev/vite-plugin-node-polyfills/issues/81)
 
 ```ts
 // vite.config.ts
@@ -97,7 +99,10 @@ export default {
     viteStaticCopy({
       targets: [
         {
-          src: normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*.production.min.js')),
+          src: [
+            normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*.production.min.js')),
+            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/webview/webview.js')),
+          ],
           dest: 'infoview'
         }
       ]

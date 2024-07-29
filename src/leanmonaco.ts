@@ -1,7 +1,7 @@
 import 'vscode/localExtensionHost'
 import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper';
 import { LeanClientProvider } from './vscode-lean4/vscode-lean4/src/utils/clientProvider';
-import { Uri } from 'vscode';
+import { Uri, workspace } from 'vscode';
 import { InfoProvider } from './vscode-lean4/vscode-lean4/src/infoview';
 import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
 import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter';
@@ -9,8 +9,8 @@ import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
 import { checkLean4ProjectPreconditions } from './preconditions'
 import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi';
-import { initialize } from 'vscode/services';
-import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override';
+import { initialize, getService, IThemeService } from 'vscode/services';
+import getConfigurationServiceOverride, { updateUserConfiguration, initUserConfiguration } from '@codingame/monaco-vscode-configuration-service-override';
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
 import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-service-override';
@@ -43,6 +43,7 @@ export class LeanMonaco {
   iframeWebviewFactory : IFrameInfoWebviewFactory | undefined
   abbreviationFeature: AbbreviationFeature | undefined
   taskGutter: LeanTaskGutter | undefined
+  infoviewEl: HTMLElement | undefined
   disposed = false
 
   async start(options: LeanMonacoOptions) {
@@ -100,7 +101,7 @@ export class LeanMonaco {
 
     if (this.disposed) return;
     
-    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(options), ExtensionHostKind.LocalProcess);
+    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(), ExtensionHostKind.LocalProcess);
 
     for (const entry of this.getExtensionFiles()) {
       const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
@@ -110,6 +111,12 @@ export class LeanMonaco {
     await this.extensionRegisterResult.whenReady()
 
     if (this.disposed) return;
+
+    const themeService = await getService(IThemeService)
+
+    if (this.disposed) return;
+
+    this.updateVSCodeOptions(options.vscode ?? {})
 
     this.abbreviationFeature = new AbbreviationFeature({} as any, { kind: 'MoveAllSelections' });
   
@@ -126,8 +133,9 @@ export class LeanMonaco {
   
     this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('vscode-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
   
-    if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
-      
+    this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService)
+    if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
+    
     this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory) 
     
     const fontFile = new FontFace(
@@ -137,15 +145,22 @@ export class LeanMonaco {
     document.fonts.add(fontFile);
     await fontFile.load()
 
+    this.updateVSCodeOptions(options.vscode ?? {})
+
     if (this.disposed) return;
 
     this.ready()
   }
 
+  updateVSCodeOptions(vsCodeOptions: { [id: string]: any }){
+    for (const key in vsCodeOptions) {
+        workspace.getConfiguration().update(key, vsCodeOptions[key])
+    }
+  }
 
   setInfoviewElement(infoviewEl: HTMLElement){
-    if (!this.iframeWebviewFactory) this.iframeWebviewFactory = new IFrameInfoWebviewFactory()
-      this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
+    if (this.iframeWebviewFactory) this.iframeWebviewFactory.setInfoviewElement(infoviewEl)
+    this.infoviewEl = infoviewEl
   }
 
   protected getExtensionFiles() {
@@ -158,12 +173,7 @@ export class LeanMonaco {
     return extensionFiles
   }
 
-  protected getExtensionManifest(options: LeanMonacoOptions): IExtensionManifest {
-    for (let o in options.vscode) {
-      if ((packageJson.contributes.configuration.properties as any)[o]) {
-        (packageJson.contributes.configuration.properties as any)[o].default = options.vscode[o]
-      }
-    }
+  protected getExtensionManifest(): IExtensionManifest {
     return {
       name: 'lean4web',
       publisher: 'leanprover-community',
@@ -214,7 +224,6 @@ export class LeanMonaco {
           }
         ],
         "configurationDefaults": {
-          "[lean4]": {
             "editor.folding": false,
             "editor.wordSeparators": "`~@$%^&*()-=+[{]}⟨⟩⦃⦄⟦⟧⟮⟯‹›\\|;:\",.<>/",
             "editor.lineNumbers": 'on',
@@ -231,10 +240,7 @@ export class LeanMonaco {
             "editor.acceptSuggestionOnEnter": "off",
             "editor.fontFamily": "JuliaMono",
             "editor.wrappingStrategy": "advanced",
-            "editor.theme": "Visual Studio Light", //"Cobalt" // "Visual Studio Light" //"Visual Studio Dark" //"Default Light Modern" //"Default Light+" //"Default Dark+" //"Default High Contrast"
-            ...options.vscode
-          }
-        },
+          },
         "themes": [
           {
               "id": "Cobalt",
