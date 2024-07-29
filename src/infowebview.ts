@@ -79,14 +79,13 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
 
     private updateCssVars() {
         const theme = this.themeService.getColorTheme();
-        const vscodeColors = ((colorUtils as any).getColorRegistry().getColors() as Array<{id:string}>).reduce<string>((colors, entry) => {
+        const documentStyle = this.iframe.contentDocument?.documentElement.style;
+        for (const entry of ((colorUtils as any).getColorRegistry().getColors() as Array<{id:string}>)) {
             const color = theme.getColor(entry.id);
             if (color) {
-                colors = colors + '--vscode-' + entry.id.replace('.', '-') + ': ' + color.toString() + "; ";
+                documentStyle?.setProperty('--vscode-' + entry.id.replace('.', '-'), color.toString());
             }
-            return colors
-        }, '');
-        this.iframe.contentDocument?.documentElement.setAttribute('style', vscodeColors)
+        }
         this.iframe.contentDocument?.documentElement.setAttribute('class', this.apiThemeClassName(theme))
     }
 

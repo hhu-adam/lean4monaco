@@ -200,6 +200,7 @@ export class LeanMonaco {
             "configuration": "./language-configuration.json"
           }
         ],
+        colors: packageJson.contributes.colors as any,
         "grammars": [
           {
             "language": "lean4",
