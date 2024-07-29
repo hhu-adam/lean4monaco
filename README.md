@@ -1,8 +1,15 @@
 # Lean 4 Monaco
 
+Provides browser support for running Lean in a Monaco editor.
+
+This package is based on the VSCode extension
+[Lean 4](https://marketplace.visualstudio.com/items?itemName=leanprover.lean4) and the
+[Lean Infoview](https://www.npmjs.com/package/@leanprover/infoview).
+
 ## Usage
 
 Install this package in your npm project.
+
 ```
 npm install lean4monaco
 ```
