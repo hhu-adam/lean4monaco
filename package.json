@@ -11,12 +11,9 @@
     "url": "https://github.com/hhu-adam/lean4monaco"
   },
   "scripts": {
-    "postinstall": "if [ -d \"server\" ]; then cd server && npm install; fi",
-    "build_server": "cd server/LeanProject && lake build",
-    "start_server": "cd server && npm start",
-    "start": "concurrently \"tsc -w\" \"webpack --watch\" \"cd demo && npm run start_client\" \"npm run start_server\" -n tsc,webpack,vite,server -c \"bgGreen.bold,bgBlue.bold,bgYellow.bold,bgMagenta.bold\"",
+    "start": "concurrently \"tsc -w\" \"webpack --watch\" \"cd demo && npm run start_client\" \"cd demo && npm run start_server\" -n tsc,webpack,vite,server -c \"bgGreen.bold,bgBlue.bold,bgYellow.bold,bgMagenta.bold\"",
     "build": "tsc && webpack && cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" ../dist/",
-    "test": "concurrently --kill-others \"cd demo && npm install && npm start\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
+    "test": "(cd demo && npm install && npm run build_server) && concurrently --kill-others \"npm start 1> /dev/null\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "^0.18.2",
