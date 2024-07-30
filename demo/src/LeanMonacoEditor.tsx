@@ -2,7 +2,7 @@ import { useEffect, useRef, useContext } from 'react'
 import { LeanMonacoEditor } from 'lean4monaco'
 import { LeanMonacoContext } from './LeanMonaco'
 
-function LeanMonacoEditorComponent({fileName}: {fileName: string}) {
+function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: string}) {
   const codeviewRef = useRef<HTMLDivElement>(null)
   const leanMonaco = useContext(LeanMonacoContext)
 
@@ -12,7 +12,7 @@ function LeanMonacoEditorComponent({fileName}: {fileName: string}) {
       
       ;(async () => {
           await leanMonaco!.whenReady
-          await leanMonacoEditor.start(codeviewRef.current!, fileName, '#check Nat')
+          await leanMonacoEditor.start(codeviewRef.current!, fileName, value)
       })()
       
       return () => {

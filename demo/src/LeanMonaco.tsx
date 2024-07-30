@@ -26,7 +26,7 @@ function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOpti
     <>
       <LeanMonacoContext.Provider value={leanMonaco}>
         {[...Array(numberEditors)].map((x, i) =>
-          <LeanMonacoEditorComponent key={i} fileName={`/project/test${i}.lean`}/>
+          <LeanMonacoEditorComponent key={i} fileName={`/project/test${i}.lean`} value={`#check ${i}`}/>
         )}
         <div className='infoview' ref={infoviewRef}></div>
       </LeanMonacoContext.Provider>

@@ -28,6 +28,7 @@ function App() {
         >Input Leader ","</button>
         <input type="number" min="1" max="3"
           value={numberEditors}
+          data-cy="number-editors"
           onChange={(event) => {
             setNumberEditors(parseInt(event.target.value));
           }}
