@@ -26,8 +26,10 @@ describe('Editor Test', () => {
       .should(($p) => {
         expect(getComputedStyle($p.get(0)).getPropertyValue('--vscode-editor-background')).to.equal("#1e1e1e")
       })
+
+    cy.get('iframe').should('have.length', 1)
   })
-  
+
   it('inputs unicode', () => {
     cy.visit('http://localhost:5173/')
     cy.get('[data-cy="leader-backslash"]').click()
