@@ -2,9 +2,10 @@ import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
 import { InfoWebviewFactory, InfoWebview } from "./vscode-lean4/vscode-lean4/src/infoview"
 import { Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
-import { IColorTheme, IThemeService } from "vscode/services"
+import { IColorTheme, IConfigurationService, IThemeService, IEditorOptions } from "vscode/services"
 import * as colorUtils from 'vscode/vscode/vs/platform/theme/common/colorUtils';
 import { ColorScheme } from 'vscode/vscode/vs/platform/theme/common/theme';
+import * as editorOptions from 'vscode/vscode/vs/editor/common/config/editorOptions';
 
 export class IFrameInfoWebview implements InfoWebview {
 
@@ -33,7 +34,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     private infoviewElement: HTMLElement
     private iframe: HTMLIFrameElement
 
-    constructor(private themeService: IThemeService) { }
+    constructor(private themeService: IThemeService, private configurationService: IConfigurationService, private fontFile: FontFace) { }
 
     setInfoviewElement(infoviewElement: HTMLElement) {
         this.infoviewElement = infoviewElement
@@ -80,13 +81,45 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     private updateCssVars() {
         const theme = this.themeService.getColorTheme();
         const documentStyle = this.iframe.contentDocument?.documentElement.style;
-        for (const entry of ((colorUtils as any).getColorRegistry().getColors() as Array<{id:string}>)) {
+        const colors: Array<{id:string}> = (colorUtils as any).getColorRegistry().getColors()
+        
+        const exportedColors = colors.reduce<Record<string, string>>((colors, entry) => {
             const color = theme.getColor(entry.id);
             if (color) {
-                documentStyle?.setProperty('--vscode-' + entry.id.replace('.', '-'), color.toString());
+                colors['vscode-' + entry.id.replace('.', '-')] = color.toString();
             }
+            return colors;
+        }, {});
+
+        const EDITOR_FONT_DEFAULTS = (editorOptions as any).EDITOR_FONT_DEFAULTS
+        const configuration: any = this.configurationService.getValue<IEditorOptions>('editor');
+        const editorFontFamily = configuration.fontFamily || EDITOR_FONT_DEFAULTS.fontFamily;
+        const editorFontWeight = configuration.fontWeight || EDITOR_FONT_DEFAULTS.fontWeight;
+        const editorFontSize = configuration.fontSize || EDITOR_FONT_DEFAULTS.fontSize;
+        const linkUnderlines = this.configurationService.getValue('accessibility.underlineLinks');
+
+        const styles: {[id: string]: string} = {
+            'vscode-font-family': '\'Droid Sans Mono\', Consolas, Menlo, Monaco, \'Courier New\', monospace',
+            'vscode-font-weight': 'normal',
+            'vscode-font-size': '13px',
+            'vscode-editor-font-family': editorFontFamily,
+            'vscode-editor-font-weight': editorFontWeight,
+            'vscode-editor-font-size': editorFontSize + 'px',
+            'text-link-decoration': linkUnderlines ? 'underline' : 'none',
+            ...exportedColors
+        };
+
+        console.log(styles)
+        
+        for (const id in styles) {
+            documentStyle?.setProperty(`--${id}`, styles[id]);
         }
-        this.iframe.contentDocument?.documentElement.setAttribute('class', this.apiThemeClassName(theme))
+
+        documentStyle?.setProperty('font-family', '-apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,system-ui,Ubuntu,Droid Sans,sans-serif')
+
+        this.iframe.contentDocument?.documentElement.setAttribute('class', `${this.apiThemeClassName(theme)}`)
+
+        this.iframe.contentDocument?.fonts.add(this.fontFile);
     }
 
     private apiThemeClassName(theme: IColorTheme) {
@@ -113,7 +146,6 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
                         color: var(--vscode-editor-foreground);
                     }
                 </style>
-                <link rel="stylesheet" href="${new URL('./vscode.css', import.meta.url)}">
                 <link rel="stylesheet" href="${new URL('../node_modules/@leanprover/infoview/dist/index.css', import.meta.url)}">
             </head>
             <body>

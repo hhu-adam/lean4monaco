@@ -9,7 +9,7 @@ import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient';
 import { checkLean4ProjectPreconditions } from './preconditions'
 import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi';
-import { initialize, getService, IThemeService } from 'vscode/services';
+import { initialize, getService, IThemeService, IConfigurationService } from 'vscode/services';
 import getConfigurationServiceOverride, { updateUserConfiguration, initUserConfiguration } from '@codingame/monaco-vscode-configuration-service-override';
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
@@ -113,6 +113,7 @@ export class LeanMonaco {
     if (this.disposed) return;
 
     const themeService = await getService(IThemeService)
+    const configurationService = await getService(IConfigurationService)
 
     if (this.disposed) return;
 
@@ -132,17 +133,18 @@ export class LeanMonaco {
     )
   
     this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('vscode-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
-  
-    this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService)
-    if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
-    
-    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory) 
-    
+
     const fontFile = new FontFace(
       "JuliaMono",
       `url(${new URL("./JuliaMono-Regular.ttf", import.meta.url)})`,
     );
     document.fonts.add(fontFile);
+
+    this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService, configurationService, fontFile)
+    if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
+    
+    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory) 
+    
     await fontFile.load()
 
     this.updateVSCodeOptions(options.vscode ?? {})
