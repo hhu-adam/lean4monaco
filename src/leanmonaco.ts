@@ -29,7 +29,7 @@ export type LeanMonacoOptions = {
 }
 
 export class LeanMonaco {
-  ready: (value: void | PromiseLike<void>) => void
+  private ready: (value: void | PromiseLike<void>) => void
   whenReady = new Promise<void>((resolve) => {
     this.ready = resolve
   })

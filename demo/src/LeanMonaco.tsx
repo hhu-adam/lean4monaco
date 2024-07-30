@@ -1,30 +1,33 @@
-import { useEffect, useRef } from 'react'
-import { LeanMonaco, LeanMonacoEditor, LeanMonacoOptions } from 'lean4monaco'
+import { useEffect, useRef, createContext, useState } from 'react'
+import { LeanMonaco, LeanMonacoOptions } from 'lean4monaco'
+import LeanMonacoEditorComponent from './LeanMonacoEditor';
+
+export const LeanMonacoContext = createContext<LeanMonaco|null>(null);
 
 function LeanMonacoComponent({options} : {options: LeanMonacoOptions}) {
-  const codeviewRef = useRef<HTMLDivElement>(null)
+  const [leanMonaco, setLeanMonaco] = useState<LeanMonaco|null>(null)
   const infoviewRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const leanMonaco = new LeanMonaco()
-    const leanMonacoEditor = new LeanMonacoEditor()
+    setLeanMonaco(leanMonaco)
+    leanMonaco.setInfoviewElement(infoviewRef.current!)
     
     ;(async () => {
         await leanMonaco.start(options)
-        leanMonaco.setInfoviewElement(infoviewRef.current!)
-        await leanMonacoEditor.start(codeviewRef.current!, `/project/test.lean`, '#check Nat')
     })()
     
     return () => {
-        leanMonacoEditor.dispose()
         leanMonaco.dispose()
     }
   }, [options])
 
   return (
     <>
-      <div className='codeview' ref={codeviewRef}></div>
-      <div className='infoview' ref={infoviewRef}></div>
+      <LeanMonacoContext.Provider value={leanMonaco}>
+        <LeanMonacoEditorComponent />
+        <div className='infoview' ref={infoviewRef}></div>
+      </LeanMonacoContext.Provider>
     </>
   )
 }
