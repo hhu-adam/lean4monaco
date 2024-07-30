@@ -100,7 +100,7 @@ export default {
       targets: [
         {
           src: [
-            normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*.production.min.js')),
+            normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*')),
             normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/webview/webview.js')),
           ],
           dest: 'infoview'

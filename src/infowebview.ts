@@ -114,7 +114,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
                     }
                 </style>
                 <link rel="stylesheet" href="${new URL('./vscode.css', import.meta.url)}">
-                <link rel="stylesheet" href="${new URL('./vscode-lean4/lean4-infoview/src/infoview/index.css', import.meta.url)}">
+                <link rel="stylesheet" href="${new URL('../node_modules/@leanprover/infoview/dist/index.css', import.meta.url)}">
             </head>
             <body>
                 <div id="react_root"></div>
