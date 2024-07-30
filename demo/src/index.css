@@ -16,6 +16,8 @@
 #root {
   max-width: 1280px;
   padding: 2rem;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 a {

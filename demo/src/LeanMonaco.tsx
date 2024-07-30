@@ -4,7 +4,7 @@ import LeanMonacoEditorComponent from './LeanMonacoEditor';
 
 export const LeanMonacoContext = createContext<LeanMonaco|null>(null);
 
-function LeanMonacoComponent({options} : {options: LeanMonacoOptions}) {
+function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOptions, numberEditors: number}) {
   const [leanMonaco, setLeanMonaco] = useState<LeanMonaco|null>(null)
   const infoviewRef = useRef<HTMLDivElement>(null)
 
@@ -25,7 +25,9 @@ function LeanMonacoComponent({options} : {options: LeanMonacoOptions}) {
   return (
     <>
       <LeanMonacoContext.Provider value={leanMonaco}>
-        <LeanMonacoEditorComponent />
+        {[...Array(numberEditors)].map((x, i) =>
+          <LeanMonacoEditorComponent key={i} fileName={`/project/test${i}.lean`}/>
+        )}
         <div className='infoview' ref={infoviewRef}></div>
       </LeanMonacoContext.Provider>
     </>
