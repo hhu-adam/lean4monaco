@@ -165,7 +165,7 @@ export class LeanMonaco {
 
   updateVSCodeOptions(vsCodeOptions: { [id: string]: any }){
     for (const key in vsCodeOptions) {
-        workspace.getConfiguration().update(key, vsCodeOptions[key])
+      workspace.getConfiguration().update(key, vsCodeOptions[key])
     }
   }
 

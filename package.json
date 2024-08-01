@@ -1,11 +1,25 @@
 {
   "name": "lean4monaco",
   "version": "1.0.11",
-  "type": "module",
-  "main": "dist/index.js",
+  "description": "Monaco Editor support for the Lean 4 theorem prover.",
+  "keywords": ["lean", "leanprover", "monaco", "editor", "vscode"],
+  "homepage": "https://github.com/hhu-adam/lean4monaco",
+  "bugs": {
+    "url": "https://github.com/hhu-adam/lean4monaco/issues"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Alexander Bentkamp"
+  },
+  "contributors": [{
+    "name": "Jon Eugster",
+    "url": "https://github.com/joneugster"
+  }],
   "files": [
     "dist"
   ],
+  "main": "dist/index.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/hhu-adam/lean4monaco"
@@ -14,6 +28,20 @@
     "start": "concurrently \"tsc -w\" \"webpack --watch\" \"cd demo && npm run start_client\" \"cd demo && npm run start_server\" -n tsc,webpack,vite,server -c \"bgGreen.bold,bgBlue.bold,bgYellow.bold,bgMagenta.bold\"",
     "build": "tsc && webpack && cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" ../dist/",
     "test": "(cd demo && npm install && npm run build_server) && concurrently --kill-others \"npm start 1> /dev/null\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
+  },
+  "dependencies": {
+    "@leanprover/infoview": "=0.7.0",
+    "@leanprover/infoview-api": "^0.4.0",
+    "@leanprover/unicode-input": "^0.1.0",
+    "axios": "^1.7.2",
+    "cheerio": "^1.0.0-rc.12",
+    "concurrently": "^8.2.2",
+    "memfs": "^4.9.3",
+    "mobx": "5.15.7",
+    "monaco-editor-wrapper": "^5.3.1",
+    "react-dom": "^18.3.1",
+    "semver": "^7.6.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@chialab/esbuild-plugin-meta-url": "^0.18.2",
@@ -29,19 +57,5 @@
     "wait-on": "^7.2.0",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "@leanprover/infoview": "=0.7.0",
-    "@leanprover/infoview-api": "^0.4.0",
-    "@leanprover/unicode-input": "^0.1.0",
-    "axios": "^1.7.2",
-    "cheerio": "^1.0.0-rc.12",
-    "concurrently": "^8.2.2",
-    "memfs": "^4.9.3",
-    "mobx": "5.15.7",
-    "monaco-editor-wrapper": "^5.3.1",
-    "react-dom": "^18.3.1",
-    "semver": "^7.6.2",
-    "zod": "^3.23.8"
   }
 }

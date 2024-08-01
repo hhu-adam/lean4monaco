@@ -5,12 +5,6 @@ import './App.css'
 
 function App() {
 
-  /* lean-Monaco options. The websocket URL is where the server should listen.
-   * To add settings in `vscode` (i.e. for the editor),
-   * you can open your settings in VSCode (Ctrl+,), search
-   * for the desired setting, select "Copy Setting as JSON" from the "More Actions"
-   * menu next to the selected setting, and paste the copied string here.
-   */
   const [options, setOptions] = useState<LeanMonacoOptions>({
     websocket: {
       url: 'ws://localhost:8080/'

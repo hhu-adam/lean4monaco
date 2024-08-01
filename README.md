@@ -85,21 +85,21 @@ export default {
   },
   [...]
 }
-```
-
-Moreover, the infoview javascript files need to be served:
-
-```
-npm install @leanprover/infoview
-```
-
-```ts
-// vite.config.ts
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { normalizePath } from 'vite'
-import path from 'node:path'
-
-export default {
+```  "devDependencies": {
+    "@chialab/esbuild-plugin-meta-url": "^0.18.2",
+    "@codingame/esbuild-import-meta-url-plugin": "https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?ec9666e",
+    "@types/node": "^20.14.2",
+    "@types/semver": "^7.5.8",
+    "@types/vscode": "^1.89.0",
+    "copyfiles": "^2.4.1",
+    "cypress": "^13.13.0",
+    "cypress-iframe": "^1.0.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "wait-on": "^7.2.0",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4"
+  },
   plugins: [
     viteStaticCopy({
       targets: [
@@ -115,6 +115,19 @@ export default {
   ]
 }
 ```
+
+## Demo
+
+You can clone `lean4monaco`, then run the demo located in `lean4monaco/demo/` with
+
+```
+cd lean4monaco
+npm install
+npm start
+```
+
+and open [http://localhost:5173](http://localhost:5173). This should open a rudimentary webpage
+with 1 (or more) monaco editors and an infoview, showing the Lean infos at the cursor.
 
 ## Troubleshooting
 
