@@ -92,13 +92,7 @@ export default {
 }
 ```
 
-Moreover, the infoview javascript files need to be served. For this install `@leanprover/infoview`:
-
-```
-npm install @leanprover/infoview
-```
-
-and serve the files by adding the following to `vite.config.ts` :
+Moreover, the infoview javascript files need to be served:
 
 ```ts
 // vite.config.ts
@@ -113,14 +107,14 @@ export default {
       targets: [
         {
           src: [
-            normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*')),
+            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/node_modules/@leanprover/infoview/dist/*')),
             normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/dist/webview/webview.js')),
           ],
           dest: 'infoview'
         },
         {
           src: [
-            normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/codicon.ttf'))
+            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/node_modules/@leanprover/infoview/dist/codicon.ttf'))
           ],
           dest: 'assets'
         }
