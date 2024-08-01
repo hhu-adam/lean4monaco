@@ -42,6 +42,11 @@ useEffect(() => {
 })
 ```
 
+### Current hacks:
+
+(Currently, this is all necessary for a functioning setup. However, we hope to remove some of these
+steps in the future and fix them properly.)
+
 For some reason, the file (here `test.lean`) cannot be at the root of the file system, i.e., not `/test.lean` instead of `/project/test.lean`. (TODO: find out why)
 
 The package uses the Lean 4 VSCode extension, which is intended to run in a nodejs runtime. Therefore, we need to install node polyfills.
@@ -85,21 +90,24 @@ export default {
   },
   [...]
 }
-```  "devDependencies": {
-    "@chialab/esbuild-plugin-meta-url": "^0.18.2",
-    "@codingame/esbuild-import-meta-url-plugin": "https://gitpkg.vercel.app/abentkamp/monacotest2/esbuild-import-meta-url-plugin?ec9666e",
-    "@types/node": "^20.14.2",
-    "@types/semver": "^7.5.8",
-    "@types/vscode": "^1.89.0",
-    "copyfiles": "^2.4.1",
-    "cypress": "^13.13.0",
-    "cypress-iframe": "^1.0.1",
-    "ts-loader": "^9.5.1",
-    "typescript": "^5.4.5",
-    "wait-on": "^7.2.0",
-    "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4"
-  },
+```
+
+Moreover, the infoview javascript files need to be served. For this install `@leanprover/infoview`:
+
+```
+npm install @leanprover/infoview
+```
+
+and serve the files by adding the following to `vite.config.ts` :
+
+```ts
+// vite.config.ts
+import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { normalizePath } from 'vite'
+import path from 'node:path'
+
+export default {
+
   plugins: [
     viteStaticCopy({
       targets: [
@@ -109,6 +117,12 @@ export default {
             normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/dist/webview/webview.js')),
           ],
           dest: 'infoview'
+        },
+        {
+          src: [
+            normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/codicon.ttf'))
+          ],
+          dest: 'assets'
         }
       ]
     })
