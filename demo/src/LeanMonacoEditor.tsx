@@ -6,23 +6,24 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
   const codeviewRef = useRef<HTMLDivElement>(null)
   const leanMonaco = useContext(LeanMonacoContext)
 
+  // You can start multiple `LeanMonacoEditor` instances
   useEffect(() => {
     if (leanMonaco) {
       const leanMonacoEditor = new LeanMonacoEditor()
-      
+
       ;(async () => {
-          await leanMonaco!.whenReady
-          await leanMonacoEditor.start(codeviewRef.current!, fileName, value)
+        await leanMonaco!.whenReady
+        await leanMonacoEditor.start(codeviewRef.current!, fileName, value)
       })()
-      
+
       return () => {
-          leanMonacoEditor.dispose()
+        leanMonacoEditor.dispose()
       }
     }
   }, [leanMonaco])
 
   return (
-      <div className='codeview' ref={codeviewRef}></div>
+    <div className='codeview' ref={codeviewRef}></div>
   )
 }
 

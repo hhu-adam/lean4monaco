@@ -12,13 +12,12 @@ const editorApi: EditorApi = rpc.getApi()
 const div: HTMLElement | null = document.querySelector('#react_root')
 
 if (div) {
-    const imports = 
-     {
-     '@leanprover/infoview': '/infoview/index.production.min.js',
-     'react': '/infoview/react.production.min.js',
-     'react/jsx-runtime': '/infoview/react-jsx-runtime.production.min.js',
-     'react-dom': '/infoview/react-dom.production.min.js',
-     }
-    console.log(imports)
-    loadRenderInfoview(imports, [editorApi, div], api => rpc.register(api))
+  const imports = {
+    '@leanprover/infoview': '/infoview/index.production.min.js',
+    'react': '/infoview/react.production.min.js',
+    'react/jsx-runtime': '/infoview/react-jsx-runtime.production.min.js',
+    'react-dom': '/infoview/react-dom.production.min.js',
+  }
+  console.log(imports)
+  loadRenderInfoview(imports, [editorApi, div], api => rpc.register(api))
 }

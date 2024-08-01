@@ -25,15 +25,17 @@ export default defineConfig({
         {
           src: [
             normalizePath(path.resolve(__dirname, '../node_modules/@leanprover/infoview/dist/*')),
+            // note: if you install `lean4monaco` via npm, this line need to change, see README.
             normalizePath(path.resolve(__dirname, '../dist/webview/webview.js')),
           ],
           dest: 'infoview'
         }
       ]
-    }) as PluginOption
+    })
   ],
   server: {
     fs: {
+      // only needed because `demo` lies inside the `lean4monaco` folder
       allow: [".."]
     }
   },

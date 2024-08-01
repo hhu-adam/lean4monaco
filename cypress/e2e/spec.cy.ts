@@ -2,7 +2,7 @@ describe('Editor Test', () => {
   it('displays the editor', () => {
     cy.visit('http://localhost:5173/')
     cy.contains('#check 0')
-      .should(($p) => {
+      .should(($p: any) => {
         // ...
         expect(getComputedStyle($p.get(0)).fontFamily).to.match(/^JuliaMono/)
       })
@@ -18,12 +18,12 @@ describe('Editor Test', () => {
     cy.visit('http://localhost:5173/')
     cy.get('[data-cy="theme-light"]').click()
     cy.contains('#check 0')
-      .should(($p) => {
+      .should(($p: any) => {
         expect(getComputedStyle($p.get(0)).getPropertyValue('--vscode-editor-background')).to.equal("#ffffff")
       })
     cy.get('[data-cy="theme-dark"]').click()
     cy.contains('#check 0')
-      .should(($p) => {
+      .should(($p: any) => {
         expect(getComputedStyle($p.get(0)).getPropertyValue('--vscode-editor-background')).to.equal("#1e1e1e")
       })
 

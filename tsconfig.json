@@ -16,10 +16,10 @@
     "alwaysStrict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    
+
     "experimentalDecorators": true,
 
-    "outDir": "./dist",  
+    "outDir": "./dist",
   },
   "include": ["src/index.ts"]
 }

@@ -1,16 +1,26 @@
 import { useState } from 'react'
-import './App.css'
 import LeanMonacoComponent from './LeanMonaco'
 import { LeanMonacoOptions } from 'lean4monaco'
+import './App.css'
 
 function App() {
-  const [options, setOptions] = useState<LeanMonacoOptions>({websocket: {url: 'ws://localhost:8080/'}, vscode: {
-    "workbench.colorTheme": "Visual Studio Light",
-    /* To add settings here, you can open your settings in VSCode (Ctrl+,), search
-     * for the desired setting, select "Copy Setting as JSON" from the "More Actions"
-     * menu next to the selected setting, and paste the copied string here.
-     */
-  }})
+
+  /* lean-Monaco options. The websocket URL is where the server should listen.
+   * To add settings in `vscode` (i.e. for the editor),
+   * you can open your settings in VSCode (Ctrl+,), search
+   * for the desired setting, select "Copy Setting as JSON" from the "More Actions"
+   * menu next to the selected setting, and paste the copied string here.
+   */
+  const [options, setOptions] = useState<LeanMonacoOptions>({
+    websocket: {
+      url: 'ws://localhost:8080/'
+    },
+    vscode: {
+      "workbench.colorTheme": "Visual Studio Light",
+    }
+  })
+
+  // state to keep track of the number of open editors
   const [numberEditors, setNumberEditors] = useState(1)
 
   return (

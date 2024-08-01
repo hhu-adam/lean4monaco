@@ -1,24 +1,32 @@
 import 'vscode/localExtensionHost'
-import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper';
-import { LeanClientProvider } from './vscode-lean4/vscode-lean4/src/utils/clientProvider';
-import { Uri, workspace } from 'vscode';
-import { InfoProvider } from './vscode-lean4/vscode-lean4/src/infoview';
-import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature';
-import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter';
+import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper'
+import { LeanClientProvider } from './vscode-lean4/vscode-lean4/src/utils/clientProvider'
+import { Uri, workspace } from 'vscode'
+import { InfoProvider } from './vscode-lean4/vscode-lean4/src/infoview'
+import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature'
+import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter'
 import { IFrameInfoWebviewFactory } from './infowebview'
-import { setupMonacoClient } from './monacoleanclient';
+import { setupMonacoClient } from './monacoleanclient'
 import { checkLean4ProjectPreconditions } from './preconditions'
-import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi';
-import { initialize, getService, IThemeService, IConfigurationService } from 'vscode/services';
-import getConfigurationServiceOverride, { updateUserConfiguration, initUserConfiguration } from '@codingame/monaco-vscode-configuration-service-override';
+import { initialize, getService, IThemeService, IConfigurationService } from 'vscode/services'
+import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override'
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
-import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-service-override';
-import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override';
-import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions';
-import { DisposableStore } from 'vscode/monaco';
+import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-service-override'
+import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
+import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions'
+import { DisposableStore } from 'vscode/monaco'
 import packageJson from './vscode-lean4/vscode-lean4/package.json'
 
+/** Options for LeanMonaco.
+ *
+ * The URL is where the server listens. You might want to use something like
+ * `"ws://" + window.location.host`
+ *
+ * To add settings in `vscode`, you can open your settings in VSCode (Ctrl+,), search
+ * for the desired setting, select "Copy Setting as JSON" from the "More Actions"
+ * menu next to the selected setting, and paste the copied string here.
+ */
 export type LeanMonacoOptions = {
   websocket: {
     url: string
@@ -27,6 +35,7 @@ export type LeanMonacoOptions = {
     [id: string]: any
   }
 }
+
 
 export class LeanMonaco {
   private ready: (value: void | PromiseLike<void>) => void
@@ -73,7 +82,7 @@ export class LeanMonaco {
           throw new Error(`Unimplemented worker ${label} (${moduleId})`)
         }
       }
-    
+
       await initialize(
         {
           ...getTextmateServiceOverride(),
@@ -81,46 +90,46 @@ export class LeanMonaco {
           ...getConfigurationServiceOverride(),
           ...getLanguagesServiceOverride(),
           ...getModelServiceOverride()
-        }, 
-        undefined, 
-        { 
+        },
+        undefined,
+        {
           workspaceProvider: {
             trusted: true,
             workspace: {
                 workspaceUri: Uri.file('/workspace.code-workspace')
             },
             async open() {
-                return false;
+                return false
             }
           }
         }
       )
 
     }
-    await (await import('@codingame/monaco-vscode-theme-defaults-default-extension')).whenReady;
+    await (await import('@codingame/monaco-vscode-theme-defaults-default-extension')).whenReady
 
-    if (this.disposed) return;
-    
-    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(), ExtensionHostKind.LocalProcess);
+    if (this.disposed) return
+
+    this.extensionRegisterResult = registerExtension(this.getExtensionManifest(), ExtensionHostKind.LocalProcess)
 
     for (const entry of this.getExtensionFiles()) {
-      const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href);
-      this.registerFileUrlResults.add(registerFileUrlResult);
+      const registerFileUrlResult = (this.extensionRegisterResult as any).registerFileUrl(entry[0], entry[1].href)
+      this.registerFileUrlResults.add(registerFileUrlResult)
     }
 
     await this.extensionRegisterResult.whenReady()
 
-    if (this.disposed) return;
+    if (this.disposed) return
 
     const themeService = await getService(IThemeService)
     const configurationService = await getService(IConfigurationService)
 
-    if (this.disposed) return;
+    if (this.disposed) return
 
     this.updateVSCodeOptions(options.vscode ?? {})
 
-    this.abbreviationFeature = new AbbreviationFeature({} as any, { kind: 'MoveAllSelections' });
-  
+    this.abbreviationFeature = new AbbreviationFeature({} as any, { kind: 'MoveAllSelections' })
+
     this.clientProvider = new LeanClientProvider(
       {
         installChanged: () => {return {dispose: ()  => {}}},
@@ -131,25 +140,25 @@ export class LeanMonaco {
       setupMonacoClient(this.getWebSocketOptions(options)),
       checkLean4ProjectPreconditions
     )
-  
+
     this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('vscode-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
 
     const fontFile = new FontFace(
       "JuliaMono",
       `url(${new URL("./JuliaMono-Regular.ttf", import.meta.url)})`,
-    );
-    document.fonts.add(fontFile);
+    )
+    document.fonts.add(fontFile)
 
     this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService, configurationService, fontFile)
     if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
-    
-    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory) 
-    
+
+    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)
+
     await fontFile.load()
 
     this.updateVSCodeOptions(options.vscode ?? {})
 
-    if (this.disposed) return;
+    if (this.disposed) return
 
     this.ready()
   }
@@ -166,12 +175,12 @@ export class LeanMonaco {
   }
 
   protected getExtensionFiles() {
-    const extensionFiles = new Map<string, URL>();
-    extensionFiles.set('/language-configuration.json', new URL('./vscode-lean4/vscode-lean4/language-configuration.json', import.meta.url));
-    extensionFiles.set('/syntaxes/lean4.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url));
-    extensionFiles.set('/syntaxes/lean4-markdown.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url));
-    extensionFiles.set('/syntaxes/codeblock.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url));
-    extensionFiles.set('/themes/cobalt2.json', new URL('./themes/cobalt2.json', import.meta.url));
+    const extensionFiles = new Map<string, URL>()
+    extensionFiles.set('/language-configuration.json', new URL('./vscode-lean4/vscode-lean4/language-configuration.json', import.meta.url))
+    extensionFiles.set('/syntaxes/lean4.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url))
+    extensionFiles.set('/syntaxes/lean4-markdown.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url))
+    extensionFiles.set('/syntaxes/codeblock.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url))
+    extensionFiles.set('/themes/cobalt2.json', new URL('./themes/cobalt2.json', import.meta.url))
     return extensionFiles
   }
 
@@ -261,13 +270,13 @@ export class LeanMonaco {
       $type: 'WebSocketUrl',
       startOptions: {
         onCall: () => {
-            console.log('Connected to socket.');
+            console.log('Connected to socket.')
         },
         reportStatus: true
       },
       stopOptions: {
         onCall: () => {
-            console.log('Disconnected from socket.');
+            console.log('Disconnected from socket.')
         },
         reportStatus: true
       },
