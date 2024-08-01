@@ -88,6 +88,11 @@ export default {
 ```
 
 Moreover, the infoview javascript files need to be served:
+
+```
+npm install @leanprover/infoview
+```
+
 ```ts
 // vite.config.ts
 import { viteStaticCopy } from 'vite-plugin-static-copy'
@@ -101,7 +106,7 @@ export default {
         {
           src: [
             normalizePath(path.resolve(__dirname, './node_modules/@leanprover/infoview/dist/*')),
-            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/webview/webview.js')),
+            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/dist/webview/webview.js')),
           ],
           dest: 'infoview'
         }
