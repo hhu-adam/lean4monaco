@@ -1,8 +1,14 @@
 {
   "name": "lean4monaco",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Monaco Editor support for the Lean 4 theorem prover.",
-  "keywords": ["lean", "leanprover", "monaco", "editor", "vscode"],
+  "keywords": [
+    "lean",
+    "leanprover",
+    "monaco",
+    "editor",
+    "vscode"
+  ],
   "homepage": "https://github.com/hhu-adam/lean4monaco",
   "bugs": {
     "url": "https://github.com/hhu-adam/lean4monaco/issues"
@@ -11,10 +17,12 @@
   "author": {
     "name": "Alexander Bentkamp"
   },
-  "contributors": [{
-    "name": "Jon Eugster",
-    "url": "https://github.com/joneugster"
-  }],
+  "contributors": [
+    {
+      "name": "Jon Eugster",
+      "url": "https://github.com/joneugster"
+    }
+  ],
   "files": [
     "dist"
   ],
