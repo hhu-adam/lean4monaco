@@ -4,7 +4,13 @@ import LeanMonacoComponent from './LeanMonaco'
 import { LeanMonacoOptions } from 'lean4monaco'
 
 function App() {
-  const [options, setOptions] = useState<LeanMonacoOptions>({websocket: {url: 'ws://localhost:8080/'}, vscode: {"workbench.colorTheme": "Visual Studio Light"}})
+  const [options, setOptions] = useState<LeanMonacoOptions>({websocket: {url: 'ws://localhost:8080/'}, vscode: {
+    "workbench.colorTheme": "Visual Studio Light",
+    /* To add settings here, you can open your settings in VSCode (Ctrl+,), search
+     * for the desired setting, select "Copy Setting as JSON" from the "More Actions"
+     * menu next to the selected setting, and paste the copied string here.
+     */
+  }})
   const [numberEditors, setNumberEditors] = useState(1)
 
   return (
