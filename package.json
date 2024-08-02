@@ -33,8 +33,10 @@
     "url": "https://github.com/hhu-adam/lean4monaco"
   },
   "scripts": {
-    "start": "concurrently \"tsc -w\" \"webpack --watch\" \"cd demo && npm run start_client\" \"cd demo && npm run start_server\" -n tsc,webpack,vite,server -c \"bgGreen.bold,bgBlue.bold,bgYellow.bold,bgMagenta.bold\"",
-    "build": "tsc && webpack && cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" ../dist/",
+    "start": "concurrently \"tsc -w --preserveWatchOutput\" \"webpack --watch\" \"npm run watch:copyfiles\" \"cd demo && npm run start_client\" \"cd demo && npm run start_server\" -n tsc,webpack,copyfiles,vite,server -c \"bgGreen.bold,bgBlue.bold,bgCyan.bold,bgYellow.bold,bgMagenta.bold\"",
+    "watch:copyfiles": "nodemon --watch ./src --exec \"npm run build:copyfiles\"",
+    "build": "tsc && webpack && npm run build:copyfiles",
+    "build:copyfiles": "cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" \"**/*.svg\" ../dist/",
     "test": "(cd demo && npm install && npm run build_server) && concurrently --kill-others \"npm start 1> /dev/null\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
   },
   "dependencies": {
@@ -60,6 +62,7 @@
     "copyfiles": "^2.4.1",
     "cypress": "^13.13.0",
     "cypress-iframe": "^1.0.1",
+    "nodemon": "^3.1.4",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "wait-on": "^7.2.0",
