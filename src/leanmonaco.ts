@@ -143,7 +143,15 @@ export type LeanMonacoOptions = {
       checkLean4ProjectPreconditions
     )
 
-    this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: (path: string) => Uri.parse(`${new URL('vscode-lean4/vscode-lean4/' + path, import.meta.url)}`),} as any)
+    const asAbsolutePath = (path: string) => {
+      switch (path) {
+        case "media/progress-light.svg":       return Uri.parse(`${new URL('vscode-lean4/vscode-lean4/media/progress-light.svg', import.meta.url)}`)
+        case "media/progress-dark.svg":        return Uri.parse(`${new URL('vscode-lean4/vscode-lean4/media/progress-dark.svg', import.meta.url)}`)
+        case "media/progress-error-light.svg": return Uri.parse(`${new URL('vscode-lean4/vscode-lean4/media/progress-error-light.svg', import.meta.url)}`)
+        case "media/progress-error-dark.svg":  return Uri.parse(`${new URL('vscode-lean4/vscode-lean4/media/progress-error-dark.svg', import.meta.url)}`)
+      }
+    }
+    this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath} as any)
 
     const fontFile = new FontFace(
       "JuliaMono",
