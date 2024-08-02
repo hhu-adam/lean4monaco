@@ -158,7 +158,24 @@ export type LeanMonacoOptions = {
 
     await fontFile.load()
 
-    this.updateVSCodeOptions(options.vscode ?? {})
+    this.updateVSCodeOptions({
+      // "editor.tabSize": 6,
+      "editor.minimap.enabled": false,
+      "editor.folding": false, // reduces space to the right of line numbers.
+      "editor.lineNumbers": 'on',
+      // "editor.lineNumbersMinChars": 1, // TODO: I believe this has no effect
+      "editor.glyphMargin": true,
+      // "editor.lineDecorationsWidth": 0,
+      // "editor.lineDecorationsWidth": 5,
+      "editor.detectIndentation": false,
+      "editor.lightbulb.enabled": "on",
+      "editor.semanticHighlighting.enabled": true,
+      "editor.wordWrap": "on",
+      "editor.wrappingStrategy": "advanced",
+      "editor.acceptSuggestionOnEnter": "off",
+      "editor.fontFamily": "JuliaMono",
+      ...options.vscode
+    })
 
     if (this.disposed) return
 
@@ -186,9 +203,7 @@ export type LeanMonacoOptions = {
     return extensionFiles
   }
 
-  /** This basically returns the `package.json` of `vscode-lean4` with some ts-fixes,
-   * some lean4monaco-specific default options for the editor, and the custom themes.
-   */
+  /** This basically returns the `package.json` of `vscode-lean4` with some ts-fixes and the custom themes. */
   protected getExtensionManifest(): IExtensionManifest {
     return {
       ...packageJson,
@@ -202,23 +217,6 @@ export type LeanMonacoOptions = {
         // `menus` and `submenus` from the package.json
         menus: undefined,
         submenus: undefined,
-        configurationDefaults: {
-          ...packageJson.contributes.configurationDefaults,
-          // Tweak the default VSCode settings here.
-          "editor.minimap.enabled": false,
-          // "editor.folding": false,
-          // "editor.lineNumbers": 'on',
-          // "editor.lineNumbersMinChars": 1,
-          "editor.glyphMargin": true,
-          // "editor.lineDecorationsWidth": 5,
-          // "editor.detectIndentation": false,
-          "editor.lightbulb.enabled": "on",
-          "editor.semanticHighlighting.enabled": true,
-          "editor.wordWrap": "on",
-          "editor.wrappingStrategy": "advanced",
-          "editor.acceptSuggestionOnEnter": "off",
-          "editor.fontFamily": "JuliaMono",
-        },
         // Add custom themes here.
         themes: [
           {

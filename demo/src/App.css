@@ -3,6 +3,10 @@
   height: 300px;
 }
 
+.codeview {
+  border: 2px solid brown;
+}
+
 .controls {
   flex: 0 0 100%;
 }
