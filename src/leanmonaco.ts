@@ -167,14 +167,10 @@ export type LeanMonacoOptions = {
     await fontFile.load()
 
     this.updateVSCodeOptions({
-      // "editor.tabSize": 6,
       "editor.minimap.enabled": false,
       "editor.folding": false, // reduces space to the right of line numbers.
       "editor.lineNumbers": 'on',
-      // "editor.lineNumbersMinChars": 1, // TODO: I believe this has no effect
       "editor.glyphMargin": true,
-      // "editor.lineDecorationsWidth": 0,
-      // "editor.lineDecorationsWidth": 5,
       "editor.detectIndentation": false,
       "editor.lightbulb.enabled": "on",
       "editor.semanticHighlighting.enabled": true,
