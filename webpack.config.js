@@ -21,6 +21,19 @@ export default {
         ],
         exclude: /node_modules/
       },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[hash].[ext]',
+              outputPath: 'media/',
+              publicPath: 'media/',
+            },
+          },
+        ],
+      },
     ],
   },
   resolve: {
