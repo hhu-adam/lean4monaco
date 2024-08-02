@@ -17,6 +17,8 @@ import getModelServiceOverride from '@codingame/monaco-vscode-model-service-over
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions'
 import { DisposableStore } from 'vscode/monaco'
 import packageJson from './vscode-lean4/vscode-lean4/package.json'
+import { IConfiguration, IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
+import { ExtensionKind } from 'vscode/vscode/vs/platform/environment/common/environment'
 
 /** Options for LeanMonaco.
  *
@@ -37,7 +39,7 @@ export type LeanMonacoOptions = {
 }
 
 
-export class LeanMonaco {
+ export class LeanMonaco {
   private ready: (value: void | PromiseLike<void>) => void
   whenReady = new Promise<void>((resolve) => {
     this.ready = resolve
@@ -184,84 +186,50 @@ export class LeanMonaco {
     return extensionFiles
   }
 
+  /** This basically returns the `package.json` of `vscode-lean4` with some ts-fixes,
+   * some lean4monaco-specific default options for the editor, and the custom themes.
+   */
   protected getExtensionManifest(): IExtensionManifest {
     return {
-      name: 'lean4web',
-      publisher: 'leanprover-community',
-      version: '1.0.0',
-      engines: {
-          vscode: '*'
-      },
-      "contributes": {
-        "configuration": packageJson.contributes.configuration as any,
-        "languages": [
+      ...packageJson,
+      contributes: {
+        ...packageJson.contributes,
+        configuration: packageJson.contributes.configuration as IConfiguration,
+        // TODO: This is suspect, the thrid entry does not have "language", yet it doesn't complain
+        // look into that.
+        grammars: packageJson.contributes.grammars as IGrammar[],
+        // Somehow `submenu` is incompatible. Since we don't use that anyways we just drop
+        // `menus` and `submenus` from the package.json
+        menus: undefined,
+        submenus: undefined,
+        configurationDefaults: {
+          ...packageJson.contributes.configurationDefaults,
+          // Tweak the default VSCode settings here.
+          "editor.minimap.enabled": false,
+          // "editor.folding": false,
+          // "editor.lineNumbers": 'on',
+          // "editor.lineNumbersMinChars": 1,
+          "editor.glyphMargin": true,
+          // "editor.lineDecorationsWidth": 5,
+          // "editor.detectIndentation": false,
+          "editor.lightbulb.enabled": "on",
+          "editor.semanticHighlighting.enabled": true,
+          "editor.wordWrap": "on",
+          "editor.wrappingStrategy": "advanced",
+          "editor.acceptSuggestionOnEnter": "off",
+          "editor.fontFamily": "JuliaMono",
+        },
+        // Add custom themes here.
+        themes: [
           {
-            "id": "lean4",
-            "configuration": "./language-configuration.json",
-            "extensions": [
-              ".lean"
-            ],
-          },
-          {
-            "id": "lean4markdown",
-            "aliases": [],
-            "extensions": [
-              ".lean4markdown"
-            ],
-            "configuration": "./language-configuration.json"
+            "id": "Cobalt",
+            "label": "Cobalt",
+            "uiTheme": "vs",
+            "path": "./themes/cobalt2.json"
           }
         ],
-        colors: packageJson.contributes.colors as any,
-        "grammars": [
-          {
-            "language": "lean4",
-            "scopeName": "source.lean4",
-            "path": "./syntaxes/lean4.json"
-          },
-          {
-            "language": "lean4markdown",
-            "scopeName": "source.lean4.markdown",
-            "path": "./syntaxes/lean4-markdown.json"
-          },
-          {
-            "language": "lean4",
-            "scopeName": "markdown.lean4.codeblock",
-            "path": "./syntaxes/codeblock.json",
-            "injectTo": [
-              "text.html.markdown"
-            ],
-            "embeddedLanguages": {
-              "meta.embedded.block.lean4": "lean4"
-            }
-          }
-        ],
-        "configurationDefaults": {
-            "editor.folding": false,
-            "editor.wordSeparators": "`~@$%^&*()-=+[{]}⟨⟩⦃⦄⟦⟧⟮⟯‹›\\|;:\",.<>/",
-            "editor.lineNumbers": 'on',
-            "editor.lineNumbersMinChars": 1,
-            "editor.glyphMargin": true,
-            "editor.lineDecorationsWidth": 5,
-            "editor.tabSize": 2,
-            "editor.detectIndentation": false,
-            "editor.lightbulb.enabled": "on",
-            "editor.unicodeHighlight.ambiguousCharacters": false,
-            "editor.minimap.enabled": false,
-            "editor.semanticHighlighting.enabled": true,
-            "editor.wordWrap": "off",
-            "editor.acceptSuggestionOnEnter": "off",
-            "editor.fontFamily": "JuliaMono",
-            "editor.wrappingStrategy": "advanced",
-          },
-        "themes": [
-          {
-              "id": "Cobalt",
-              "label": "Cobalt",
-              "uiTheme": "vs",
-              "path": "./themes/cobalt2.json"
-            }
-        ],
       },
+      extensionKind: packageJson.extensionKind as ExtensionKind[],
     }
   }
 
