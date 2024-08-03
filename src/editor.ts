@@ -21,6 +21,7 @@ export class LeanMonacoEditor {
     // Create editor and model
     this.modelRef = await createModelReference(Uri.parse(fileName), code)
     this.editor = monaco.editor.create(editorEl, {
+      automaticLayout: true,
       // Note: looks like setting options here prevents them from being overwritten later.
       // TODO: Looks like these options cannot be set in `updateVSCodeOptions` in `leanmonaco.ts`
       // so we set them here
