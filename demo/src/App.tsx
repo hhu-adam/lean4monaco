@@ -10,7 +10,10 @@ function App() {
       url: 'ws://localhost:8080/'
     },
     vscode: {
-      "workbench.colorTheme": "Visual Studio Light",
+      // The default options are defined in `LeanMonaco.start` and can be overwritten here.
+      // See docstring of `LeanMonacoOptions`!
+      // For example:
+      // "editor.wordWrap": false,
     }
   })
 

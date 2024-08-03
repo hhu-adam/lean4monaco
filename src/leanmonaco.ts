@@ -166,18 +166,27 @@ export type LeanMonacoOptions = {
 
     await fontFile.load()
 
+    // Here we provide default options for the editor. They can be overwritten by the user.
     this.updateVSCodeOptions({
+      // Layout options, trying to maximise the usable space of the code editor
+      "editor.lineNumbers": "on",
+      "editor.stickyScroll.enabled": false,
+      "editor.folding": false,
       "editor.minimap.enabled": false,
-      "editor.folding": false, // reduces space to the right of line numbers.
-      "editor.lineNumbers": 'on',
-      "editor.glyphMargin": true,
-      "editor.detectIndentation": false,
-      "editor.lightbulb.enabled": "on",
+
+      // features useful for Lean
+      "editor.glyphMargin": true, // Shows the yellow/red task gutter on the left.
       "editor.semanticHighlighting.enabled": true,
+      "editor.lightbulb.enabled": "on",
+      "editor.detectIndentation": false, // rather, indentation in Lean is always 2
+      "editor.acceptSuggestionOnEnter": "off", // since there are plenty suggestions
+
+      // other options
+      "editor.renderWhitespace": "trailing",
+      "editor.fontFamily": "JuliaMono",
       "editor.wordWrap": "on",
       "editor.wrappingStrategy": "advanced",
-      "editor.acceptSuggestionOnEnter": "off",
-      "editor.fontFamily": "JuliaMono",
+      "workbench.colorTheme": "Visual Studio Light",
       ...options.vscode
     })
 
@@ -186,6 +195,7 @@ export type LeanMonacoOptions = {
     this.ready()
   }
 
+  /** Update options of the editor */
   updateVSCodeOptions(vsCodeOptions: { [id: string]: any }){
     for (const key in vsCodeOptions) {
       workspace.getConfiguration().update(key, vsCodeOptions[key])

@@ -10,32 +10,3 @@
 .controls {
   flex: 0 0 100%;
 }
-
-/* Hack to make the line numbers smaller.
-
-TODO: something like this used to work with `editor.lineNumbersMinChars` but that option
-doesnt exist anymore. This doesn't fully work, e.g. the editor width is off now.
-Find out a better way to do this!
-*/
-
-.monaco-editor .glyph-margin {
-  /* border: 1px solid black; */
-  width: 7px !important; /* originally 19px; */
-}
-
-.monaco-editor .line-numbers {
-  /* border: 1px solid black; */
-  width: 26px !important;  /* originally 41px; */
-  left: 7px !important;
-  overflow-x: hidden;
-}
-
-.monaco-editor .margin {
-  /* border: 1px solid violet; */
-  width: 33px !important;  /* originally 71px; */
-}
-
-.monaco-editor .editor-scrollable {
-  /* border: 1px solid violet; */
-  left: 38px !important;
-}

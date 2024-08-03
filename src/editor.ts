@@ -20,7 +20,14 @@ export class LeanMonacoEditor {
 
     // Create editor and model
     this.modelRef = await createModelReference(Uri.parse(fileName), code)
-    this.editor = monaco.editor.create(editorEl, { automaticLayout: true })
+    this.editor = monaco.editor.create(editorEl, {
+      // Note: looks like setting options here prevents them from being overwritten later.
+      // TODO: Looks like these options cannot be set in `updateVSCodeOptions` in `leanmonaco.ts`
+      // so we set them here
+      contextmenu: false,             // the context menu breaks mobile support.
+      lineNumbersMinChars: 1,         // minimal no. of characters for line numbers
+      lineDecorationsWidth: 5,        // distance (px) between line number and code.
+    })
     this.editor.setModel(this.modelRef.object.textEditorModel)
 
     // Set focus on editor to trigger infoview to open
