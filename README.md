@@ -42,12 +42,14 @@ useEffect(() => {
 })
 ```
 
-### Current hacks:
+### Configure vite
 
 (Currently, this is all necessary for a functioning setup. However, we hope to remove some of these
 steps in the future and fix them properly.)
 
 For some reason, the file (here `test.lean`) cannot be at the root of the file system, i.e., not `/test.lean` instead of `/project/test.lean`. (TODO: find out why)
+
+#### vite-plugin-node-polyfills
 
 The package uses the Lean 4 VSCode extension, which is intended to run in a nodejs runtime. Therefore, we need to install node polyfills.
 Here is how this can be done if your project uses Vite:
@@ -72,15 +74,13 @@ export default {
 }
 ```
 
+#### esbuild-import-meta-url-plugin
+
 For Vite dev mode to work properly, the following plugin is necessary:
-```
-npm install 'https://gitpkg.vercel.app/hhu-adam/lean4monaco/esbuild-import-meta-url-plugin?ec9666e' --save-dev
-```
-This could be replaced by `@codingame/esbuild-import-meta-url-plugin` when this PR is accepted: https://github.com/CodinGame/esbuild-import-meta-url-plugin/pull/5
 
 ```ts
 // vite.config.ts
-import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
+import importMetaUrlPlugin from 'lean4monaco/esbuild-import-meta-url-plugin/esbuildImportMetaUrlPlugin'
 
 export default {
   optimizeDeps: {
@@ -91,6 +91,10 @@ export default {
   [...]
 }
 ```
+
+This could be replaced by `npm install --save-dev @codingame/esbuild-import-meta-url-plugin` when this PR is accepted: https://github.com/CodinGame/esbuild-import-meta-url-plugin/pull/5
+
+#### infoview
 
 Moreover, the infoview javascript files need to be served:
 
@@ -126,7 +130,9 @@ export default {
 
 ## Demo
 
-You can clone `lean4monaco`, then run the demo located in `lean4monaco/demo/` with
+`lean4monaco` contains a sample project `lean4monaco/demo/` which you can use for comparison.
+
+If you cloned `lean4monaco`, you can run the demo with
 
 ```
 cd lean4monaco
@@ -139,8 +145,10 @@ with 1 (or more) monaco editors and an infoview, showing the Lean infos at the c
 
 ## Troubleshooting
 
-* Make sure that only one version of the npm package `monaco-vscode-api` is installed.
-The error I typically got is:
-```
-this._configurationService.onDidChangeConfiguration is not a function
-```
+Some random errors we encountered. If you have more, please share them.
+
+* Make sure that only one version of the npm package `monaco-vscode-api` is installed. The error I typically got is:
+  
+  ```
+  this._configurationService.onDidChangeConfiguration is not a function
+  ```
