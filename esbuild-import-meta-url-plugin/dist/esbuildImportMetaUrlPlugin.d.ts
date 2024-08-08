@@ -1,3 +1,3 @@
-import type { Plugin } from 'esbuild';
-declare const _default: Plugin;
+// import type { Plugin } from 'esbuild';
+declare const _default: any; // Plugin
 export default _default;
