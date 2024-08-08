@@ -78,9 +78,13 @@ export default {
 
 For Vite dev mode to work properly, the following plugin is necessary:
 
+```
+npm install -D 'https://gitpkg.vercel.app/hhu-adam/lean4monaco/esbuild-import-meta-url-plugin?main'
+```
+
 ```ts
 // vite.config.ts
-import importMetaUrlPlugin from 'lean4monaco/esbuild-import-meta-url-plugin/esbuildImportMetaUrlPlugin'
+import importMetaUrlPlugin from '@codingame/esbuild-import-meta-url-plugin'
 
 export default {
   optimizeDeps: {
