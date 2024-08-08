@@ -1,7 +1,7 @@
 import { PluginOption, defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
-import importMetaUrlPlugin from 'lean4monaco/esbuild-import-meta-url-plugin/esbuildImportMetaUrlPlugin'
+import { importMetaUrlPlugin } from 'lean4monaco/node_modules/'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { normalizePath } from 'vite'
 import path from 'node:path'

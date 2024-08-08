@@ -1,0 +1,45 @@
+{
+  "name": "@codingame/esbuild-import-meta-url-plugin",
+  "version": "0.0.0-semantic-release",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Esbuild plugin allowing to use t he `new URL(..., import.meta.url)` syntax",
+  "type": "module",
+  "module": "dist/esbuildImportMetaUrlPlugin.js",
+  "main": "dist/esbuildImportMetaUrlPlugin.js",
+  "types": "dist/esbuildImportMetaUrlPlugin.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/CodinGame/esbuild-import-meta-url-plugin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CodinGame/esbuild-import-meta-url-plugin/issues"
+  },
+  "homepage": "https://github.com/CodinGame/esbuild-import-meta-url-plugin#readme",
+  "devDependencies": {
+    "@codingame/commitlint-config-codingame": "^1.0.7",
+    "@codingame/semantic-release-config": "^1.3.4",
+    "@codingame/tsconfig": "^1.1.1",
+    "@commitlint/cli": "^18.6.0",
+    "@types/node": "^20.11.7",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "esbuild": ">=0.19.x",
+    "import-meta-resolve": "^4.0.0"
+  },
+  "volta": {
+    "node": "20.11.0",
+    "npm": "10.4.0"
+  }
+}
