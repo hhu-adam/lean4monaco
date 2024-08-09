@@ -1,0 +1,183 @@
+{
+.appVersion = "3260";
+.formatVersion = 3;
+DisplayStrings = (
+"✅",
+"❌",
+"💥",
+"🎉",
+"🎭",
+" ",
+""
+);
+date = "2024-08-09 10:41:33 +0000";
+familyName = LeanWeb;
+fontMaster = (
+{
+id = m01;
+metricValues = (
+{
+over = 16;
+pos = 800;
+},
+{
+over = -16;
+},
+{
+over = -16;
+pos = -200;
+}
+);
+name = Regular;
+visible = 1;
+}
+);
+glyphs = (
+{
+glyphname = space;
+lastChange = "2024-08-09 11:26:53 +0000";
+layers = (
+{
+layerId = m01;
+width = 600;
+}
+);
+unicode = 32;
+},
+{
+glyphname = .notdef;
+lastChange = "2024-08-09 11:27:26 +0000";
+layers = (
+{
+layerId = m01;
+width = 600;
+}
+);
+},
+{
+glyphname = partyPopper;
+lastChange = "2024-08-09 11:25:06 +0000";
+layers = (
+{
+attr = {
+svg = 1;
+};
+backgroundImage = {
+imagePath = 1F389.svg;
+pos = (100,-200);
+};
+layerId = m01;
+name = Regular;
+width = 1200;
+}
+);
+unicode = 127881;
+},
+{
+glyphname = performingArts;
+lastChange = "2024-08-09 11:24:41 +0000";
+layers = (
+{
+attr = {
+svg = 1;
+};
+backgroundImage = {
+imagePath = 1F3AD.svg;
+pos = (100,-200);
+};
+layerId = m01;
+name = Regular;
+width = 1200;
+}
+);
+unicode = 127917;
+},
+{
+glyphname = collisionSymbol;
+lastChange = "2024-08-09 11:24:16 +0000";
+layers = (
+{
+attr = {
+svg = 1;
+};
+backgroundImage = {
+imagePath = 1F4A5.svg;
+pos = (100,-200);
+};
+layerId = m01;
+name = Regular;
+width = 1200;
+}
+);
+unicode = 128165;
+},
+{
+glyphname = whiteHeavyCheckMark;
+lastChange = "2024-08-09 11:19:22 +0000";
+layers = (
+{
+attr = {
+svg = 1;
+};
+backgroundImage = {
+imagePath = 2705.svg;
+pos = (100,-200);
+};
+layerId = m01;
+name = Regular;
+visible = 1;
+width = 1200;
+}
+);
+unicode = 9989;
+},
+{
+glyphname = crossMark;
+lastChange = "2024-08-09 11:23:46 +0000";
+layers = (
+{
+attr = {
+svg = 1;
+};
+backgroundImage = {
+imagePath = 274C.svg;
+pos = (100,-200);
+};
+layerId = m01;
+name = Regular;
+visible = 1;
+width = 1200;
+}
+);
+unicode = 10060;
+}
+);
+instances = (
+{
+customParameters = (
+{
+name = "Color Layers to SVG";
+value = 1;
+}
+);
+instanceInterpolations = {
+m01 = 1;
+};
+name = Regular;
+}
+);
+metrics = (
+{
+type = ascender;
+},
+{
+type = baseline;
+},
+{
+type = descender;
+}
+);
+unitsPerEm = 1000;
+versionMajor = 1;
+versionMinor = 0;
+}

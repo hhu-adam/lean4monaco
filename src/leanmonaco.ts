@@ -155,18 +155,27 @@ export type LeanMonacoOptions = {
 
     this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: asAbsolutePath} as any)
 
-    const fontFile = new FontFace(
+    const fontFiles = [
+      new FontFace(
       "JuliaMono",
-      `url(${new URL("./JuliaMono-Regular.ttf", import.meta.url)})`,
-    )
-    document.fonts.add(fontFile)
+      `url(${new URL("./fonts/JuliaMono-Regular.ttf", import.meta.url)})`,
+      ),
+      new FontFace(
+        "LeanWeb",
+        `url(${new URL("./fonts/LeanWeb-Regular.otf", import.meta.url)})`,
+      )
+    ]
+    fontFiles.map(font => {
+      document.fonts.add(font)
 
-    this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService, configurationService, fontFile)
+    })
+
+    this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService, configurationService, fontFiles)
     if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
 
     this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)
 
-    await fontFile.load()
+    await Promise.all(fontFiles.map(font => font.load()))
 
     // Here we provide default options for the editor. They can be overwritten by the user.
     this.updateVSCodeOptions({
@@ -185,7 +194,7 @@ export type LeanMonacoOptions = {
 
       // other options
       "editor.renderWhitespace": "trailing",
-      "editor.fontFamily": "JuliaMono",
+      "editor.fontFamily": "'LeanWeb', 'JuliaMono'",
       "editor.wordWrap": "on",
       "editor.wrappingStrategy": "advanced",
       "workbench.colorTheme": "Visual Studio Light",

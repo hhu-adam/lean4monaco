@@ -34,7 +34,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
   private infoviewElement: HTMLElement
   private iframe: HTMLIFrameElement
 
-  constructor(private themeService: IThemeService, private configurationService: IConfigurationService, private fontFile: FontFace) { }
+  constructor(private themeService: IThemeService, private configurationService: IConfigurationService, private fontFiles: FontFace[]) { }
 
   setInfoviewElement(infoviewElement: HTMLElement) {
     this.infoviewElement = infoviewElement
@@ -118,7 +118,9 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     documentStyle?.setProperty('font-family', '-apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,system-ui,Ubuntu,Droid Sans,sans-serif')
 
     this.iframe.contentDocument?.documentElement.setAttribute('class', `${this.apiThemeClassName(theme)}`)
-    this.iframe.contentDocument?.fonts.add(this.fontFile)
+    this.fontFiles.map(font => {
+      this.iframe.contentDocument?.fonts.add(font)
+    })
   }
 
   private apiThemeClassName(theme: IColorTheme) {
