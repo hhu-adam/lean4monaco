@@ -6,7 +6,15 @@ import { Rpc } from '../vscode-lean4/vscode-lean4/src/rpc'
 const vscodeApi = window.parent
 
 const rpc = new Rpc((m: any) => vscodeApi.postMessage(JSON.stringify(m)))
-window.addEventListener('message', e => {rpc.messageReceived(JSON.parse(e.data))})
+window.addEventListener('message', e => {
+  try {
+    rpc.messageReceived(JSON.parse(e.data))
+  } catch (error) {
+    console.warn('TODO: catch JSON.parse failure: ', error)
+    console.debug('TODO: data which is not JSON: ', e.data)
+  }
+})
+
 const editorApi: EditorApi = rpc.getApi()
 
 const div: HTMLElement | null = document.querySelector('#react_root')

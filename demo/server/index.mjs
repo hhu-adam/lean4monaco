@@ -26,10 +26,11 @@ function startServerProcess() {
   )
 
   if (serverProcess.stderr !== null) {
-    serverProcess.stderr.on('data', data =>
+    serverProcess.stderr.on('data', data => {
       console.error(`Lean Server: ${data}`)
-    )
+    })
   }
+
   return serverProcess
 }
 
@@ -48,13 +49,28 @@ wss.addListener("connection", function(ws, req) {
     const socketConnection = jsonrpcserver.createConnection(reader, writer, () => ws.close())
     const serverConnection = jsonrpcserver.createProcessStreamConnection(ps)
     socketConnection.forward(serverConnection, message => {
-        // console.log(`CLIENT: ${JSON.stringify(message)}`)
+        console.log(`CLIENT: ${JSON.stringify(message)}`)
         return message;
     })
     serverConnection.forward(socketConnection, message => {
-        // console.log(`SERVER: ${JSON.stringify(message)}`)
+        console.log(`SERVER: ${JSON.stringify(message)}`)
         return message;
     });
+
+    // Sending errors from Lean's stderr to the client
+    ps.stderr.on('data', data => {
+      // TODO: This might be incorrect, i.e. numbers are chosen at random
+      let msg = {
+        "jsonrpc":"2.0",
+        "id": "1",
+        "error": {
+          "message": data.toString(),
+          "code": "-1"
+        }
+      }
+      console.log(`SERVER: ${JSON.stringify(msg)}`)
+      ws.send(JSON.stringify(msg))
+    })
 
     ws.on('close', () => {
       console.log(`[${new Date()}] Socket closed`)

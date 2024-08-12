@@ -109,8 +109,6 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
       ...exportedColors
     }
 
-    console.log(styles)
-
     for (const id in styles) {
       documentStyle?.setProperty(`--${id}`, styles[id])
     }

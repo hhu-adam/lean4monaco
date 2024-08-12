@@ -155,6 +155,7 @@ export type LeanMonacoOptions = {
 
     this.taskGutter = new LeanTaskGutter(this.clientProvider, {asAbsolutePath: asAbsolutePath} as any)
 
+    // Load fonts
     const fontFiles = [
       new FontFace(
       "JuliaMono",
@@ -167,7 +168,6 @@ export type LeanMonacoOptions = {
     ]
     fontFiles.map(font => {
       document.fonts.add(font)
-
     })
 
     this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService, configurationService, fontFiles)
@@ -175,6 +175,7 @@ export type LeanMonacoOptions = {
 
     this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)
 
+    // Wait for all fonts to be loaded
     await Promise.all(fontFiles.map(font => font.load()))
 
     // Here we provide default options for the editor. They can be overwritten by the user.
