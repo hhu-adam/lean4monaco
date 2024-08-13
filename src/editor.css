@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "JuliaMono";
+  src: local(".fonts/JuliaMono-Regular.ttf"),
+}
+
+@font-face {
+    font-family: "LeanWeb";
+    src: local(".fonts/LeanWeb-Regular.otf"),
+  }

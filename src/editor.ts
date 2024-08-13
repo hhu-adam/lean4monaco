@@ -4,6 +4,7 @@ import { ITextFileEditorModel, createModelReference } from 'vscode/monaco'
 import * as monaco from 'monaco-editor'
 import { IReference } from '@codingame/monaco-vscode-editor-service-override'
 import path from 'path'
+import './editor.css'
 
 export class LeanMonacoEditor {
 
