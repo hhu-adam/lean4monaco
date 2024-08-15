@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import LeanMonacoComponent from './LeanMonaco'
 import { LeanMonacoOptions } from 'lean4monaco'
 import './App.css'
 
 function App() {
 
+  const monacoRef = useRef<HTMLDivElement>(null)
   const [options, setOptions] = useState<LeanMonacoOptions>({
     websocket: {
       url: 'ws://localhost:8080/'
@@ -19,6 +20,11 @@ function App() {
 
   // state to keep track of the number of open editors
   const [numberEditors, setNumberEditors] = useState(1)
+
+  // Set the `mainContainer` of the monaco editor.
+  useEffect(() => {
+    setOptions({...options, htmlElement:monacoRef.current ?? undefined})
+  }, [monacoRef])
 
   return (
     <>
@@ -47,7 +53,9 @@ function App() {
           }}
         />
       </div>
-      <LeanMonacoComponent options={options} numberEditors={numberEditors} />
+      <div id="lean4monaco-wrapper" ref={monacoRef} >
+        <LeanMonacoComponent options={options} numberEditors={numberEditors} />
+      </div>
     </>
   )
 }

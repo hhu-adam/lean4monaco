@@ -33,6 +33,7 @@ export type LeanMonacoOptions = {
   websocket: {
     url: string
   }
+  htmlElement?: HTMLElement
   vscode?: {
     [id: string]: any
   }
@@ -58,6 +59,13 @@ export type LeanMonacoOptions = {
   disposed = false
 
   async start(options: LeanMonacoOptions) {
+
+    if (!options.htmlElement) {
+      console.debug('[LeanMonaco]: not starting because container is null')
+      return
+    } else {
+      console.debug('[LeanMonaco]: starting')
+    }
 
     if (LeanMonaco.activeInstance == this) {
       console.warn('A LeanMonaco instance cannot be started twice.')
@@ -93,7 +101,7 @@ export type LeanMonacoOptions = {
           ...getLanguagesServiceOverride(),
           ...getModelServiceOverride()
         },
-        undefined,
+        options.htmlElement,
         {
           workspaceProvider: {
             trusted: true,
