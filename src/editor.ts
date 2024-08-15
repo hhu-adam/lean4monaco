@@ -25,7 +25,7 @@ export class LeanMonacoEditor {
       // Note: looks like setting options here prevents them from being overwritten later.
       // TODO: Looks like these options cannot be set in `updateVSCodeOptions` in `leanmonaco.ts`
       // so we set them here
-      contextmenu: false,             // the context menu breaks mobile support.
+      contextmenu: true,             // the context menu breaks mobile support.
       lineNumbersMinChars: 1,         // minimal no. of characters for line numbers
       lineDecorationsWidth: 5,        // distance (px) between line number and code.
     })
