@@ -152,7 +152,12 @@ with 1 (or more) monaco editors and an infoview, showing the Lean infos at the c
 Some random errors we encountered. If you have more, please share them.
 
 * Make sure that only one version of the npm package `monaco-vscode-api` is installed. The error I typically got is:
-  
+
   ```
   this._configurationService.onDidChangeConfiguration is not a function
   ```
+
+### Warnings on `npm install`
+
+* Warnings about `glob` and `inflight` come from `copyfiles`: see [copyfiles#132](https://github.com/calvinmetcalf/copyfiles/pull/132)
+* Warning about ` @types/cypress` comes from `cypress-iframe`
