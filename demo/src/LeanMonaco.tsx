@@ -27,10 +27,17 @@ function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOpti
     <>
       <LeanMonacoContext.Provider value={leanMonaco}>
         {[...Array(numberEditors)].map((_x, i) =>
-          <LeanMonacoEditorComponent key={i} fileName={`/project/test${i}.lean`} value={`#check ${i}`}/>
+          <LeanMonacoEditorComponent key={i} fileName={`/project/test${i}.lean`} value={`#check ${i}\n#eval (panic "oh no" : Nat)`}/>
         )}
         <div className='infoview' ref={infoviewRef}></div>
       </LeanMonacoContext.Provider>
+
+      <div>
+        <button onClick={(ev)=> {
+          console.log('restarting Lean')
+          leanMonaco?.clientProvider?.getClients().map(client => {client.restart()})
+        }}>Restart Lean</button>
+      </div>
     </>
   )
 }
