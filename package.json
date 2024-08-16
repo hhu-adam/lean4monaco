@@ -1,6 +1,6 @@
 {
   "name": "lean4monaco",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Monaco Editor support for the Lean 4 theorem prover.",
   "keywords": [
     "lean",
