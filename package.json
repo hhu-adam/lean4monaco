@@ -40,7 +40,7 @@
     "test": "(cd demo && npm install && npm run build_server) && concurrently --kill-others \"npm start 1> /dev/null\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
   },
   "dependencies": {
-    "@leanprover/infoview": "^0.7.0",
+    "@leanprover/infoview": "^0.7.3",
     "@leanprover/infoview-api": "^0.4.0",
     "@leanprover/unicode-input": "^0.1.0",
     "concurrently": "^8.2.2",

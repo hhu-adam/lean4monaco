@@ -147,8 +147,8 @@ export type LeanMonacoOptions = {
         getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
         {appendLine: () => {}
       } as any,
-      setupMonacoClient(this.getWebSocketOptions(options)),
-      checkLean4ProjectPreconditions
+      checkLean4ProjectPreconditions,
+      setupMonacoClient(this.getWebSocketOptions(options))
     )
 
     const asAbsolutePath = (path: string) => {
