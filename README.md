@@ -136,7 +136,7 @@ export default {
 
 `lean4monaco` contains a sample project `lean4monaco/demo/` which you can use for comparison.
 
-If you cloned `lean4monaco`, you can run the demo with
+If you cloned `lean4monaco` and updated submodules (`git submodule init && git submodule update`), you can run the demo with
 
 ```
 cd lean4monaco
@@ -156,6 +156,22 @@ Some random errors we encountered. If you have more, please share them.
   ```
   this._configurationService.onDidChangeConfiguration is not a function
   ```
+
+### Errors on `npm start`
+
+* Errors `[vite] sh: line 1: vite: command not found` or `[vite] Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@vitejs/plugin-react'`. Manually install the `demo` dependencies:
+```
+cd demo
+rm -rf package-lock.json
+npm install
+```
+
+If you don't remove the package lock, you might face:
+```
+npm WARN tarball tarball data for @codingame/esbuild-import-meta-url-plugin@https://gitpkg.vercel.app/hhu-adam/lean4monaco/esbuild-import-meta-url-plugin?main (sha512-57hwS705QV7vD2U87FNuN7CngCpeakKSPHWJTfJwfbPWNzsQKyaev8M4H1liX+S9PJ6kE/oRiGy/1BU3ZxELHg==) seems to be corrupted. Trying again.
+npm ERR! code EINTEGRITY
+npm ERR! sha512-57hwS705QV7vD2U87FNuN7CngCpeakKSPHWJTfJwfbPWNzsQKyaev8M4H1liX+S9PJ6kE/oRiGy/1BU3ZxELHg== integrity checksum failed when using sha512: wanted sha512-57hwS705QV7vD2U87FNuN7CngCpeakKSPHWJTfJwfbPWNzsQKyaev8M4H1liX+S9PJ6kE/oRiGy/1BU3ZxELHg== but got sha512-UwN6GRHovlRXN04kllaCtQMxiMACnaylhNoBMVLcDUUwE73rq32ioCTm42pj0TG2DTS1OPmd9XEKfNml9MOnSg==. (1255 bytes)
+```
 
 ### Warnings on `npm install`
 
