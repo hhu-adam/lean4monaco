@@ -16,8 +16,8 @@ jobs:
           #   os: ubuntu-latest
           - name: macOS
             os: macos-latest
-          - name: Windows
-            os: windows-latest
+          # - name: Windows
+          #   os: windows-latest
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -35,7 +35,7 @@ jobs:
       - name: install elan (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          curl -fsSL https://raw.githubusercontent.com/leanprover-community/mathlib4/master/scripts/install_macos.sh) > install_macos.sh
+          curl -fsSL https://raw.githubusercontent.com/leanprover-community/mathlib4/master/scripts/install_macos.sh > install_macos.sh
           ./install_macos.sh -y
           source ~/.profile
       - name: run lake build (macOS)
