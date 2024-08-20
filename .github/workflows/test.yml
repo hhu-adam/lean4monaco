@@ -16,8 +16,8 @@ jobs:
             os: ubuntu-latest
           - name: macOS
             os: macos-latest
-          - name: Windows
-            os: windows-latest
+          # - name: Windows
+          #   os: windows-latest
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -32,6 +32,22 @@ jobs:
           build: true
           test: false
           lint: false
+      - uses: actions/setup-node@v3
+      - run: npm install --loglevel verbose
+      - run: npm audit
+        continue-on-error: true
+      - run: npm run test
+  wintest:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: install elan
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+      - name: print lean and lake versions
       - uses: actions/setup-node@v3
       - run: npm install --loglevel verbose
       - run: npm audit
