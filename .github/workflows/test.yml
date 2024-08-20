@@ -74,6 +74,6 @@ jobs:
         with:
           start: npm start
           wait-on: 'http://localhost:5173'
-      - run: Run npm audit
+      - run: npm audit
         if: matrix.os == 'ubuntu-latest'
         continue-on-error: true
