@@ -35,7 +35,8 @@ jobs:
       - name: install elan (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/leanprover-community/mathlib4/master/scripts/install_macos.sh)"
+          curl -fsSL https://raw.githubusercontent.com/leanprover-community/mathlib4/master/scripts/install_macos.sh) > install_macos.sh
+          ./install_macos.sh -y
           source ~/.profile
       - name: run lake build (macOS)
         if: matrix.os == 'macos-latest'
