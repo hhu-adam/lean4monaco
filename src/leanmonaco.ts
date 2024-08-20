@@ -17,7 +17,7 @@ import getModelServiceOverride from '@codingame/monaco-vscode-model-service-over
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions'
 import { DisposableStore } from 'vscode/monaco'
 import packageJson from './vscode-lean4/vscode-lean4/package.json'
-import { IConfiguration, IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
+import { IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
 import { ExtensionKind } from 'vscode/vscode/vs/platform/environment/common/environment'
 
 /** Options for LeanMonaco.
@@ -243,7 +243,7 @@ export type LeanMonacoOptions = {
       ...packageJson,
       contributes: {
         ...packageJson.contributes,
-        configuration: packageJson.contributes.configuration as IConfiguration,
+        configuration: packageJson.contributes.configuration as any, // Apparently `IExtensionContributions.configuration` has type `any`
         // TODO: This is suspect, the thrid entry does not have "language", yet it doesn't complain
         // look into that.
         grammars: packageJson.contributes.grammars as IGrammar[],
