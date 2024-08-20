@@ -25,25 +25,58 @@ one or more editors can be created using `LeanMonacoEditor`. Here is an example
 how to use the classes using React:
 
 ```ts
-import { LeanMonaco, LeanMonacoEditor } from 'lean4monaco'
+import { LeanMonaco, LeanMonacoEditor, LeanMonacoOptions } from 'lean4monaco'
 
 [...]
 
+const editorRef = useRef<HTMLDivElement>(null)
+const infoviewRef = useRef<HTMLDivElement>(null)
+
+const [options, setOptions] = useState<LeanMonacoOptions>({
+  websocket: {
+    url: 'ws://localhost:8080/'
+  },
+  htmlElement: undefined // The wrapper div for monaco
+  vscode: {
+    "editor.wordWrap": true,
+  }
+})
+
+// Set the `mainContainer` of the monaco editor. This can be a wrapper div; it determines
+// for example the extend of the Monaco context menu.
 useEffect(() => {
-    const leanMonaco = new LeanMonaco()
+  setOptions({...options, htmlElement: editorRef.current ?? undefined})
+}, [editorRef])
+
+// Start one instance of LeanMonaco, this is the "infoview"
+useEffect(() => {
+  const leanMonaco = new LeanMonaco()
+  leanMonaco.setInfoviewElement(infoviewRef.current!)
+
+  ;(async () => {
+    await leanMonaco.start(options)
+  })()
+
+  return () => {
+    leanMonaco.dispose()
+  }
+}, [options])
+
+// You can start multiple `LeanMonacoEditor` instances, these are the "editors"
+useEffect(() => {
+  if (leanMonaco) {
     const leanMonacoEditor = new LeanMonacoEditor()
 
     ;(async () => {
-        await leanMonaco.start({websocket: {url: 'ws://localhost:8080/'}})
-        leanMonaco.setInfoviewElement(infoviewRef.current)
-        await leanMonacoEditor.start(codeviewRef.current!, '/project/test.lean', '#check Nat')
+      await leanMonaco!.whenReady
+      await leanMonacoEditor.start(codeviewRef.current!, '/project/test.lean', '#check Nat')
     })()
 
     return () => {
-        leanMonacoEditor.dispose()
-        leanMonaco.dispose()
+      leanMonacoEditor.dispose()
     }
-})
+  }
+}, [leanMonaco])
 ```
 
 ### Configure vite
@@ -168,3 +201,14 @@ Some random errors we encountered. If you have more, please share them.
 
 * Warnings about `glob` and `inflight` come from `copyfiles`: see [copyfiles#132](https://github.com/calvinmetcalf/copyfiles/pull/132)
 * Warning about ` @types/cypress` comes from `cypress-iframe`
+
+## Development
+
+You can run
+
+```
+npm install
+npm run test
+```
+
+for the automated cypress tests.

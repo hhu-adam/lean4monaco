@@ -59,13 +59,7 @@ export type LeanMonacoOptions = {
   disposed = false
 
   async start(options: LeanMonacoOptions) {
-
-    if (!options.htmlElement) {
-      console.debug('[LeanMonaco]: not starting because container is null')
-      return
-    } else {
-      console.debug('[LeanMonaco]: starting')
-    }
+    console.debug('[LeanMonaco]: starting')
 
     if (LeanMonaco.activeInstance == this) {
       console.warn('A LeanMonaco instance cannot be started twice.')
@@ -101,7 +95,9 @@ export type LeanMonacoOptions = {
           ...getLanguagesServiceOverride(),
           ...getModelServiceOverride()
         },
-        options.htmlElement,
+        // The wrapper HTML element determines the extend of certain monaco features
+        // such as the right-click context menu.
+        options.htmlElement ?? undefined,
         {
           workspaceProvider: {
             trusted: true,
