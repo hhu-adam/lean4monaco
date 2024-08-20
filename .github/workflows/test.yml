@@ -32,7 +32,7 @@ jobs:
           build: true
           test: false
           lint: false
-      - name: install elan (macOS)
+      - name: Install elan (macOS)
         if: matrix.os == 'macos-latest'
         run: |
           set -exo pipefail
@@ -43,42 +43,37 @@ jobs:
           elan default stable
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
           source ~/.profile
-      - name: run lake build (macOS)
+      - name: Run lake build (macOS)
         if: matrix.os == 'macos-latest'
         run: |
           cd demo/server/LeanProject
           lake build
 
-      - name: install elan (Windows)
+      - name: Install elan (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.ps1
           echo 1 | powershell -ExecutionPolicy Bypass -f elan-init.ps1
           del elan-init.ps1
         shell: pwsh
-      - name: add elan to PATH (Windows)
+      - name: Add elan to PATH (Windows)
         if: matrix.os == 'windows-latest'
         run: (Resolve-Path ~/.elan/bin).Path >> $Env:GITHUB_PATH
         shell: pwsh
-      - name: run lake build (Windows)
+      - name: Run lake build (Windows)
         if: matrix.os == 'windows-latest'
         run: |
           CD demo\server\LeanProject
           lake build
         shell: pwsh
-
       - uses: actions/setup-node@v3
-
       # Install npm dependencies, cache them correctly
       # and run all Cypress tests
-      - name: Cypress run
+      - name: Run tests
         uses: cypress-io/github-action@v6
         with:
           start: npm start
           wait-on: 'http://localhost:5173'
-
-      # - run: npm install --loglevel verbose
-      # - run: npm audit
-      #   if: matrix.os == 'ubuntu-latest'
-      #   continue-on-error: true
-      # - run: npm run test
+      - run: Run npm audit
+        if: matrix.os == 'ubuntu-latest'
+        continue-on-error: true
