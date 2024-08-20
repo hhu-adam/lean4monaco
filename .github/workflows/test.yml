@@ -48,7 +48,9 @@ jobs:
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
       - name: print lean and lake versions
-      - uses: actions/setup-node@v3
+        run: |
+          lean --version
+          lake --version      - uses: actions/setup-node@v3
       - run: npm install --loglevel verbose
       - run: npm audit
         continue-on-error: true
