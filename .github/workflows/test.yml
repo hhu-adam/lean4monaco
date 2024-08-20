@@ -29,6 +29,11 @@ jobs:
           submodules: true
       # uses lean standard action with all default input values
       - uses: leanprover/lean-action@v1
+        lake-package-directory: "demo/server"
+        use-mathlib-cache: false
+        build: true
+        test: false
+        lint: false
       - uses: actions/setup-node@v3
       - run: npm install --loglevel verbose
       - run: npm audit
