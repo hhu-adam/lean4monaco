@@ -36,7 +36,8 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           set -exo pipefail
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
+          yes | sh elan-init.sh
           elan toolchain install stable -y
           elan default stable -y
           source ~/.profile
