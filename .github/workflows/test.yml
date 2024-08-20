@@ -32,17 +32,27 @@ jobs:
           build: true
           test: false
           lint: false
-      - name: install elan (Windows)
+      - name: install elan
         if: matrix.os == 'windows-latest'
         run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
-          sh elan-init.sh -y
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      - name: lean bui.d (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
+          curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.ps1
+          echo 1 | powershell -ExecutionPolicy Bypass -f elan-init.ps1
+          del elan-init.ps1
+          (Resolve-Path ~/.elan/bin).Path >> $Env:GITHUB_PATH
           cd demo\server\LeanProject
           lake build
+        shell: pwsh
+      # - name: install elan (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
+      #     sh elan-init.sh -y
+      #     echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      # - name: lean bui.d (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     cd demo\server\LeanProject
+      #     lake build
       - uses: actions/setup-node@v3
       - run: npm install --loglevel verbose
       - run: npm audit
