@@ -30,7 +30,7 @@ jobs:
       # uses lean standard action with all default input values
       - uses: leanprover/lean-action@v1
         with:
-          lake-package-directory: "demo/server"
+          lake-package-directory: "demo/server/LeanProject"
           use-mathlib-cache: false
           build: true
           test: false
