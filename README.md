@@ -38,7 +38,7 @@ const [options, setOptions] = useState<LeanMonacoOptions>({
   websocket: {
     url: 'ws://localhost:8080/'
   },
-  htmlElement: undefined // The wrapper div for monaco
+  htmlElement: undefined, // The wrapper div for monaco
   vscode: {
     "editor.wordWrap": true,
   }
