@@ -38,9 +38,9 @@ jobs:
           set -exo pipefail
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
           sh elan-init.sh -y
+          source ~/.profile
           elan toolchain install stable
           elan default stable
-          source ~/.profile
       - name: run lake build (macOS)
         if: matrix.os == 'macos-latest'
         run: |
