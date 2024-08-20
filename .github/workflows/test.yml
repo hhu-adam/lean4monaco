@@ -37,7 +37,7 @@ jobs:
         run: |
           curl -fsSL https://raw.githubusercontent.com/leanprover-community/mathlib4/master/scripts/install_macos.sh > install_macos.sh
           chmod a+x install_macos.sh
-          /bin/bash ./install_macos.sh -y
+          yes | ./install_macos.sh
           source ~/.profile
       - name: run lake build (macOS)
         if: matrix.os == 'macos-latest'
