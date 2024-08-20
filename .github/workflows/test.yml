@@ -3,24 +3,34 @@ run-name: Test editor end-to-end
 on:
   workflow_dispatch:
   push:
+    branches: ["main"] # replace "main" with the default branch
+  pull_request:
+    branches: ["main"]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux
+            os: ubuntu-latest
+            # artifact: build-Linux release
+          # - name: macOS
+          #   os: macos-latest
+          #   artifact: build-macOS
+          - name: Windows
+            os: windows-latest
+            # artifact: build-Windows
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: install elan
-        run: |
-          set -o pipefail
-          curl -sSfL https://github.com/leanprover/elan/releases/download/v3.0.0/elan-x86_64-unknown-linux-gnu.tar.gz | tar xz
-          ./elan-init -y
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
       - uses: actions/checkout@v4
         with:
           submodules: true
+      # uses lean standard action with all default input values
+      - uses: leanprover/lean-action@v1
       - uses: actions/setup-node@v3
-      - name: print lean and lake versions
-        run: |
-          lean --version
-          lake --version
-      - run: npm install
-      - run: npm run build
+      - run: npm install --loglevel verbose
+      - run: npm audit
+        continue-on-error: true
       - run: npm run test
