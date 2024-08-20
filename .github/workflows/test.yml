@@ -14,13 +14,10 @@ jobs:
         include:
           - name: Linux
             os: ubuntu-latest
-            # artifact: build-Linux release
-          # - name: macOS
-          #   os: macos-latest
-          #   artifact: build-macOS
+          - name: macOS
+            os: macos-latest
           - name: Windows
             os: windows-latest
-            # artifact: build-Windows
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
