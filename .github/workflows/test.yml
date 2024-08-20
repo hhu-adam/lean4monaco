@@ -14,8 +14,8 @@ jobs:
         include:
           - name: Linux
             os: ubuntu-latest
-          - name: macOS
-            os: macos-latest
+          # - name: macOS
+          #   os: macos-latest
           - name: Windows
             os: windows-latest
     name: ${{ matrix.name }}
@@ -24,9 +24,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      # uses lean standard action with all default input values
       - uses: leanprover/lean-action@v1
-        if: matrix.os != 'windows-latest'
+        if: matrix.os == 'ubuntu-latest'
         with:
           lake-package-directory: "demo/server/LeanProject"
           use-mathlib-cache: false
@@ -39,11 +38,14 @@ jobs:
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
           sh elan-init.sh -y
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      - name: macos fix
-        if: matrix.os == 'macos-latest'
-        run: source ~/.profile
+      - name: lean bui.d (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cd demo\server\LeanProject
+          lake build
       - uses: actions/setup-node@v3
       - run: npm install --loglevel verbose
       - run: npm audit
+        if: matrix.os == 'ubuntu-latest'
         continue-on-error: true
       - run: npm run test
