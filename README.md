@@ -136,7 +136,10 @@ export default {
 
 `lean4monaco` contains a sample project `lean4monaco/demo/` which you can use for comparison.
 
-If you cloned `lean4monaco`, you can run the demo with
+Ideally you clone this repo using `git clone --recurse-submodules <ssh/https address>` to load the included submodule.
+(alternatively, call `git submodule init && git submodule update` inside the cloned the repo).
+
+Afterwards, you can run the demo with
 
 ```
 cd lean4monaco
