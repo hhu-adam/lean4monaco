@@ -41,6 +41,8 @@ jobs:
           source ~/.profile
           elan toolchain install stable
           elan default stable
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+          source ~/.profile
       - name: run lake build (macOS)
         if: matrix.os == 'macos-latest'
         run: |
