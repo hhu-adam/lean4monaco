@@ -29,9 +29,11 @@ import { LeanMonaco, LeanMonacoEditor, LeanMonacoOptions } from 'lean4monaco'
 
 [...]
 
+// Refs for the editor and infoview
 const editorRef = useRef<HTMLDivElement>(null)
 const infoviewRef = useRef<HTMLDivElement>(null)
 
+// Lean4monaco options
 const [options, setOptions] = useState<LeanMonacoOptions>({
   websocket: {
     url: 'ws://localhost:8080/'
@@ -42,41 +44,32 @@ const [options, setOptions] = useState<LeanMonacoOptions>({
   }
 })
 
-// Set the `mainContainer` of the monaco editor. This can be a wrapper div; it determines
-// for example the extend of the Monaco context menu.
+// Optional: restrict monaco's extend (e.g. context menu) to the editor itself
 useEffect(() => {
   setOptions({...options, htmlElement: editorRef.current ?? undefined})
 }, [editorRef])
 
-// Start one instance of LeanMonaco, this is the "infoview"
+// Start infoview and editor(s)
 useEffect(() => {
+  // You must create a single `LeanMonaco` instance (infoview), but you can create multiple
+  // `LeanMonacoEditor` instances (editor)
+  // You must await `leanMonaco.start` or use `await leanMonaco.whenReady` before
+  // starting the editors!
   const leanMonaco = new LeanMonaco()
+  const leanMonacoEditor = new LeanMonacoEditor()
+
   leanMonaco.setInfoviewElement(infoviewRef.current!)
 
   ;(async () => {
     await leanMonaco.start(options)
+    await leanMonacoEditor.start(editorRef.current!, '/project/test.lean', '#check Nat')
   })()
 
   return () => {
     leanMonaco.dispose()
+    leanMonacoEditor.dispose()
   }
-}, [options])
-
-// You can start multiple `LeanMonacoEditor` instances, these are the "editors"
-useEffect(() => {
-  if (leanMonaco) {
-    const leanMonacoEditor = new LeanMonacoEditor()
-
-    ;(async () => {
-      await leanMonaco!.whenReady
-      await leanMonacoEditor.start(codeviewRef.current!, '/project/test.lean', '#check Nat')
-    })()
-
-    return () => {
-      leanMonacoEditor.dispose()
-    }
-  }
-}, [leanMonaco])
+}, [options, infoviewRef, editorRef])
 ```
 
 ### Configure vite
