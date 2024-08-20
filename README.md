@@ -1,3 +1,7 @@
+[![GitHub license](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/hhu-adam/lean4monaco/blob/main/LICENSE)
+[![npm version](https://img.shields.io/npm/v/lean4monaco.svg)](https://www.npmjs.com/package/lean4monaco)
+[![(Runtime) Build and Test](https://github.com/hhu-adam/lean4monaco/actions/workflows/test.yml/badge.svg)](https://github.com/hhu-adam/lean4monaco/actions/workflows/test.yml)
+
 # Lean 4 Monaco
 
 Provides browser support for running Lean in a Monaco editor.
