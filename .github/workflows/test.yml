@@ -32,22 +32,12 @@ jobs:
           build: true
           test: false
           lint: false
-      # - name: Install elan (macOS)
-      #   if: matrix.os == 'macos-latest'
-      #   run: |
-      #     set -exo pipefail
-      #     curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
-      #     sh elan-init.sh -y
-      #     source ~/.profile
-      #     elan toolchain install stable
-      #     elan default stable
-      #     echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      #     source ~/.profile
-      # - name: Run lake build (macOS)
-      #   if: matrix.os == 'macos-latest'
-      #   run: |
-      #     cd demo/server/LeanProject
-      #     lake build
+      - name: Windows test
+        if: matrix.os == 'windows-latest'
+
+        run: |
+          ls
+        shell: bash
       - name: Install elan (Windows)
         if: matrix.os == 'windows-latest'
         run: |
