@@ -32,19 +32,18 @@ jobs:
           build: true
           test: false
           lint: false
-      - name: Windows test
+      - name: TEST Install elan (Windows)
         if: matrix.os == 'windows-latest'
-
         run: |
-          ls
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
         shell: bash
-      - name: Install elan (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.ps1
-          echo 1 | powershell -ExecutionPolicy Bypass -f elan-init.ps1
-          del elan-init.ps1
-        shell: pwsh
+      # - name: Install elan (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     curl -O --location https://raw.githubusercontent.com/leanprover/elan/master/elan-init.ps1
+      #     echo 1 | powershell -ExecutionPolicy Bypass -f elan-init.ps1
+      #     del elan-init.ps1
+      #   shell: pwsh
       - name: Add elan to PATH (Windows)
         if: matrix.os == 'windows-latest'
         run: (Resolve-Path ~/.elan/bin).Path >> $Env:GITHUB_PATH
