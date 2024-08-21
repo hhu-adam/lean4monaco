@@ -45,16 +45,16 @@ jobs:
       #     echo 1 | powershell -ExecutionPolicy Bypass -f elan-init.ps1
       #     del elan-init.ps1
       #   shell: pwsh
-      - name: Add elan to PATH (Windows)
-        if: matrix.os == 'windows-latest'
-        run: (Resolve-Path ~/.elan/bin).Path >> $Env:GITHUB_PATH
-        shell: pwsh
+      # - name: Add elan to PATH (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: (Resolve-Path ~/.elan/bin).Path >> $Env:GITHUB_PATH
+      #   shell: bash
       - name: Run lake build (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          CD demo\server\LeanProject
+          cd demo\server\LeanProject
           lake build
-        shell: pwsh
+        shell: bash
       - uses: actions/setup-node@v4
       # Install npm dependencies, cache them correctly
       # and run all Cypress tests
