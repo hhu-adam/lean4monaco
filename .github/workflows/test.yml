@@ -25,30 +25,29 @@ jobs:
         with:
           submodules: true
       - uses: leanprover/lean-action@v1
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os != 'windows-latest'
         with:
           lake-package-directory: "demo/server/LeanProject"
           use-mathlib-cache: false
           build: true
           test: false
           lint: false
-      - name: Install elan (macOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          set -exo pipefail
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
-          sh elan-init.sh -y
-          source ~/.profile
-          elan toolchain install stable
-          elan default stable
-          echo "$HOME/.elan/bin" >> $GITHUB_PATH
-          source ~/.profile
-      - name: Run lake build (macOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          cd demo/server/LeanProject
-          lake build
-
+      # - name: Install elan (macOS)
+      #   if: matrix.os == 'macos-latest'
+      #   run: |
+      #     set -exo pipefail
+      #     curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
+      #     sh elan-init.sh -y
+      #     source ~/.profile
+      #     elan toolchain install stable
+      #     elan default stable
+      #     echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      #     source ~/.profile
+      # - name: Run lake build (macOS)
+      #   if: matrix.os == 'macos-latest'
+      #   run: |
+      #     cd demo/server/LeanProject
+      #     lake build
       - name: Install elan (Windows)
         if: matrix.os == 'windows-latest'
         run: |
