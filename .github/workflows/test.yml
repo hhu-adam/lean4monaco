@@ -35,7 +35,8 @@ jobs:
       - name: TEST Install elan (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
+          bash elan-init.sh -y
         shell: bash
       # - name: Install elan (Windows)
       #   if: matrix.os == 'windows-latest'
