@@ -6,6 +6,9 @@ on:
     branches: ["main"] # replace "main" with the default branch
   pull_request:
     branches: ["main"]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     strategy:
@@ -45,10 +48,11 @@ jobs:
       #     echo 1 | powershell -ExecutionPolicy Bypass -f elan-init.ps1
       #     del elan-init.ps1
       #   shell: pwsh
-      # - name: Add elan to PATH (Windows)
-      #   if: matrix.os == 'windows-latest'
+      - name: Add elan to PATH (Windows)
+        if: matrix.os == 'windows-latest'
       #   run: (Resolve-Path ~/.elan/bin).Path >> $Env:GITHUB_PATH
-      #   shell: bash
+        run: echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
+        shell: bash
       - name: Run lake build (Windows)
         if: matrix.os == 'windows-latest'
         run: |
