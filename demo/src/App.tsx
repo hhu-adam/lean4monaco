@@ -6,9 +6,11 @@ import './App.css'
 function App() {
 
   const monacoRef = useRef<HTMLDivElement>(null)
+  const socketUrl = 'ws://' + window.location.hostname + ':8080/'
+  console.log(`[demo]: socketUrl`, socketUrl)
   const [options, setOptions] = useState<LeanMonacoOptions>({
     websocket: {
-      url: 'ws://localhost:8080/'
+      url: socketUrl
     },
     vscode: {
       // The default options are defined in `LeanMonaco.start` and can be overwritten here.
