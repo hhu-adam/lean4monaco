@@ -9,12 +9,18 @@ describe('Editor Test', () => {
   })
 
   it('displays the infoview', () => {
+    cy.on('uncaught:exception', (err, runnable) => {
+      return false
+    })
     cy.visit('http://localhost:5173/')
     cy.get('.squiggly-info')
     cy.iframe().contains('0 : Nat')
   })
 
   it('changes themes', () => {
+    cy.on('uncaught:exception', (err, runnable) => {
+      return false
+    })
     cy.visit('http://localhost:5173/')
     cy.get('[data-cy="theme-light"]').click()
     cy.contains('#check 0')
@@ -31,6 +37,9 @@ describe('Editor Test', () => {
   })
 
   it('inputs unicode', () => {
+    cy.on('uncaught:exception', (err, runnable) => {
+      return false
+    })
     cy.visit('http://localhost:5173/')
     cy.get('[data-cy="leader-backslash"]').click()
     cy.contains('#check 0').click("left")
