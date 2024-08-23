@@ -1,31 +1,31 @@
-# name: Build
-# run-name: Build Lean4monaco
-# on:
-#   workflow_dispatch:
-#   push:
-#     branches:
-#       - "main"
-#   pull_request:
-#     branches:
-#       - "main"
-# jobs:
-#   build:
-#     name: Build
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#         with:
-#           submodules: true
-#       - uses: actions/setup-node@v4
-#       - uses: leanprover/lean-action@v1
-#         with:
-#           lake-package-directory: "demo/server/LeanProject"
-#           use-mathlib-cache: false
-#           auto-config: false
-#           build: true
-#           test: false
-#           lint: false
-#       - name: Install dependencies
-#         run: npm install
-#       - name: Build
-#         run: npm run build
+name: Build
+run-name: Build Lean4monaco
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: "demo/server/LeanProject"
+          use-mathlib-cache: false
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
