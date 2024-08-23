@@ -178,8 +178,30 @@ npm setup_demo # this builds lean4monaco and calls `npm install` in `demo/`
 npm start
 ```
 
-and open [http://localhost:5173](http://localhost:5173). This should open a rudimentary webpage
+and open [localhost:5173](http://localhost:5173). This should open a rudimentary webpage
 with 1 (or more) monaco editors and an infoview, showing the Lean infos at the cursor.
+
+### Docker image
+
+The Dockerfile defines an image where the server is run in a Linux container.
+You can look at the github workflow to see how it is used; in particular the image can
+be built with
+
+```
+docker build  -t lean4monaco .
+```
+
+and then started with
+
+```
+docker run -it -p 5173:5173 -p 8080:8080 lean4monaco
+```
+
+Now the demo should be accessible at [localhost:5173](http://localhost:5173).
+
+This is an alternative to calling `npm start`, but it
+does not have some feature such as auto-reload
+on edit.
 
 ## Troubleshooting
 

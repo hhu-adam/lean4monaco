@@ -35,7 +35,7 @@ function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOpti
       </LeanMonacoContext.Provider>
 
       <div>
-        <button onClick={(ev)=> {
+        <button onClick={(_ev)=> {
           console.log('[LeanMonaco] restarting Lean')
           leanMonaco?.clientProvider?.getClients().map(client => {client.restart()})
         }}>Restart Lean</button>
