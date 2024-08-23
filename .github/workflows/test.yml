@@ -32,14 +32,15 @@ jobs:
           colima start
 
 
-      - run: docker build  -t lean4monaco .
-      # - name: Set up Docker
-      #   uses: docker/setup-buildx-action@v3
-      # - name: Build server docker image
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     tags: lean4monaco:latest
-      #     outputs: type=docker,dest=/tmp/lean4monaco.tar
+      # - run: docker build  -t lean4monaco .
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+      - name: Build server docker image
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: lean4monaco:latest
+          # outputs: type=docker,dest=/tmp/lean4monaco.tar
       # - name: Upload artifact
       #   uses: actions/upload-artifact@v4
       #   with:
