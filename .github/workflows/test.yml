@@ -41,6 +41,23 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: "demo/server/LeanProject"
+          use-mathlib-cache: false
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - run: npm setup_demo
       - name: Download server image
         uses: actions/download-artifact@v4
         with:
@@ -50,8 +67,6 @@ jobs:
         run: docker load --input /tmp/lean4monaco.tar
       - name: Start server
         run: docker run -dit -p 5173:5173 -p 8080:8080 lean4monaco
-      - run: npm install
-      - run: npm setup_demo
       - name: Run tests
         uses: cypress-io/github-action@v6
         with:
