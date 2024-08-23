@@ -29,20 +29,21 @@ jobs:
         run: npm install
       - name: Install server dependencies
         run: |
-          cd demo/server
+          cd demo
           npm install
       - name: Build lean4monaco
         run: npm run build
       - name: Build demo server
         run: |
-          cd demo/server
+          cd demo
           npm run build
       - name: Start server
         id: start-server
         run: |
-          cd demo/server
+          cd demo
           echo "Starting server..."
-          nohup npm run start > nohup.out 2> nohup.err < /dev/null &
+          npm run start
+          # nohup npm run start > nohup.out 2> nohup.err < /dev/null &
           echo "server is running."
   test:
     strategy:
