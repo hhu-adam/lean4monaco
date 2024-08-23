@@ -1,31 +1,57 @@
-name: Build
-run-name: Build Lean4monaco
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - "main"
-  pull_request:
-    branches:
-      - "main"
-jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: actions/setup-node@v4
-      - uses: leanprover/lean-action@v1
-        with:
-          lake-package-directory: "demo/server/LeanProject"
-          use-mathlib-cache: false
-          auto-config: false
-          build: true
-          test: false
-          lint: false
-      - name: Install dependencies
-        run: npm install
-      - name: Build
-        run: npm run build
+# name: Build
+# run-name: Build Lean4monaco
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - "main"
+#   pull_request:
+#     branches:
+#       - "main"
+# jobs:
+#   build:
+#     # strategy:
+#     #   fail-fast: false
+#     #   matrix:
+#     #     include:
+#     #       - name: Linux
+#     #         os: ubuntu-latest
+#     #       - name: macOS
+#     #         os: macos-latest
+#     #       - name: Windows
+#     #         os: windows-latest
+#     # name: ${{ matrix.name }}
+#     # runs-on: ${{ matrix.os }}
+#     name: Build
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           submodules: true
+#       - uses: actions/setup-node@v4
+#       - uses: leanprover/lean-action@v1
+#         # if: matrix.os != 'windows-latest'
+#         with:
+#           lake-package-directory: "demo/server/LeanProject"
+#           use-mathlib-cache: false
+#           auto-config: false
+#           build: true
+#           test: false
+#           lint: false
+#       # - name: Install elan (Windows)
+#       #   if: matrix.os == 'windows-latest'
+#       #   run: |
+#       #     curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
+#       #     bash elan-init.sh -y
+#       #     echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
+#       #   shell: bash
+#       # - name: Run lake build (Windows)
+#       #   if: matrix.os == 'windows-latest'
+#       #   run: |
+#       #     cd demo/server/LeanProject
+#       #     lake build
+#       #   shell: bash
+#       - name: Install dependencies
+#         run: npm install
+#       - name: Build
+#         run: npm run build
