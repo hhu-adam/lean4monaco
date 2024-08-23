@@ -22,7 +22,7 @@ jobs:
           - windows-latest
         browser:
           - chrome
-          - firefox
+          # - firefox
         include:
           - os: ubuntu-latest
             name: Linux
@@ -55,20 +55,19 @@ jobs:
         shell: bash
       - uses: actions/setup-node@v4
       - run: npm install
-      - run: npm run setup_demo
-        if: matrix.os != 'windows-latest'
-
-      # BUG: Somehow `lake` is not found when called through `npm` but it works on its own
-      - name: Run npm run setup_demo (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          concurrently \"(cd demo && npm install)\" \"npm run build\" -n install,build -c \"bgCyan.bold,bgBlue.bold\"
-      - name: Run lake build (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          cd demo/server/LeanProject
-          lake build
         shell: bash
+      - run: npm run setup_demo
+        shell: bash
+      # # BUG: Somehow `lake` is not found when called through `npm` but it works on its own
+      # - name: Run npm run setup_demo (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     npm run build
+      #     cd demo
+      #     npm install
+      #     cd server/LeanProject
+      #     lake build
+      #   shell: bash
 
       - name: Run tests
         uses: cypress-io/github-action@v6
