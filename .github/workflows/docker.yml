@@ -1,5 +1,5 @@
-name: Test
-run-name: Test editor end-to-end
+name: Docker
+run-name: Test docker image
 on:
   workflow_dispatch:
   push:
