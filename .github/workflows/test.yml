@@ -12,7 +12,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
+  test:
     strategy:
       fail-fast: false
       matrix:
@@ -23,7 +23,10 @@ jobs:
             os: macos-latest
           - name: Windows
             os: windows-latest
-    name: ${{ matrix.name }}
+        browser:
+          - chrome
+          - firefox
+    name: ${{ matrix.name }}/${{matrix.browser}}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4

@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    name: 'Build docker image'
+    name: 'Build image'
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
@@ -49,6 +49,7 @@ jobs:
   # #           os: windows-latest
   # #   name: ${{ matrix.name }}
   # #   runs-on: ${{ matrix.os }}
+    name: Test image
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
