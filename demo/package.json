@@ -7,7 +7,7 @@
     "postinstall": "cd server && npm install",
     "build_client": "tsc -b && vite build",
     "build_server": "cd server && npm run build",
-    "build": "concurrently \"npm run build_client &&\" \"npm run build_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
+    "build": "concurrently \"npm run build_client\" \"npm run build_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
     "start_client": "vite --host",
     "start_server": "cd server && npm run build && npm run start",
     "start": "concurrently \"npm run start_client\" \"npm run start_server\" -n client,server -c \"bgBlue.bold,bgMagenta.bold\"",
