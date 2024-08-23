@@ -181,28 +181,6 @@ npm start
 and open [localhost:5173](http://localhost:5173). This should open a rudimentary webpage
 with 1 (or more) monaco editors and an infoview, showing the Lean infos at the cursor.
 
-### Docker image
-
-The Dockerfile defines an image where the server is run in a Linux container.
-You can look at the github workflow to see how it is used; in particular the image can
-be built with
-
-```
-docker build  -t lean4monaco .
-```
-
-and then started with
-
-```
-docker run -it -p 5173:5173 -p 8080:8080 lean4monaco
-```
-
-Now the demo should be accessible at [localhost:5173](http://localhost:5173).
-
-This is an alternative to calling `npm start`, but it
-does not have some feature such as auto-reload
-on edit.
-
 ## Troubleshooting
 
 Some random errors we encountered. If you have more, please share them.
@@ -228,3 +206,37 @@ npm run test
 ```
 
 for the automated cypress tests.
+
+### OS support
+
+Note that currently there is no support for running the server on Windows. However, there
+is a Linux Dockerfile which you might find useful to get it running on a Windows machine,
+see below.
+
+However, we do actively support Windows users (i.e. browser) accessing the website which is hosted
+on a Linux machine (but unfortunately we cannot test this automatically in the github workflow).
+
+Please report problems with Windows nevertheless, but be advised that you might need to
+invest some time and effort if you're trying to set up a Windows server :)
+
+### Docker image
+
+The Dockerfile defines an image where the server is run in a Linux container.
+You can look at the github workflow to see how it is used; in particular the image can
+be built with
+
+```
+docker build  -t lean4monaco .
+```
+
+and then started with
+
+```
+docker run -it -p 5173:5173 -p 8080:8080 lean4monaco
+```
+
+Now the demo should be accessible at [localhost:5173](http://localhost:5173).
+
+This is an alternative to calling `npm start`, but it
+does not have some feature such as auto-reload
+on edit.
