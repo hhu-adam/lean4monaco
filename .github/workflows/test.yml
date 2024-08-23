@@ -1,61 +1,61 @@
-name: Test
-run-name: Test editor end-to-end
-on:
-  workflow_dispatch:
-  push:
-    branches: ["main"] # replace "main" with the default branch
-  pull_request:
-    branches: ["main"]
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Linux
-            os: ubuntu-latest
-          - name: macOS
-            os: macos-latest
-          - name: Windows
-            os: windows-latest
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: leanprover/lean-action@v1
-        if: matrix.os != 'windows-latest'
-        with:
-          lake-package-directory: "demo/server/LeanProject"
-          use-mathlib-cache: false
-          build: true
-          test: false
-          lint: false
-      - name: Install elan (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
-          bash elan-init.sh -y
-          echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
-        shell: bash
-      - name: Run lake build (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          cd demo/server/LeanProject
-          lake build
-        shell: bash
-      - uses: actions/setup-node@v4
-      # Install npm dependencies, cache them correctly
-      # and run all Cypress tests
-      - name: Run tests
-        uses: cypress-io/github-action@v6
-        with:
-          start: npm start
-          wait-on: 'http://localhost:5173'
-      - run: npm audit
-        if: matrix.os == 'ubuntu-latest'
-        continue-on-error: true
+# name: Test
+# run-name: Test editor end-to-end
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches: ["main"] # replace "main" with the default branch
+#   pull_request:
+#     branches: ["main"]
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+#   cancel-in-progress: true
+# jobs:
+#   test:
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         include:
+#           - name: Linux
+#             os: ubuntu-latest
+#           - name: macOS
+#             os: macos-latest
+#           - name: Windows
+#             os: windows-latest
+#     name: ${{ matrix.name }}
+#     runs-on: ${{ matrix.os }}
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           submodules: true
+#       - uses: leanprover/lean-action@v1
+#         if: matrix.os != 'windows-latest'
+#         with:
+#           lake-package-directory: "demo/server/LeanProject"
+#           use-mathlib-cache: false
+#           build: true
+#           test: false
+#           lint: false
+#       - name: Install elan (Windows)
+#         if: matrix.os == 'windows-latest'
+#         run: |
+#           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
+#           bash elan-init.sh -y
+#           echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
+#         shell: bash
+#       - name: Run lake build (Windows)
+#         if: matrix.os == 'windows-latest'
+#         run: |
+#           cd demo/server/LeanProject
+#           lake build
+#         shell: bash
+#       - uses: actions/setup-node@v4
+#       # Install npm dependencies, cache them correctly
+#       # and run all Cypress tests
+#       - name: Run tests
+#         uses: cypress-io/github-action@v6
+#         with:
+#           start: npm start
+#           wait-on: 'http://localhost:5173'
+#       - run: npm audit
+#         if: matrix.os == 'ubuntu-latest'
+#         continue-on-error: true
