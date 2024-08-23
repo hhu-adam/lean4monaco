@@ -16,6 +16,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        browser:
+          - chrome
+          - firefox
         include:
           - name: Linux
             os: ubuntu-latest
@@ -23,10 +26,8 @@ jobs:
             os: macos-latest
           - name: Windows
             os: windows-latest
-        browser:
-          - chrome
-          - firefox
-    name: ${{ matrix.name }}/${{matrix.browser}}
+
+    name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -62,6 +63,7 @@ jobs:
         with:
           start: npm start
           wait-on: 'http://localhost:5173'
+          browser: ${{ matrix.browser }}
       # - run: npm audit
       #   if: matrix.os == 'ubuntu-latest'
       #   continue-on-error: true
