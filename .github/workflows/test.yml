@@ -8,26 +8,6 @@ on:
     branches: ["main"]
 jobs:
   build:
-    name: Build server
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
-      - name: Build server docker image
-        uses: docker/build-push-action@v6
-        with:
-          tags: lean4monaco:latest
-          outputs: type=docker,dest=/tmp/lean4monaco.tar
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: lean4monaco
-          path: /tmp/lean4monaco.tar
-  test:
-    needs: build
     strategy:
       fail-fast: false
       matrix:
@@ -45,6 +25,44 @@ jobs:
         with:
           submodules: true
       - uses: actions/setup-node@v4
+      - name: Setup docker (missing on MacOS)
+        if: matrix.os == 'macos'
+        run: |
+          brew install docker
+          colima start
+
+
+      - run: docker build  -t lean4monaco .
+      # - name: Set up Docker
+      #   uses: docker/setup-buildx-action@v3
+      # - name: Build server docker image
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     tags: lean4monaco:latest
+      #     outputs: type=docker,dest=/tmp/lean4monaco.tar
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: lean4monaco
+      #     path: /tmp/lean4monaco.tar
+  # # test:
+  # #   needs: build
+  # #   strategy:
+  # #     fail-fast: false
+  # #     matrix:
+  # #       include:
+  # #         - name: Linux
+  # #           os: ubuntu-latest
+  # #         - name: macOS
+  # #           os: macos-latest
+  # #         - name: Windows
+  # #           os: windows-latest
+  # #   name: ${{ matrix.name }}
+  # #   runs-on: ${{ matrix.os }}
+  # #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         submodules: true
       # - uses: leanprover/lean-action@v1
       #   if: matrix.os != 'windows-latest'
       #   with:
@@ -72,13 +90,13 @@ jobs:
       # - name: Build
       #   run: npm run build
       # - run: npm run setup_demo
-      - name: Download server image
-        uses: actions/download-artifact@v4
-        with:
-          name: lean4monaco
-          path: /tmp
-      - name: Load server image
-        run: docker load --input /tmp/lean4monaco.tar
+      # - name: Download server image
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: lean4monaco
+      #     path: /tmp
+      # - name: Load server image
+      #   run: docker load --input /tmp/lean4monaco.tar
       - name: Start server
         run: docker run -dit -p 5173:5173 -p 8080:8080 lean4monaco
       - name: Run tests
