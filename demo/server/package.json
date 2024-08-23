@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.mjs",
   "scripts": {
+    "build": "cd LeanProject && lake build",
     "start": "node index.mjs"
   },
   "author": "",

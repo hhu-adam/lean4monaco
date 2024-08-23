@@ -1,0 +1,70 @@
+name: Test on Linux server
+run-name: Test on Linux server
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"] # replace "main" with the default branch
+  pull_request:
+    branches: ["main"]
+jobs:
+  start-server:
+    runs-on: ubuntu-latest
+    # outputs:
+    #   server-url: ${{ steps.server-output.outputs.server-url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: "demo/server/LeanProject"
+          use-mathlib-cache: false
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+      - name: Install dependencies
+        run: npm install
+      - name: Install server dependencies
+        run: |
+          cd demo/server
+          npm install
+      - name: Build lean4monaco
+        run: npm run build
+      - name: Build demo server
+        run: |
+          cd demo/server
+          npm run build
+      - name: Start server
+        id: start-server
+        run: |
+          cd demo/server
+          echo "Starting server..."
+          nohup npm run start &> server.log
+      - name: Sleep
+        run: sleep 5
+  run-cypress:
+    runs-on: windows-latest
+    needs: start-server
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm install
+      - name: Wait for server
+        run: |
+          echo "Pinging the server to check if it's up..."
+          for i in {1..30}; do
+            curl -sSf http://localhost:5173 && break
+            echo "Waiting for server..."
+            sleep 5
+          done
+
+      - name: Run Cypress tests
+        run: |
+          wait-on http://localhost:5173
+          cypress run
