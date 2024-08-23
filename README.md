@@ -209,15 +209,14 @@ for the automated cypress tests.
 
 ### OS support
 
-Note that currently there is no support for running the server on Windows. However, there
-is a Linux Dockerfile which you might find useful to get it running on a Windows machine,
-see below.
+Currently there is no support for Windows servers!
 
-However, we do actively support Windows users (i.e. browser) accessing the website which is hosted
-on a Linux machine (but unfortunately we cannot test this automatically in the github workflow).
+However, we do actively support Windows clients (i.e. browsers) accessing the website hosted
+on a Linux machine! (unfortunately the github workflow does not test this)
 
-Please report problems with Windows nevertheless, but be advised that you might need to
-invest some time and effort if you're trying to set up a Windows server :)
+There is a Linux Dockerfile which you might find useful to get
+it running on a Windows machine (see below), but be advised you might need to
+invest some time and effort if you're trying to set up a Windows server…
 
 ### Docker image
 
