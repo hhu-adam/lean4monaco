@@ -41,7 +41,7 @@ jobs:
         run: |
           cd demo/server
           echo "Starting server..."
-          nohup npm run start &> server.log
+          npm run start
       - name: Sleep
         run: sleep 5
   run-cypress:
