@@ -58,6 +58,7 @@
     "cypress": "^13.13.0",
     "cypress-iframe": "^1.0.1",
     "nodemon": "^3.1.4",
+    "playwright-webkit": "^1.46.1",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "wait-on": "^7.2.0",

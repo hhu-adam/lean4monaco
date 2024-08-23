@@ -24,6 +24,7 @@ jobs:
           - electron
           - chrome
           - firefox
+          - webkit
         experimental:
           - false
         include:
@@ -33,11 +34,8 @@ jobs:
             name: macOS
           - os: windows-latest
             name: Windows
-          - os: macos-latest
-            name: macOS
-            browser: webkit
-          - os: ubuntu-latest
-            name: Linux
+        exclude:
+          - os: windows-lates
             browser: webkit
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
