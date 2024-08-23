@@ -73,7 +73,15 @@ jobs:
       #       echo "Waiting for server..."
       #       sleep 5
       #     done
-      - name: Run Cypress tests
-        run: |
-          wait-on http://localhost:5173
-          cypress run
+      # - name: Run Cypress tests
+      #   run: |
+      #     # wait-on http://localhost:5173
+      #     cypress run
+
+      #     #       # Install npm dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Run tests
+        uses: cypress-io/github-action@v6
+        # with:
+        #   start: npm start
+        #   wait-on: 'http://localhost:5173'
