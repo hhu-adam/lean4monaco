@@ -36,6 +36,9 @@ jobs:
           - os: macos-latest
             name: macOS
             browser: webkit
+          - os: ubuntu-latest
+            name: Linux
+            browser: webkit
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
@@ -43,8 +46,11 @@ jobs:
     continue-on-error: ${{ matrix.os == 'windows-latest' }}
     steps:
       - name: Setup firefox (macOS)
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-latest' && matrix.browser == 'firefox'
         uses: browser-actions/setup-firefox@v1
+      - name: Setup webkit (Linux)
+        if: matrix.os == 'ubuntu-latest' && matrix.browser == 'webkit'
+        run: npx playwright install-deps webkit
       - uses: actions/checkout@v4
         with:
           submodules: true
