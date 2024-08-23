@@ -32,10 +32,11 @@ jobs:
             name: macOS
           - os: windows-latest
             name: Windows
-            experimental: true
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
+    # Windows server is not working yet
+    continue-on-error: ${{ matrix.os == 'windows-latest' }}
     steps:
       - uses: actions/checkout@v4
         with:
