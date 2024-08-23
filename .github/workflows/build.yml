@@ -28,12 +28,12 @@ jobs:
           submodules: true
       - uses: actions/setup-node@v4
       - uses: leanprover/lean-action@v1
-        # if: matrix.os != 'windows-latest'
+        if: matrix.os != 'windows-latest'
         with:
           lake-package-directory: "demo/server/LeanProject"
           use-mathlib-cache: false
           auto-config: false
-          build: true
+          build: false
           test: false
           lint: false
       - name: Install elan (Windows)
@@ -43,12 +43,12 @@ jobs:
           bash elan-init.sh -y
           echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
         shell: bash
-      - name: Run lake build (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          cd demo/server/LeanProject
-          lake build
-        shell: bash
+      # - name: Run lake build (Windows)
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     cd demo/server/LeanProject
+      #     lake build
+      #   shell: bash
       - run: npm install
       - run: npm run setup_demo
       - name: Run tests
