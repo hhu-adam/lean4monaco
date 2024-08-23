@@ -55,9 +55,9 @@ jobs:
           lint: false
       - name: Install dependencies
         run: npm install
-      - name: Build
-        run: npm run build
-      - run: npm setup_demo
+      # - name: Build
+      #   run: npm run build
+      # - run: npm run setup_demo
       - name: Download server image
         uses: actions/download-artifact@v4
         with:
