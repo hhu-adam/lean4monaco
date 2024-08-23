@@ -32,12 +32,18 @@ jobs:
             name: macOS
           - os: windows-latest
             name: Windows
+          - os: macos-latest
+            name: macOS
+            browser: webkit
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
     # Windows server is not working yet
     continue-on-error: ${{ matrix.os == 'windows-latest' }}
     steps:
+      - name: Setup firefox (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: browser-actions/setup-firefox@v1
       - uses: actions/checkout@v4
         with:
           submodules: true
