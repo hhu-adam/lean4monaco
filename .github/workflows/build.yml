@@ -7,82 +7,101 @@ on:
   pull_request:
     branches: ["main"]
 jobs:
-  start-server:
-    name: Start server
-    runs-on: ubuntu-latest
-    # outputs:
-    #   server-url: ${{ steps.server-output.outputs.server-url }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - uses: actions/setup-node@v4
-      - uses: leanprover/lean-action@v1
-        with:
-          lake-package-directory: "demo/server/LeanProject"
-          use-mathlib-cache: false
-          auto-config: false
-          build: true
-          test: false
-          lint: false
-      - name: Install dependencies
-        run: npm install
-      - name: Install demo
-        run: npm run setup_demo
-      # - name: Build lean4monaco
-      #   run: npm run build
-      # - name: Build demo server
-      #   run: |
-      #     cd demo
-      #     npm run build
-      - name: Start server
-        id: start-server
-        run: |
-          nohup npm start > nohup.out 2> nohup.err < /dev/null &
-          echo "server is running..."
-# cd demo
-# echo "Starting server..."
-# npm run start
-# # nohup npm run start > nohup.out 2> nohup.err < /dev/null &
-# echo "server is running."
   test:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: Linux
-            os: ubuntu-latest
-          # - name: macOS
-          #   os: macos-latest
-          - name: Windows
-            os: windows-latest
-    name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
-    needs: start-server
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - uses: actions/setup-node@v4
-      - name: Install dependencies
-        run: npm install
-      # - name: Wait for server
-      #   run: |
-      #     echo "Pinging the server to check if it's up..."
-      #     for i in {1..30}; do
-      #       curl -sSf http://localhost:5173 && break
-      #       echo "Waiting for server..."
-      #       sleep 5
-      #     done
-      # - name: Run Cypress tests
-      #   run: |
-      #     # wait-on http://localhost:5173
-      #     cypress run
-
-      #     #       # Install npm dependencies, cache them correctly
-      # and run all Cypress tests
+      - name: build docker image
+        run: docker build -t hhu-adam/lean4monaco .
+      - name: start server
+        run: docker run -dit -p 5173:5173 -p 8080:8080 hhu-adam/lean4monaco
       - name: Run tests
         uses: cypress-io/github-action@v6
-        # with:
+        with:
+          browser: chrome
         #   start: npm start
-        #   wait-on: 'http://localhost:5173'
+          wait-on: 'http://localhost:5173'
+
+
+#   start-server:
+#     name: Start server
+#     runs-on: ubuntu-latest
+#     # outputs:
+#     #   server-url: ${{ steps.server-output.outputs.server-url }}
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           submodules: true
+#       - uses: actions/setup-node@v4
+#       - uses: leanprover/lean-action@v1
+#         with:
+#           lake-package-directory: "demo/server/LeanProject"
+#           use-mathlib-cache: false
+#           auto-config: false
+#           build: true
+#           test: false
+#           lint: false
+#       - name: Install dependencies
+#         run: npm install
+#       - name: Build and setup demo
+#         run: npm run setup_demo
+#       # - name: Build lean4monaco
+#       #   run: npm run build
+#       # - name: Build demo server
+#       #   run: |
+#       #     cd demo
+#       #     npm run build
+#       - name: Start server
+#         id: start-server
+#         run: |
+#           nohup npm start > nohup.out 2> nohup.err < /dev/null &
+#           echo "server is running..."
+# # cd demo
+# # echo "Starting server..."
+# # npm run start
+# # # nohup npm run start > nohup.out 2> nohup.err < /dev/null &
+# # echo "server is running."
+#   test:
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         include:
+#           - name: Linux
+#             os: ubuntu-latest
+#           # - name: macOS
+#           #   os: macos-latest
+#           - name: Windows
+#             os: windows-latest
+#     name: ${{ matrix.name }}
+#     runs-on: ${{ matrix.os }}
+#     needs: start-server
+#     steps:
+#       - uses: actions/checkout@v4
+#         with:
+#           submodules: true
+#       - uses: actions/setup-node@v4
+#       - name: Install dependencies
+#         run: npm install
+#       # - name: Wait for server
+#       #   run: |
+#       #     echo "Pinging the server to check if it's up..."
+#       #     for i in {1..30}; do
+#       #       curl -sSf http://localhost:5173 && break
+#       #       echo "Waiting for server..."
+#       #       sleep 5
+#       #     done
+#       # - name: Run Cypress tests
+#       #   run: |
+#       #     # wait-on http://localhost:5173
+#       #     cypress run
+
+#       #     #       # Install npm dependencies, cache them correctly
+#       # and run all Cypress tests
+#       - name: Run tests
+#         uses: cypress-io/github-action@v6
+#         with:
+#           browser: chrome
+#         #   start: npm start
+#         #   wait-on: 'http://localhost:5173'

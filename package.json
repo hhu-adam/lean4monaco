@@ -34,7 +34,7 @@
   },
   "scripts": {
     "setup_demo": "concurrently \"(cd demo && npm install)\" \"npm run build\" -n install,build -c \"bgCyan.bold,bgBlue.bold\"",
-    "start": "npm run setup_demo && concurrently \"tsc -w --preserveWatchOutput\" \"webpack --watch\" \"npm run watch:copyfiles\" \"cd demo && npm run start_client\" \"cd demo && npm run start_server\" -n tsc,webpack,copyfiles,vite,server -c \"bgGreen.bold,bgBlue.bold,bgCyan.bold,bgYellow.bold,bgMagenta.bold\"",
+    "start": "concurrently \"tsc -w --preserveWatchOutput\" \"webpack --watch\" \"npm run watch:copyfiles\" \"cd demo && npm run start_client\" \"cd demo && npm run start_server\" -n tsc,webpack,copyfiles,vite,server -c \"bgGreen.bold,bgBlue.bold,bgCyan.bold,bgYellow.bold,bgMagenta.bold\"",
     "watch:copyfiles": "nodemon --watch ./src --exec \"npm run build:copyfiles\"",
     "build:copyfiles": "cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" \"**/*.otf\" \"**/*.svg\" ../dist/",
     "build": "tsc && webpack && npm run build:copyfiles",
