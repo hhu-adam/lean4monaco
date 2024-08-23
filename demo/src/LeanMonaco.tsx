@@ -10,16 +10,18 @@ function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOpti
 
   // You need to start one `LeanMonaco` instance once in your application using a `useEffect`
   useEffect(() => {
-    const leanMonaco = new LeanMonaco()
-    setLeanMonaco(leanMonaco)
-    leanMonaco.setInfoviewElement(infoviewRef.current!)
+    var _leanMonaco = new LeanMonaco()
+    setLeanMonaco(_leanMonaco)
+    _leanMonaco.setInfoviewElement(infoviewRef.current!)
+
 
     ;(async () => {
-      await leanMonaco.start(options)
+      await _leanMonaco.start(options)
+      console.debug('[demo]: leanMonaco started')
     })()
 
     return () => {
-      leanMonaco.dispose()
+      _leanMonaco.dispose()
     }
   }, [options])
 
@@ -34,7 +36,7 @@ function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOpti
 
       <div>
         <button onClick={(ev)=> {
-          console.log('restarting Lean')
+          console.log('[LeanMonaco] restarting Lean')
           leanMonaco?.clientProvider?.getClients().map(client => {client.restart()})
         }}>Restart Lean</button>
       </div>

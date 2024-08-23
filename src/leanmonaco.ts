@@ -62,20 +62,27 @@ export type LeanMonacoOptions = {
     console.debug('[LeanMonaco]: starting')
 
     if (LeanMonaco.activeInstance == this) {
-      console.warn('A LeanMonaco instance cannot be started twice.')
+      console.warn('[LeanMonaco]: A LeanMonaco instance cannot be started twice.')
       return
     }
     if (LeanMonaco.activeInstance) {
-      console.warn('There can only be one active LeanMonaco instance at a time. Disposing previous instance.')
+      console.warn('[LeanMonaco]: There can only be one active LeanMonaco instance at a time. Disposing previous instance.')
       LeanMonaco.activeInstance?.dispose()
     }
     LeanMonaco.activeInstance = this
 
     if (! window.MonacoEnvironment) {
+      console.debug('[LeanMonaco]: setting monaco environment')
       type WorkerLoader = () => Worker
       const workerLoaders: Partial<Record<string, WorkerLoader>> = {
-        editorWorkerService: () => new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url), { type: 'module' }),
-        textMateWorker: () => new Worker(new URL('@codingame/monaco-vscode-textmate-service-override/worker', import.meta.url), { type: 'module' }),
+        editorWorkerService: () => new Worker(
+          new URL('monaco-editor/esm/vs/editor/editor.worker.js', import.meta.url),
+          { type: 'module' }
+        ),
+        textMateWorker: () => new Worker(
+          new URL('@codingame/monaco-vscode-textmate-service-override/worker', import.meta.url),
+          { type: 'module' }
+        ),
       }
       window.MonacoEnvironment = {
         getWorker: function (moduleId, label) {
@@ -102,19 +109,22 @@ export type LeanMonacoOptions = {
           workspaceProvider: {
             trusted: true,
             workspace: {
-                workspaceUri: Uri.file('/workspace.code-workspace')
+              workspaceUri: Uri.file('/workspace.code-workspace')
             },
             async open() {
-                return false
+              return false
             }
           }
         }
       )
-
+      console.debug('[LeanMonaco]: done initializing')
     }
     await (await import('@codingame/monaco-vscode-theme-defaults-default-extension')).whenReady
 
-    if (this.disposed) return
+    if (this.disposed) {
+      console.debug('[LeanMonaco]: is disposed (A)')
+      return
+    }
 
     this.extensionRegisterResult = registerExtension(this.getExtensionManifest(), ExtensionHostKind.LocalProcess)
 
@@ -125,12 +135,18 @@ export type LeanMonacoOptions = {
 
     await this.extensionRegisterResult.whenReady()
 
-    if (this.disposed) return
+    if (this.disposed) {
+      console.debug('[LeanMonaco]: is disposed (B)')
+      return
+    }
 
     const themeService = await getService(IThemeService)
     const configurationService = await getService(IConfigurationService)
 
-    if (this.disposed) return
+    if (this.disposed) {
+      console.debug('[LeanMonaco]: is disposed (C)')
+      return
+    }
 
     this.updateVSCodeOptions(options.vscode ?? {})
 
@@ -206,8 +222,12 @@ export type LeanMonacoOptions = {
       ...options.vscode
     })
 
-    if (this.disposed) return
+    if (this.disposed) {
+      console.debug('[LeanMonaco]: is disposed (D)')
+      return
+    }
 
+    console.info('[LeanMonaco]: is ready!')
     this.ready()
   }
 

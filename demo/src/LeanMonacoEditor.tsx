@@ -13,7 +13,9 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
 
       ;(async () => {
         await leanMonaco!.whenReady
+        console.debug('[demo]: starting editor')
         await leanMonacoEditor.start(codeviewRef.current!, fileName, value)
+        console.debug('[demo]: editor started')
       })()
 
       return () => {
