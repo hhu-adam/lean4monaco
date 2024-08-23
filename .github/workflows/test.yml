@@ -22,7 +22,9 @@ jobs:
           - windows-latest
         browser:
           - chrome
-          # - firefox
+          - firefox
+        experimental:
+          - false
         include:
           - os: ubuntu-latest
             name: Linux
@@ -30,6 +32,8 @@ jobs:
             name: macOS
           - os: windows-latest
             name: Windows
+            experimental: true
+          - include
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
