@@ -14,10 +14,10 @@ jobs:
         include:
           - name: Linux
             os: ubuntu-latest
-          - name: macOS
-            os: macos-latest
-          - name: Windows
-            os: windows-latest
+          # - name: macOS
+          #   os: macos-latest
+          # - name: Windows
+          #   os: windows-latest
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -31,15 +31,14 @@ jobs:
           brew install docker
           colima start
 
-
-      # - run: docker build  -t lean4monaco .
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
-      - name: Build server docker image
-        uses: docker/build-push-action@v6
-        with:
-          push: false
-          tags: lean4monaco:latest
+      - run: docker build  -t lean4monaco .
+      # - name: Set up Docker
+      #   uses: docker/setup-buildx-action@v3
+      # - name: Build server docker image
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     push: false
+      #     tags: lean4monaco:latest
           # outputs: type=docker,dest=/tmp/lean4monaco.tar
       # - name: Upload artifact
       #   uses: actions/upload-artifact@v4
