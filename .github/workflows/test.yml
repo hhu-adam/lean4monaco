@@ -21,6 +21,7 @@ jobs:
           - macos-latest
           - windows-latest
         browser:
+          - electron
           - chrome
           - firefox
         experimental:
