@@ -14,7 +14,7 @@ jobs:
         with:
           submodules: true
       - name: build docker image
-        run: docker build -t hhu-adam/lean4monaco .
+        run: docker build --progress plain -t hhu-adam/lean4monaco .
       - name: start server
         run: docker run -dit -p 5173:5173 -p 8080:8080 hhu-adam/lean4monaco
       - name: Run tests
