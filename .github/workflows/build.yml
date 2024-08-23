@@ -43,8 +43,6 @@ jobs:
           echo "Starting server..."
           nohup npm run start > nohup.out 2> nohup.err < /dev/null &
           echo "server is running."
-      - name: Sleep
-        run: sleep 5
   run-cypress:
     runs-on: windows-latest
     needs: start-server
@@ -53,18 +51,16 @@ jobs:
         with:
           submodules: true
       - uses: actions/setup-node@v4
-
       - name: Install dependencies
         run: npm install
-      - name: Wait for server
-        run: |
-          echo "Pinging the server to check if it's up..."
-          for i in {1..30}; do
-            curl -sSf http://localhost:5173 && break
-            echo "Waiting for server..."
-            sleep 5
-          done
-
+      # - name: Wait for server
+      #   run: |
+      #     echo "Pinging the server to check if it's up..."
+      #     for i in {1..30}; do
+      #       curl -sSf http://localhost:5173 && break
+      #       echo "Waiting for server..."
+      #       sleep 5
+      #     done
       - name: Run Cypress tests
         run: |
           wait-on http://localhost:5173
