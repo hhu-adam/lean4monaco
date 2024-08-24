@@ -81,7 +81,7 @@ jobs:
           start: npm start
           wait-on: 'http://localhost:5173'
           browser: ${{ matrix.browser }}
-      - name: Run test (Windows)
+      - name: Run tests (Windows)
         run: |
           npx concurrently --hide 0 --kill-others \
             "npm start" \
