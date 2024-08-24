@@ -47,7 +47,7 @@ jobs:
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
     # add exceptions for failing jobs here
-    continue-on-error: ${{ matrix.os == 'windows-latest' }}
+    continue-on-error: false
     steps:
       - name: Setup firefox (macOS)
         if: matrix.os == 'macos-latest' && matrix.browser == 'firefox'
