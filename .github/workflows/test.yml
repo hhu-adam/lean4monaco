@@ -35,7 +35,7 @@ jobs:
           - os: windows-latest
             name: Windows
         exclude:
-          - os: windows-lates
+          - os: windows-latest
             browser: webkit
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}

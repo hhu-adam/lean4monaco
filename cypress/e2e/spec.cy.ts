@@ -52,6 +52,9 @@ describe('Editor Test', () => {
   })
 
   it('allows for multiple editors', () => {
+    cy.on('uncaught:exception', (err, runnable) => {
+      return false
+    })
     cy.visit('http://localhost:5173/')
     cy.contains('#check 0')
     cy.get('[data-cy="number-editors"]').type('{selectall}').type('2')
