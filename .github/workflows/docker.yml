@@ -9,6 +9,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
   build:
     name: 'Build image'
@@ -53,13 +56,10 @@ jobs:
           path: /tmp
       - name: Load server image
         run: docker load --input /tmp/lean4monaco.tar
-        shell: bash
       - name: Start server
         run: docker run -dit -p 5173:5173 -p 8080:8080 lean4monaco
-        shell: bash
       - name: Run tests (electron)
         uses: cypress-io/github-action@v6
         with:
           browser: electron
           wait-on: 'http://localhost:5173'
-          shell: bash
