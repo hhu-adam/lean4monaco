@@ -4,7 +4,7 @@ import { defineConfig } from "cypress";
 // Infoview loading is slow on Windows…
 
 export default defineConfig({
-  defaultCommandTimeout: 400000,
+  defaultCommandTimeout: 40000,
   experimentalWebKitSupport: true,
   e2e: {
     setupNodeEvents(on, config) {

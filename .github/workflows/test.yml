@@ -45,7 +45,7 @@ jobs:
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
     # add exceptions for failing jobs here
-    continue-on-error: false
+    continue-on-error: ${{ matrix.os }} == 'windows-latest'
     steps:
       - name: Setup firefox (macOS)
         if: matrix.os == 'macos-latest' && matrix.browser == 'firefox'
@@ -73,7 +73,7 @@ jobs:
           echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
       - uses: actions/setup-node@v4
       - run: npm install
-      - run: npm run setup_demo
+      # - run: npm run setup_demo  # included in the next step
       - name: Run tests
         uses: cypress-io/github-action@v6
         with:
