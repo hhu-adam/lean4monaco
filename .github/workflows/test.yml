@@ -11,6 +11,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
 jobs:
   test:
     strategy:
@@ -25,8 +28,6 @@ jobs:
           - chrome
           - firefox
           - webkit
-        experimental:
-          - false
         include:
           - os: ubuntu-latest
             name: Linux
@@ -34,14 +35,16 @@ jobs:
             name: macOS
           - os: windows-latest
             name: Windows
+          - os: windows-latest
+            name: Windows
+            browser: edge
         exclude:
           - os: windows-latest
             browser: webkit
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
-    # Windows server is not working yet
-    continue-on-error: ${{ matrix.os == 'windows-latest' || matrix.browser == 'webkit' }}
+    continue-on-error: ${{ matrix.os == 'windows-latest' }} # add exceptions for failing jobs here
     steps:
       - name: Setup firefox (macOS)
         if: matrix.os == 'macos-latest' && matrix.browser == 'firefox'
@@ -67,30 +70,12 @@ jobs:
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
           bash elan-init.sh -y
           echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
-        shell: bash
       - uses: actions/setup-node@v4
       - run: npm install
-        shell: bash
       - run: npm run setup_demo
-        shell: bash
-      # # BUG: Somehow `lake` is not found when called through `npm` but it works on its own
-      # - name: Run npm run setup_demo (Windows)
-      #   if: matrix.os == 'windows-latest'
-      #   run: |
-      #     npm run build
-      #     cd demo
-      #     npm install
-      #     cd server/LeanProject
-      #     lake build
-      #   shell: bash
-
       - name: Run tests
         uses: cypress-io/github-action@v6
         with:
           start: npm start
           wait-on: 'http://localhost:5173'
           browser: ${{ matrix.browser }}
-      # - run: npm audit
-      #   if: matrix.os == 'ubuntu-latest'
-      #   continue-on-error: true
-

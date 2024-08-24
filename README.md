@@ -207,17 +207,6 @@ npm run test
 
 for the automated cypress tests.
 
-### OS support
-
-Currently there is no support for Windows servers!
-
-However, we do actively support Windows clients (i.e. browsers) accessing the website hosted
-on a Linux machine! (unfortunately the github workflow does not test this)
-
-There is a Linux Dockerfile which you might find useful to get
-it running on a Windows machine (see below), but be advised you might need to
-invest some time and effort if you're trying to set up a Windows server…
-
 ### Docker image
 
 The Dockerfile defines an image where the server is run in a Linux container.
