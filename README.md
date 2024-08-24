@@ -209,7 +209,7 @@ for the automated cypress tests.
 
 ### Docker image
 
-The Dockerfile defines an image where the server is run in a Linux container.
+There is a `Dockerfile` which defines an image where the server is run in a Linux container.
 You can look at the github workflow to see how it is used; in particular the image can
 be built with
 
