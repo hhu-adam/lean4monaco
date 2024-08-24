@@ -202,7 +202,7 @@ You can run
 
 ```
 npm install
-npm run test
+npm test
 ```
 
 for the automated cypress tests.

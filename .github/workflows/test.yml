@@ -33,16 +33,14 @@ jobs:
             name: Linux
           - os: macos-latest
             name: macOS
-          # currently only one Windows test
           - os: windows-latest
             name: Windows
-            browser: electron
-          # - os: windows-latest
-          #   name: Windows
-          #   browser: edge
-        # exclude:
-        #   - os: windows-latest
-        #     browser: webkit
+          - os: windows-latest
+            name: Windows
+            browser: edge
+        exclude:
+          - os: windows-latest
+            browser: webkit
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
@@ -76,7 +74,6 @@ jobs:
       - uses: actions/setup-node@v4
       - run: npm install
       - run: npm run setup_demo
-        if: matrix.os != 'windows-latest'
       - name: Run tests
         if: matrix.os != 'windows-latest'
         uses: cypress-io/github-action@v6
@@ -85,5 +82,9 @@ jobs:
           wait-on: 'http://localhost:5173'
           browser: ${{ matrix.browser }}
       - name: Run test (Windows)
-        run: npm test
+        run: |
+          npx concurrently --hide 0 --kill-others \
+            "npm start" \
+            "npx wait-on http://localhost:5173 && \
+            cypress run --browser ${{ matrix.browser }}" -n server,cypress -s command-cypress
         if: matrix.os == 'windows-latest'
