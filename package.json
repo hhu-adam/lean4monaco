@@ -38,7 +38,7 @@
     "watch:copyfiles": "nodemon --watch ./src --exec \"npm run build:copyfiles\"",
     "build:copyfiles": "cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" \"**/*.otf\" \"**/*.svg\" ../dist/",
     "build": "tsc && webpack && npm run build:copyfiles",
-    "test": "npm run setup_demo && concurrently --hide 0 --kill-others \"npm start\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
+    "test": "npm run setup_demo && concurrently --hide 0 --kill-others \"npm start\" \"wait-on http://localhost:5173 && cypress run --browser ${CY_BROWSER=electron}\" -n server,cypress -s command-cypress"
   },
   "dependencies": {
     "@leanprover/infoview": "^0.7.3",

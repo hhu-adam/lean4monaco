@@ -202,10 +202,11 @@ You can run
 
 ```
 npm install
-npm run test
+npm test
 ```
 
-for the automated cypress tests.
+for the automated cypress tests. You can use the environment variable `CY_BROWSER` to select the
+desired browser: `CY_BROWSER=chrome npm test`
 
 ### Docker image
 
