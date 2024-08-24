@@ -5,6 +5,7 @@ import * as url from 'url';
 import * as rpc from 'vscode-ws-jsonrpc';
 import * as path from 'path'
 import * as jsonrpcserver from 'vscode-ws-jsonrpc/server';
+import os from 'os'
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -50,6 +51,12 @@ wss.addListener("connection", function(ws, req) {
     const serverConnection = jsonrpcserver.createProcessStreamConnection(ps)
     socketConnection.forward(serverConnection, message => {
         // console.log(`CLIENT: ${JSON.stringify(message)}`)
+
+        // Here would be the first place we could determine the server OS
+        // and modify the data sent.
+        // TODO: Maybe it could be an option to search `message` recursively for `uri` fields
+        // and use `.replaceAll('\\', '/')` or vice-versa on them.
+        // console.log('[demo]: os', os.platform())
         return message;
     })
     serverConnection.forward(socketConnection, message => {
