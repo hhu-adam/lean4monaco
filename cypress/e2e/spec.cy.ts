@@ -10,6 +10,8 @@ describe('Editor Test', () => {
 
   it('displays the infoview', () => {
     cy.on('uncaught:exception', (err, runnable) => {
+      // Note: this is because the server throws sometimes random errors about
+      // the Lean server being stopped/restarted etc. which don't prevent the site from working
       return false
     })
     cy.visit('http://localhost:5173/')
@@ -19,6 +21,7 @@ describe('Editor Test', () => {
 
   it('changes themes', () => {
     cy.on('uncaught:exception', (err, runnable) => {
+      // Note: see note about console errors above
       return false
     })
     cy.visit('http://localhost:5173/')
@@ -38,6 +41,7 @@ describe('Editor Test', () => {
 
   it('inputs unicode', () => {
     cy.on('uncaught:exception', (err, runnable) => {
+      // Note: see note about console errors above
       return false
     })
     cy.visit('http://localhost:5173/')
@@ -53,6 +57,7 @@ describe('Editor Test', () => {
 
   it('allows for multiple editors', () => {
     cy.on('uncaught:exception', (err, runnable) => {
+      // Note: see note about console errors above
       return false
     })
     cy.visit('http://localhost:5173/')
