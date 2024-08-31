@@ -181,6 +181,10 @@ export type LeanMonacoOptions = {
       "JuliaMono",
       `url(${new URL("./fonts/JuliaMono-Regular.ttf", import.meta.url)})`,
       ),
+      new FontFace(
+        "Noto Color Emoji",
+        `url(${new URL("./fonts/NotoColorEmoji-Regular.ttf", import.meta.url)})`,
+      ),
       // new FontFace(
       //   "LeanWeb",
       //   `url(${new URL("./fonts/LeanWeb-Regular.otf", import.meta.url)})`,
@@ -215,7 +219,7 @@ export type LeanMonacoOptions = {
 
       // other options
       "editor.renderWhitespace": "trailing",
-      "editor.fontFamily": "'JuliaMono'",
+      "editor.fontFamily": "'JuliaMono', 'Noto Color Emoji'",
       "editor.wordWrap": "on",
       "editor.wrappingStrategy": "advanced",
       "workbench.colorTheme": "Visual Studio Light",
@@ -298,6 +302,14 @@ export type LeanMonacoOptions = {
       },
       ...options.websocket
     }
+  }
+
+  /** Restarting all clients.
+   * Note: I think with the current implementation, there is always just one client
+   * (is that true?), but the vscode-extension is designed for more.
+   */
+  restart() {
+    this.clientProvider?.getClients().map(client => {client.restart()})
   }
 
   dispose() {
