@@ -18,9 +18,11 @@ const server = app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
 const wss = new WebSocketServer({ server })
 
+const leanProjectPath = path.join(__dirname, 'LeanProject')
+
 function startServerProcess() {
 
-  const serverProcess = cp.spawn("lake", ["serve", "--"], { cwd: path.join(__dirname, 'LeanProject') })
+  const serverProcess = cp.spawn("lean", ["--server"], { cwd: leanProjectPath })
 
   serverProcess.on('error', error =>
     console.error(`Launching Lean Server failed: ${error}`)
@@ -33,6 +35,40 @@ function startServerProcess() {
   }
 
   return serverProcess
+}
+
+/** Transform client URI to valid file on the server */
+function urisToFilenames(prefix, obj) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (key === 'uri') {
+        obj[key] = obj[key].replace('file://', `file://${prefix}`)
+      } else if (key === 'rootUri') {
+        obj[key] = obj[key].replace('file://', `file://${prefix}`)
+      } else if (key === 'rootPath') {
+        obj[key] = path.join(prefix, obj[key])
+      }
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        urisToFilenames(prefix, obj[key]);
+      }
+    }
+  }
+  return obj;
+}
+
+/** Transform server file back into client URI */
+function FilenamesToUri(prefix, obj) {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      if (key === 'uri') {
+        obj[key] = obj[key].replace(prefix, '')
+      }
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        FilenamesToUri(prefix, obj[key]);
+      }
+    }
+  }
+  return obj;
 }
 
 wss.addListener("connection", function(ws, req) {
@@ -50,8 +86,9 @@ wss.addListener("connection", function(ws, req) {
     const socketConnection = jsonrpcserver.createConnection(reader, writer, () => ws.close())
     const serverConnection = jsonrpcserver.createProcessStreamConnection(ps)
     socketConnection.forward(serverConnection, message => {
-        // console.log(`CLIENT: ${JSON.stringify(message)}`)
+        urisToFilenames(leanProjectPath, message)
 
+        console.log(`CLIENT: ${JSON.stringify(message)}`)
         // Here would be the first place we could determine the server OS
         // and modify the data sent.
         // TODO: Maybe it could be an option to search `message` recursively for `uri` fields
@@ -60,7 +97,9 @@ wss.addListener("connection", function(ws, req) {
         return message;
     })
     serverConnection.forward(socketConnection, message => {
-        // console.log(`SERVER: ${JSON.stringify(message)}`)
+        FilenamesToUri(leanProjectPath, message)
+
+        console.log(`SERVER: ${JSON.stringify(message)}`)
         return message;
     });
 
@@ -75,7 +114,7 @@ wss.addListener("connection", function(ws, req) {
           "code": "-1"
         }
       }
-      // console.log(`SERVER: ${JSON.stringify(msg)}`)
+      console.log(`SERVER: ${JSON.stringify(msg)}`)
       ws.send(JSON.stringify(msg))
     })
 
