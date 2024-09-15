@@ -51,8 +51,10 @@ describe('Editor Test', () => {
     cy.contains('α')
     cy.get('[data-cy="leader-comma"]').click()
     cy.contains('α#check 0').click("left")
-    cy.get('body').type(',beta')
-    cy.contains('βα#check 0')
+    cy.get('body').type(',bet ')
+    cy.contains('β α#check 0')// cursor should behind the space!
+    cy.get('body').type(',gamma')
+    cy.contains('β γα#check 0')
   })
 
   it('allows for multiple editors', () => {
