@@ -1,0 +1,2 @@
+-- demonstrates that the 1st and 2nd editor use the `leanOptions` as they specify
+-- and existing file, while all further do not as they reference a fictional file.

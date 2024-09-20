@@ -73,4 +73,15 @@ describe('Editor Test', () => {
     cy.contains('#check 0').click()
     cy.iframe().contains('0 : Nat')
   })
+
+  it('check leanOptions', () => {
+    cy.on('uncaught:exception', (err, runnable) => {
+      // Note: see note about console errors above
+      return false
+    })
+    cy.visit('http://localhost:5173/')
+    cy.contains('#print f')
+    cy.contains('#print f').click()
+    cy.iframe().contains('def f : Nat → Nat := fun x ↦ x + 1')
+  })
 })
