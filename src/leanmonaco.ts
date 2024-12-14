@@ -182,13 +182,9 @@ export type LeanMonacoOptions = {
       `url(${new URL("./fonts/JuliaMono-Regular.ttf", import.meta.url)})`,
       ),
       new FontFace(
-        "Noto Color Emoji",
-        `url(${new URL("./fonts/NotoColorEmoji-Regular.ttf", import.meta.url)})`,
-      ),
-      // new FontFace(
-      //   "LeanWeb",
-      //   `url(${new URL("./fonts/LeanWeb-Regular.otf", import.meta.url)})`,
-      // )
+        "LeanWeb",
+        `url(${new URL("./fonts/LeanWeb-Regular.otf", import.meta.url)})`,
+      )
     ]
     fontFiles.map(font => {
       document.fonts.add(font)
@@ -219,7 +215,7 @@ export type LeanMonacoOptions = {
 
       // other options
       "editor.renderWhitespace": "trailing",
-      "editor.fontFamily": "'JuliaMono', 'Noto Color Emoji'",
+      "editor.fontFamily": "'LeanWeb', 'JuliaMono'",
       "editor.wordWrap": "on",
       "editor.wrappingStrategy": "advanced",
       "workbench.colorTheme": "Visual Studio Light",
