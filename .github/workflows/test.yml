@@ -74,7 +74,7 @@ jobs:
           echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
       - uses: actions/setup-node@v4
       - run: npm install
-      - run: npm run setup_demo
+      - run: npm run demo:setup
       - name: Run tests
         if: matrix.os != 'windows-latest'
         uses: cypress-io/github-action@v6

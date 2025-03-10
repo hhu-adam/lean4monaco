@@ -174,7 +174,7 @@ Afterwards, you can run the demo with
 ```
 cd lean4monaco
 npm install
-npm run setup_demo # this builds lean4monaco and calls `npm install` in `demo/`
+npm run demo:setup # this builds lean4monaco and calls `npm install` in `demo/`
 npm start
 ```
 

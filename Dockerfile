@@ -27,6 +27,6 @@ RUN export LEAN_VERSION="$(cat /project/demo/server/LeanProject/lean-toolchain)"
 
 # Install the demo project
 RUN npm install
-RUN npm run setup_demo
+RUN npm run demo:setup
 
 CMD ["npm", "start"]
