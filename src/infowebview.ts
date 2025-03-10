@@ -1,6 +1,6 @@
 import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
-import { InfoWebviewFactory, InfoWebview } from "./vscode-lean4/vscode-lean4/src/infoview"
-import { Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
+import { InfoWebviewFactory, InfoWebview } from "lean4/src/infoview"
+import { Rpc } from "lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
 import { IColorTheme, IConfigurationService, IThemeService, IEditorOptions } from "vscode/services"
 import * as colorUtils from 'vscode/vscode/vs/platform/theme/common/colorUtils'

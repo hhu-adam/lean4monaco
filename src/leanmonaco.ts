@@ -1,10 +1,10 @@
 import 'vscode/localExtensionHost'
 import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper'
-import { LeanClientProvider } from './vscode-lean4/vscode-lean4/src/utils/clientProvider'
+import { LeanClientProvider } from 'lean4/src/utils/clientProvider'
 import { Uri, workspace } from 'vscode'
-import { InfoProvider } from './vscode-lean4/vscode-lean4/src/infoview'
-import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature'
-import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter'
+import { InfoProvider } from 'lean4/src/infoview'
+import { AbbreviationFeature } from 'lean4/src/abbreviation/AbbreviationFeature'
+import { LeanTaskGutter } from 'lean4/src/taskgutter'
 import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient'
 import { checkLean4ProjectPreconditions } from './preconditions'
@@ -16,7 +16,7 @@ import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-serv
 import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions'
 import { DisposableStore } from 'vscode/monaco'
-import packageJson from './vscode-lean4/vscode-lean4/package.json'
+import packageJson from 'lean4/package.json'
 import { IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
 import { ExtensionKind } from 'vscode/vscode/vs/platform/environment/common/environment'
 
@@ -160,7 +160,7 @@ export type LeanMonacoOptions = {
         {appendLine: () => {}
       } as any,
       checkLean4ProjectPreconditions,
-      setupMonacoClient(this.getWebSocketOptions(options))
+      setupMonacoClient(this.getWebSocketOptions(options)) as any // TODO: `as any` hack
     )
 
     const asAbsolutePath = (path: string) => {
