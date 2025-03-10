@@ -4,7 +4,7 @@ import { PreconditionCheckResult } from "./vscode-lean4/vscode-lean4/src/diagnos
 
 export async function checkLean4ProjectPreconditions(
   channel: OutputChannel,
-  folderUri: ExtUri,
+  folderUri: string,
 ): Promise<PreconditionCheckResult> {
   return 'Fulfilled'
 }

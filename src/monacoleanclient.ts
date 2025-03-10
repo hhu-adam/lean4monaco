@@ -1,11 +1,16 @@
 import { LanguageClientWrapper, WorkerConfigDirect, WebSocketConfigOptions, WebSocketConfigOptionsUrl, WorkerConfigOptions } from 'monaco-editor-wrapper'
-import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi'
+import { ExtUri } from 'lean4/src/utils/exturi'
 import { LanguageClientOptions } from 'vscode-languageclient/node'
 import { Message } from 'vscode-jsonrpc'
-import { displayError } from './vscode-lean4/vscode-lean4/src/utils/notifs'
+
+// JE: just copied that from somewhere random out of `vscode-lean4`
+function displayError(errorText: string) {
+  this.error.hidden = errorText.length === 0
+  this.error.innerText = errorText
+}
 
 export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketConfigOptionsUrl | WorkerConfigOptions | WorkerConfigDirect) => {
-  return async (clientOptions: LanguageClientOptions, folderUri: ExtUri, elanDefaultToolchain: string) => {
+  return async (toolchainOverride: string | undefined, folderUri: ExtUri, clientOptions: LanguageClientOptions) => {
     const languageClientWrapper = new LanguageClientWrapper()
     await languageClientWrapper.init({
       languageClientConfig: {
@@ -26,7 +31,7 @@ export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketCon
                 }
               }
             }
-          }
+          } as any // TODO (JE): Just added `as any` to silence it...
         }
       }
     })

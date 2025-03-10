@@ -8,7 +8,7 @@ Provides browser support for running Lean in a Monaco editor.
 
 This package uses the [VSCode extension
 "Lean 4"](https://marketplace.visualstudio.com/items?itemName=leanprover.lean4) and the
-[Lean Infoview](https://www.npmjs.com/package/@leanprover/infoview).
+[Lean Infoview](https://www.npmjs.com/package/@joneugster/infoview).
 
 ## Usage
 
@@ -145,14 +145,14 @@ export default {
       targets: [
         {
           src: [
-            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/node_modules/@leanprover/infoview/dist/*')),
+            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/node_modules/@joneugster/infoview/dist/*')),
             normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/dist/webview/webview.js')),
           ],
           dest: 'infoview'
         },
         {
           src: [
-            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/node_modules/@leanprover/infoview/dist/codicon.ttf'))
+            normalizePath(path.resolve(__dirname, './node_modules/lean4monaco/node_modules/@joneugster/infoview/dist/codicon.ttf'))
           ],
           dest: 'assets'
         }

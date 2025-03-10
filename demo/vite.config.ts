@@ -24,7 +24,7 @@ export default defineConfig({
       targets: [
         {
           src: [
-            normalizePath(path.resolve(__dirname, '../node_modules/@leanprover/infoview/dist/*')),
+            normalizePath(path.resolve(__dirname, '../node_modules/@joneugster/infoview/dist/*')),
             // note: if you install `lean4monaco` via npm, this line need to change, see README.
             normalizePath(path.resolve(__dirname, '../dist/webview/webview.js')),
           ],

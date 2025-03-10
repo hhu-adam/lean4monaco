@@ -1,10 +1,10 @@
 import 'vscode/localExtensionHost'
 import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper'
-import { LeanClientProvider } from './vscode-lean4/vscode-lean4/src/utils/clientProvider'
-import { Uri, workspace } from 'vscode'
-import { InfoProvider } from './vscode-lean4/vscode-lean4/src/infoview'
-import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature'
-import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter'
+import { LeanClientProvider } from 'lean4/src/utils/clientProvider'
+import { Uri, workspace, ExtensionContext } from 'vscode'
+import { InfoProvider } from 'lean4/src/infoview'
+import { AbbreviationFeature } from 'lean4/src/abbreviation/AbbreviationFeature'
+import { LeanTaskGutter } from 'lean4/src/taskgutter'
 import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient'
 import { checkLean4ProjectPreconditions } from './preconditions'
@@ -16,7 +16,7 @@ import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-serv
 import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions'
 import { DisposableStore } from 'vscode/monaco'
-import packageJson from './vscode-lean4/vscode-lean4/package.json'
+import packageJson from 'lean4/package.json'
 import { IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
 import { ExtensionKind } from 'vscode/vscode/vs/platform/environment/common/environment'
 
@@ -160,16 +160,16 @@ export type LeanMonacoOptions = {
         {appendLine: () => {}
       } as any,
       checkLean4ProjectPreconditions,
-      setupMonacoClient(this.getWebSocketOptions(options))
+      setupMonacoClient(this.getWebSocketOptions(options)) as any // TODO (JE): just added `as any` to silence it
     )
 
     const asAbsolutePath = (path: string) => {
       switch (path) {
         // url.pathToFileURL
-        case "media/progress-light.svg":       return Uri.parse(`${new URL('./vscode-lean4/vscode-lean4/media/progress-light.svg', import.meta.url)}`)
-        case "media/progress-dark.svg":        return Uri.parse(`${new URL('./vscode-lean4/vscode-lean4/media/progress-dark.svg', import.meta.url)}`)
-        case "media/progress-error-light.svg": return Uri.parse(`${new URL('./vscode-lean4/vscode-lean4/media/progress-error-light.svg', import.meta.url)}`)
-        case "media/progress-error-dark.svg":  return Uri.parse(`${new URL('./vscode-lean4/vscode-lean4/media/progress-error-dark.svg', import.meta.url)}`)
+        case "media/progress-light.svg":       return Uri.parse(`${new URL('lean4/media/progress-light.svg', import.meta.url)}`)
+        case "media/progress-dark.svg":        return Uri.parse(`${new URL('lean4/media/progress-dark.svg', import.meta.url)}`)
+        case "media/progress-error-light.svg": return Uri.parse(`${new URL('lean4/media/progress-error-light.svg', import.meta.url)}`)
+        case "media/progress-error-dark.svg":  return Uri.parse(`${new URL('lean4/media/progress-error-dark.svg', import.meta.url)}`)
       }
     }
 
@@ -197,7 +197,7 @@ export type LeanMonacoOptions = {
     this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService, configurationService, fontFiles)
     if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
 
-    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)
+    this.infoProvider = new InfoProvider(this.clientProvider, {} as ExtensionContext, this.iframeWebviewFactory)
 
     // Wait for all fonts to be loaded
     await Promise.all(fontFiles.map(font => font.load()))
@@ -249,10 +249,10 @@ export type LeanMonacoOptions = {
 
   protected getExtensionFiles() {
     const extensionFiles = new Map<string, URL>()
-    extensionFiles.set('/language-configuration.json', new URL('./vscode-lean4/vscode-lean4/language-configuration.json', import.meta.url))
-    extensionFiles.set('/syntaxes/lean4.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4.json', import.meta.url))
-    extensionFiles.set('/syntaxes/lean4-markdown.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/lean4-markdown.json', import.meta.url))
-    extensionFiles.set('/syntaxes/codeblock.json', new URL('./vscode-lean4/vscode-lean4/syntaxes/codeblock.json', import.meta.url))
+    extensionFiles.set('/language-configuration.json', new URL('lean4/language-configuration.json', import.meta.url))
+    extensionFiles.set('/syntaxes/lean4.json', new URL('lean4/syntaxes/lean4.json', import.meta.url))
+    extensionFiles.set('/syntaxes/lean4-markdown.json', new URL('lean4/syntaxes/lean4-markdown.json', import.meta.url))
+    extensionFiles.set('/syntaxes/codeblock.json', new URL('lean4/syntaxes/codeblock.json', import.meta.url))
     extensionFiles.set('/themes/cobalt2.json', new URL('./themes/cobalt2.json', import.meta.url))
     return extensionFiles
   }

@@ -1,6 +1,6 @@
-import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
-import { InfoWebviewFactory, InfoWebview } from "./vscode-lean4/vscode-lean4/src/infoview"
-import { Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
+import { EditorApi, InfoviewApi } from "@joneugster/infoview-api"
+import { InfoWebviewFactory, InfoWebview } from "lean4/src/infoview"
+import { Rpc } from "lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
 import { IColorTheme, IConfigurationService, IThemeService, IEditorOptions } from "vscode/services"
 import * as colorUtils from 'vscode/vscode/vs/platform/theme/common/colorUtils'
@@ -40,7 +40,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     this.infoviewElement = infoviewElement
   }
 
-  make(editorApi: EditorApi, stylesheet: string, column: number) {
+  make(editorApi: EditorApi, stylesheet: string) {
     this.iframe = document.createElement("iframe")
     this.infoviewElement.append(this.iframe)
     this.iframe.contentWindow!.document.open()

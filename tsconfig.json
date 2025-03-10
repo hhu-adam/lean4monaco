@@ -5,6 +5,15 @@
     "module": "ESNext",
     "lib": ["ES2021", "ES2021.String", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
+    // TODO: maybe don't need this. Added when playing with relative dependencies.
+    // "baseUrl": ".",
+    // "paths": {
+    //   "lean4": ["./src/vscode-lean4/vscode-lean4"],
+    //   "@joneugster/infoview-api": ["./src/vscode-lean4/lean4-infoview-api"],
+    //   "@joneugster/infoview": ["./src/vscode-lean4/lean4-infoview"],
+    //   "@joneugster/infoview-unicode-input": ["./src/vscode-lean4/lean4-unicode-input"],
+    //   "@joneugster/infoview-unicode-input-component": ["./src/vscode-lean4/lean4-unicode-input-component"],
+    // },
 
     /* Bundler mode */
     "moduleResolution": "bundler",
