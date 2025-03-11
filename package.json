@@ -33,7 +33,8 @@
     "url": "https://github.com/hhu-adam/lean4monaco"
   },
   "scripts": {
-    "demo:setup": "concurrently \"(cd demo && npm install && npm run build:server)\" \"npm run build\" -n install,build -c \"bgCyan.bold,bgBlue.bold\"",
+    "demo:install": "(cd demo && npm install && npm run build:server)",
+    "demo:setup": "concurrently \"npm run demo:install\" \"npm run build\" -n install,build -c \"bgCyan.bold,bgBlue.bold\"",
     "start": "concurrently \"tsc -w --preserveWatchOutput\" \"webpack --watch\" \"npm run watch:copyfiles\" \"cd demo && npm run start:client\" \"cd demo && npm run start:server\" -n tsc,webpack,copyfiles,vite,server -c \"bgGreen.bold,bgBlue.bold,bgCyan.bold,bgYellow.bold,bgMagenta.bold\"",
     "watch:copyfiles": "nodemon --watch ./src --exec \"npm run build:copyfiles\"",
     "build:copyfiles": "cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" \"**/*.otf\" \"**/*.svg\" ../dist/",
