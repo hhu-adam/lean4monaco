@@ -76,12 +76,12 @@ jobs:
           build: false
           test: false
           lint: false
-      # - name: Install elan (Windows)
-      #   if: matrix.os == 'windows-latest'
-      #   run: |
-      #     curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
-      #     bash elan-init.sh -y
-      #     echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
+      - name: Install elan (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
+          bash elan-init.sh -y
+          echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
       - uses: actions/setup-node@v4
       - run: npm install
       - run: npm run demo:setup
@@ -92,41 +92,6 @@ jobs:
           start: npm start
           wait-on: 'http://localhost:5173'
           browser: ${{ matrix.browser }}
-      # - name: Run tests (Windows)
-      #   run: |
-      #     npx concurrently --hide 0 --kill-others \
-      #       "npm start" \
-      #       "npx wait-on http://localhost:5173 && \
-      #       cypress run --browser ${{ matrix.browser }}" -n server,cypress -s command-cypress
-      #   if: matrix.os == 'windows-latest'
-
-
-  # TODO: copy-pasted from `test` above to allow Windows to fail temporarily
-  test-windows:
-    strategy:
-      fail-fast: false
-      matrix:
-        browser:
-          - electron
-          - chrome
-          - firefox
-          - edge
-    name: Windows - ${{ matrix.browser }}
-    runs-on: windows-latest
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Install elan (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
-          bash elan-init.sh -y
-          echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
-      - uses: actions/setup-node@v4
-      - run: npm install
-      - run: npm run demo:setup
       - name: Run tests (Windows)
         run: |
           npx concurrently --hide 0 --kill-others \
