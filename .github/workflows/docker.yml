@@ -6,9 +6,10 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+# # note: due to the low volume of pushes, it's currently preferred to not cancel previous runs
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+#   cancel-in-progress: true
 defaults:
   run:
     shell: bash
