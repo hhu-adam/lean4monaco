@@ -1,8 +1,8 @@
 import { LanguageClientWrapper, WorkerConfigDirect, WebSocketConfigOptions, WebSocketConfigOptionsUrl, WorkerConfigOptions } from 'monaco-editor-wrapper'
-import { ExtUri } from 'lean4/src/utils/exturi'
+import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi'
 import { LanguageClientOptions } from 'vscode-languageclient/node'
 import { Message } from 'vscode-jsonrpc'
-import { displayError } from 'lean4/src/utils/notifs'
+import { displayError } from './vscode-lean4/vscode-lean4/src/utils/notifs'
 
 export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketConfigOptionsUrl | WorkerConfigOptions | WorkerConfigDirect) => {
   return async (clientOptions: LanguageClientOptions, folderUri: ExtUri, elanDefaultToolchain: string) => {

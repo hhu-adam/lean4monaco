@@ -1,8 +1,8 @@
 import { useEffect, useRef, useContext, useState } from 'react'
 import { LeanMonacoEditor } from 'lean4monaco'
 import { LeanMonacoContext } from './LeanMonaco'
-import { RpcSessionAtPos } from 'lean4/src/infoview'
-import { LeanClient } from 'lean4/src/leanclient'
+import { RpcSessionAtPos } from 'lean4monaco/src/vscode-lean4/vscode-lean4/src/infoview'
+import { LeanClient } from 'lean4monaco/src/vscode-lean4/vscode-lean4/src/leanclient'
 import { Uri } from 'vscode'
 import { RpcConnectParams } from '@leanprover/infoview-api'
 
