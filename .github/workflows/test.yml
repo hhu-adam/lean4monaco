@@ -33,7 +33,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          # - windows-latest
+          - windows-latest
         browser:
           - electron
           - chrome
@@ -44,11 +44,11 @@ jobs:
             name: Linux
           - os: macos-latest
             name: macOS
-          # - os: windows-latest
-          #   name: Windows
-          # - os: windows-latest
-          #   name: Windows
-          #   browser: edge
+          - os: windows-latest
+            name: Windows
+          - os: windows-latest
+            name: Windows
+            browser: edge
         exclude:
           - os: windows-latest
             browser: webkit
@@ -56,7 +56,8 @@ jobs:
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
     # add exceptions for failing jobs here
-    continue-on-error: false
+    # TODO: fix Windows and make these tests mandatory again! (i.e. set this to `false`)
+    continue-on-error: ${{matrix.os == 'windows-latest'}}
     steps:
       - name: Setup firefox (macOS)
         if: matrix.os == 'macos-latest' && matrix.browser == 'firefox'
