@@ -8,9 +8,10 @@ on:
   pull_request:
     branches:
       - "main"
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+# # note: due to the low volume of pushes, it's currently preferred to not cancel previous runs
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+#   cancel-in-progress: true
 defaults:
   run:
     shell: bash
@@ -84,7 +85,7 @@ jobs:
           echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
       - uses: actions/setup-node@v4
       - run: npm install
-      - run: npm run demo:install
+      - run: npm run demo:setup
       - name: Run tests
         if: matrix.os != 'windows-latest'
         uses: cypress-io/github-action@v6
