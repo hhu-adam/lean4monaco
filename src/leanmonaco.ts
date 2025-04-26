@@ -1,7 +1,7 @@
 import 'vscode/localExtensionHost'
 import { RegisterExtensionResult, WebSocketConfigOptionsUrl } from 'monaco-editor-wrapper'
 import { LeanClientProvider } from './vscode-lean4/vscode-lean4/src/utils/clientProvider'
-import { Uri, workspace } from 'vscode'
+import { Uri, workspace, ExtensionContext } from 'vscode'
 import { InfoProvider } from './vscode-lean4/vscode-lean4/src/infoview'
 import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviation/AbbreviationFeature'
 import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter'
@@ -19,6 +19,7 @@ import { DisposableStore } from 'vscode/monaco'
 import packageJson from './vscode-lean4/vscode-lean4/package.json'
 import { IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
 import { ExtensionKind } from 'vscode/vscode/vs/platform/environment/common/environment'
+import { registerLeanEditorProvider } from './vscode-lean4/vscode-lean4/src/utils/leanEditorProvider'
 
 /** Options for LeanMonaco.
  *
@@ -150,7 +151,9 @@ export type LeanMonacoOptions = {
 
     this.updateVSCodeOptions(options.vscode ?? {})
 
-    this.abbreviationFeature = new AbbreviationFeature({} as any, { kind: 'MoveAllSelections' })
+    registerLeanEditorProvider({subscriptions: []} as any)
+
+    this.abbreviationFeature = new AbbreviationFeature({} as any)
 
     this.clientProvider = new LeanClientProvider(
       {
@@ -159,7 +162,6 @@ export type LeanMonacoOptions = {
         getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
         {appendLine: () => {}
       } as any,
-      checkLean4ProjectPreconditions,
       setupMonacoClient(this.getWebSocketOptions(options)) as any // TODO: `as any` hack
     )
 
@@ -197,7 +199,7 @@ export type LeanMonacoOptions = {
     this.iframeWebviewFactory = new IFrameInfoWebviewFactory(themeService, configurationService, fontFiles)
     if (this.infoviewEl) this.iframeWebviewFactory.setInfoviewElement(this.infoviewEl)
 
-    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'}, {} as any, this.iframeWebviewFactory)
+    this.infoProvider = new InfoProvider(this.clientProvider, {language: 'lean4'} as any, this.iframeWebviewFactory)
 
     // Wait for all fonts to be loaded
     await Promise.all(fontFiles.map(font => font.load()))

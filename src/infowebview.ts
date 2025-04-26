@@ -40,7 +40,7 @@ export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
     this.infoviewElement = infoviewElement
   }
 
-  make(editorApi: EditorApi, stylesheet: string, column: number) {
+  make(editorApi: EditorApi, stylesheet: string) {
     this.iframe = document.createElement("iframe")
     this.infoviewElement.append(this.iframe)
     this.iframe.contentWindow!.document.open()
