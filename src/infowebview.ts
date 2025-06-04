@@ -78,6 +78,8 @@ export class IFrameInfoWebviewFactory {
   }
 
   private updateCssVars() {
+    // See also https://github.com/microsoft/vscode/blob/main/src/vs/workbench/contrib/webview/browser/themeing.ts
+
     const theme = this.themeService.getColorTheme()
     const documentStyle = this.iframe.contentDocument?.documentElement.style
     const colors: Array<{id:string}> = (colorUtils as any).getColorRegistry().getColors()
