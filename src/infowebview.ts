@@ -98,7 +98,7 @@ export class IFrameInfoWebviewFactory {
     const linkUnderlines = this.configurationService.getValue('accessibility.underlineLinks')
 
     const styles: {[id: string]: string} = {
-      'vscode-font-family': '\'Droid Sans Mono\', Consolas, Menlo, Monaco, \'Courier New\', monospace',
+      'vscode-font-family': '-apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,system-ui,Ubuntu,Droid Sans,sans-serif',
       'vscode-font-weight': 'normal',
       'vscode-font-size': '13px',
       'vscode-editor-font-family': editorFontFamily,
@@ -111,8 +111,6 @@ export class IFrameInfoWebviewFactory {
     for (const id in styles) {
       documentStyle?.setProperty(`--${id}`, styles[id])
     }
-
-    documentStyle?.setProperty('font-family', '-apple-system,BlinkMacSystemFont,Segoe WPC,Segoe UI,HelveticaNeue-Light,system-ui,Ubuntu,Droid Sans,sans-serif')
 
     this.iframe.contentDocument?.documentElement.setAttribute('class', `${this.apiThemeClassName(theme)}`)
     this.fontFiles.map(font => {
@@ -144,7 +142,7 @@ export class IFrameInfoWebviewFactory {
             color: var(--vscode-editor-foreground);
           }
         </style>
-        <link rel="stylesheet" href="${new URL('./vscode-lean4/lean4-infoview/src/infoview/index.css', import.meta.url)}">
+        <link rel="stylesheet" href="${new URL('../node_modules/@leanprover/infoview/dist/index.css', import.meta.url)}">
         <link rel="stylesheet" href="${new URL('./css/vscode_webview.css', import.meta.url)}">
         <link rel="stylesheet" href="${new URL('./css/custom.css', import.meta.url)}">
       </head>
