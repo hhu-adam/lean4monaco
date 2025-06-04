@@ -1,5 +1,4 @@
 import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
-import { InfoWebviewFactory, InfoWebview } from "./vscode-lean4/vscode-lean4/src/infoview"
 import { Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
 import { IColorTheme, IConfigurationService, IThemeService, IEditorOptions } from "vscode/services"
@@ -7,7 +6,7 @@ import * as colorUtils from 'vscode/vscode/vs/platform/theme/common/colorUtils'
 import { ColorScheme } from 'vscode/vscode/vs/platform/theme/common/theme'
 import * as editorOptions from 'vscode/vscode/vs/editor/common/config/editorOptions'
 
-export class IFrameInfoWebview implements InfoWebview {
+export class IFrameInfoWebview {
 
   visible = true
 
@@ -30,7 +29,7 @@ export class IFrameInfoWebview implements InfoWebview {
   }
 }
 
-export class IFrameInfoWebviewFactory implements InfoWebviewFactory {
+export class IFrameInfoWebviewFactory {
   private infoviewElement: HTMLElement
   private iframe: HTMLIFrameElement
 

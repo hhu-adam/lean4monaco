@@ -5,7 +5,7 @@ import { Message } from 'vscode-jsonrpc'
 import { displayNotification } from './vscode-lean4/vscode-lean4/src/utils/notifs'
 
 export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketConfigOptionsUrl | WorkerConfigOptions | WorkerConfigDirect) => {
-  return async (folderUri: ExtUri, clientOptions: LanguageClientOptions, elanDefaultToolchain: string) => {
+  return async (clientOptions: LanguageClientOptions) => {
     const languageClientWrapper = new LanguageClientWrapper()
     await languageClientWrapper.init({
       languageClientConfig: {
