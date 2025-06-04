@@ -11,3 +11,9 @@ TODO: These might be superfluous if the styles from `vscode-lean4 were integrate
 .font-size-code-smaller {
   opacity: 0.6;
 }
+
+/* Hide "Save current config to default config" button */
+.saveConfigButton,
+.saveConfigLineBreak {
+  display: none;
+}
