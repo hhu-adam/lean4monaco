@@ -1,5 +1,10 @@
 describe('Editor Test', () => {
   it('displays the editor', () => {
+    cy.on('uncaught:exception', (err, runnable) => {
+      // Note: this is because the server throws sometimes random errors about
+      // the Lean server being stopped/restarted etc. which don't prevent the site from working
+      return false
+    })
     cy.visit('http://localhost:5173/')
     cy.contains('#check 0')
       .should(($p: any) => {
@@ -10,13 +15,13 @@ describe('Editor Test', () => {
 
   it('displays the infoview', () => {
     cy.on('uncaught:exception', (err, runnable) => {
-      // Note: this is because the server throws sometimes random errors about
-      // the Lean server being stopped/restarted etc. which don't prevent the site from working
+      // Note: see note about console errors above
       return false
     })
     cy.visit('http://localhost:5173/')
     cy.get('.squiggly-info')
     cy.iframe().contains('0 : Nat')
+    cy.iframe().find('.codicon').should('have.css', 'font-family', 'codicon')
   })
 
   it('changes themes', () => {
@@ -65,8 +70,6 @@ describe('Editor Test', () => {
     cy.visit('http://localhost:5173/')
     cy.contains('#check 0')
     cy.get('[data-cy="number-editors"]').type('{selectall}').type('2')
-    cy.contains('#check 1')
-    cy.contains('#check 0')
     cy.get('.squiggly-info')
     cy.contains('#check 1').click()
     cy.iframe().contains('1 : Nat')
@@ -74,7 +77,7 @@ describe('Editor Test', () => {
     cy.iframe().contains('0 : Nat')
   })
 
-  it('check leanOptions', () => {
+  it('respects leanOptions', () => {
     cy.on('uncaught:exception', (err, runnable) => {
       // Note: see note about console errors above
       return false
@@ -82,12 +85,10 @@ describe('Editor Test', () => {
     // check that the lean option to display `fun _ ↦` is activated in the
     // 1st editor
     cy.visit('http://localhost:5173/')
-    cy.contains('#print f0')
     cy.contains('#print f0').click()
     cy.iframe().contains('def f0 : Nat → Nat := fun x ↦ x + 1')
     // Test in the 3rd editor that the default setting is indeed still `fun _ =>`
     cy.get('[data-cy="number-editors"]').type('{selectall}').type('3')
-    cy.contains('#print f2')
     cy.contains('#print f2').click()
     cy.iframe().contains('def f2 : Nat → Nat := fun x => x + 1')
   })
