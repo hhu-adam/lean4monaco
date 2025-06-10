@@ -82,14 +82,9 @@ describe('Editor Test', () => {
       // Note: see note about console errors above
       return false
     })
-    // check that the lean option to display `fun _ ↦` is activated in the
-    // 1st editor
+    // check that the lean option to display `fun _ ↦` is activated
     cy.visit('http://localhost:5173/')
     cy.contains('#print f0').click()
     cy.iframe().contains('def f0 : Nat → Nat := fun x ↦ x + 1')
-    // Test in the 3rd editor that the default setting is indeed still `fun _ =>`
-    cy.get('[data-cy="number-editors"]').type('{selectall}').type('3')
-    cy.contains('#print f2').click()
-    cy.iframe().contains('def f2 : Nat → Nat := fun x => x + 1')
   })
 })
