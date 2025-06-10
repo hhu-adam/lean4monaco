@@ -144,7 +144,7 @@ export class IFrameInfoWebviewFactory {
             color: var(--vscode-editor-foreground);
           }
         </style>
-        <link rel="stylesheet" href="${new URL('../node_modules/@leanprover/infoview/dist/index.css', import.meta.url)}">
+        <link rel="stylesheet" href="/infoview/index.css">
         <link rel="stylesheet" href="${new URL('./css/vscode_webview.css', import.meta.url)}">
         <link rel="stylesheet" href="${new URL('./css/custom.css', import.meta.url)}">
       </head>
