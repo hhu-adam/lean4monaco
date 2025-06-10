@@ -196,7 +196,18 @@ Some random errors we encountered. If you have more, please share them.
 * Warnings about `glob` and `inflight` come from `copyfiles`: see [copyfiles#132](https://github.com/calvinmetcalf/copyfiles/pull/132)
 * Warning about ` @types/cypress` comes from `cypress-iframe`
 
+
 ## Development
+
+### Beware of the Git Submodule
+
+This repo contains a submodule in `src/vscode-lean4`. So after cloning the repo and after pulling changes, run
+```
+git submodule update --init
+```
+to update the submodule as well.
+
+### Testing
 
 You can run
 
@@ -206,6 +217,70 @@ npm test
 ```
 
 for the automated cypress tests.
+
+### Merge upstream changes from the VSCode extension
+
+Here is how to get the latest changes from the VSCode extension:
+```
+cd src/vscode-lean4
+git remote add upstream https://github.com/leanprover/vscode-lean4.git
+git fetch upstream
+git merge upstream/master
+```
+If there are merge conflicts, resolve them.
+
+Make sure that the `@leanprover` packages (and possibly others?)
+listed under `dependencies` in `package.json` point to the same versions as the packages
+listed under `dependencies` in `src/vscode-lean4/package.json`. 
+
+Verify that the everything still works:
+```
+npm install
+npm test
+```
+
+Stage the submodule pointer to the new merge commit
+and if you made changes to `package.json`, stage `package.json` and `package-lock.json` as well:
+```
+cd ../..
+git add src/vscode-lean4 package.json package-lock.json
+```
+
+Commit your changes:
+```
+git commit -m "Merge upstream changes from vscode-lean4"
+```
+
+Push the new commits in the submodule and in the parent repo:
+```
+cd src/vscode/lean4
+git push
+cd ../..
+git push
+```
+
+### Publishing
+
+Increase the version number in `package.json`.
+
+Verify that the everything works:
+```
+npm install
+npm test
+```
+
+Publish:
+```
+npm publish
+```
+
+If it succeeded, commit the new version number:
+```
+git add package.json package-lock.json demo/package-lock.json
+git commit -m "Publish npm package"
+git push
+```
+
 
 ### Docker image
 

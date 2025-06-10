@@ -1,6 +1,6 @@
 {
   "name": "lean4monaco",
-  "version": "1.0.46",
+  "version": "1.1.0",
   "description": "Monaco Editor support for the Lean 4 theorem prover.",
   "keywords": [
     "lean",
@@ -42,7 +42,7 @@
     "test": "npm run demo:setup && concurrently --hide 0 --kill-others \"npm start\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
   },
   "dependencies": {
-    "@leanprover/infoview": "~0.8.4",
+    "@leanprover/infoview": "~0.8.5",
     "@leanprover/infoview-api": "~0.7.0",
     "@leanprover/unicode-input": "~0.1.4",
     "@leanprover/unicode-input-component": "~0.1.4",
