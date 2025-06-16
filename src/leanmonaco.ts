@@ -7,7 +7,6 @@ import { AbbreviationFeature } from './vscode-lean4/vscode-lean4/src/abbreviatio
 import { LeanTaskGutter } from './vscode-lean4/vscode-lean4/src/taskgutter'
 import { IFrameInfoWebviewFactory } from './infowebview'
 import { setupMonacoClient } from './monacoleanclient'
-import { checkLean4ProjectPreconditions } from './preconditions'
 import { initialize, getService, IThemeService, IConfigurationService } from 'vscode/services'
 import getConfigurationServiceOverride from '@codingame/monaco-vscode-configuration-service-override'
 import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-service-override'
