@@ -39,7 +39,10 @@
     "watch:copyfiles": "nodemon --watch ./src --exec \"npm run build:copyfiles\"",
     "build:copyfiles": "cd src && copyfiles \"**/*.json\" \"**/*.css\" \"**/*.ttf\" \"**/*.otf\" \"**/*.svg\" ../dist/",
     "build": "tsc && webpack && npm run build:copyfiles",
-    "test": "npm run demo:setup && concurrently --hide 0 --kill-others \"npm start\" \"wait-on http://localhost:5173 && cypress run\" -n server,cypress -s command-cypress"
+    "test:bare": "wait-on http://localhost:5173 && cypress run",
+    "test": "npm run demo:setup && concurrently --hide 0 --kill-others \"npm start\" \"npm run test:bare\" -n server,cypress -s command-cypress",
+    "test:windows:bare": "wait-on http://localhost:5173 && CYPRESS_USER_AGENT_OS=\"Windows NT 10.0; Win64; x64\" cypress run --browser chromium",
+    "test:windows": "npm run demo:setup && concurrently --hide 0 --kill-others \"npm start\" \"npm run test:windows:bare\" -n server,cypress -s command-cypress"
   },
   "dependencies": {
     "@leanprover/infoview": "~0.8.5",
