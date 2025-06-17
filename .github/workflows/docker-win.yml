@@ -21,9 +21,7 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-docker-action@v4
       - name: Build server docker image
-        uses: docker/build-push-action@v6
-        with:
-          tags: lean4monaco:latest
+        run: docker build -t lean4monaco -f Dockerfile .
       - name: Start server
         run: docker run -dit -p 5173:5173 -p 8080:8080 lean4monaco
       - name: Run tests (electron)
