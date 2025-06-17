@@ -61,9 +61,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lean4monaco
-          path: /tmp
+          path: $GITHUB_WORKSPACE
       - name: Load server image
-        run: docker load --input /tmp/lean4monaco.tar
+        working-directory: $GITHUB_WORKSPACE
+        run: docker load --input lean4monaco.tar
       - name: Start server
         run: docker run -dit -p 5173:5173 -p 8080:8080 lean4monaco
       - name: Run tests (electron)
