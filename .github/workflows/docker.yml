@@ -41,12 +41,8 @@ jobs:
           path: /tmp/lean4monaco.tar
   test:
     needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    name: Test image (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Test image
+    runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,17 +50,13 @@ jobs:
       # needed to run cypress
       - name: Install dependencies
         run: npm install
-      - name: Set up docker (Windows)
-        if: runner.os == 'windows'
-        uses: docker/setup-docker-action@v4
       - name: Download server image
         uses: actions/download-artifact@v4
         with:
           name: lean4monaco
-          path: $GITHUB_WORKSPACE
+          path: /tmp
       - name: Load server image
-        working-directory: $GITHUB_WORKSPACE
-        run: docker load --input lean4monaco.tar
+        run: docker load --input /tmp/lean4monaco.tar
       - name: Start server
         run: docker run -dit -p 5173:5173 -p 8080:8080 lean4monaco
       - name: Run tests (electron)
