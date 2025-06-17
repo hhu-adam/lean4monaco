@@ -20,6 +20,13 @@ jobs:
       - uses: actions/setup-node@v4
       - name: Set up Docker
         uses: docker/setup-docker-action@v4
+      - name: Enable Docker experimental features
+        run: |
+          $configPath = "$env:ProgramData\Docker\config\daemon.json"
+          New-Item -Path $configPath -Force
+          Set-Content -Path $configPath -Value '{ "experimental": true }'
+          Restart-Service docker
+        shell: pwsh
       - name: Build server docker image
         run: docker build -t lean4monaco -f Dockerfile .
       - name: Start server
