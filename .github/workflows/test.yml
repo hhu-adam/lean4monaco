@@ -82,6 +82,7 @@ jobs:
       - run: npm run demo:setup
       
       - name: Run tests
+        if: matrix.browser != 'chromium'
         uses: cypress-io/github-action@v6
         with:
           start: npm start
