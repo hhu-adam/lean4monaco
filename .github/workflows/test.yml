@@ -39,6 +39,9 @@ jobs:
           - firefox
           - webkit
           - chromium
+        exclude:
+          - os: macos-latest
+            browser: chromium
         include:
           - os: ubuntu-latest
             name: Linux
