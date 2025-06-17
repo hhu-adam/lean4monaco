@@ -33,41 +33,36 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          # - windows-latest
         browser:
           - electron
           - chrome
           - firefox
           - webkit
+          - chromium
         include:
           - os: ubuntu-latest
             name: Linux
           - os: macos-latest
             name: macOS
-        #   - os: windows-latest
-        #     name: Windows
-        #   - os: windows-latest
-        #     name: Windows
-        #     browser: edge
-        # exclude:
-        #   - os: windows-latest
-        #     browser: webkit
 
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
     continue-on-error: false
     steps:
+
       - name: Setup firefox (macOS)
         if: matrix.os == 'macos-latest' && matrix.browser == 'firefox'
         uses: browser-actions/setup-firefox@v1
+
       - name: Setup webkit (Linux)
         if: matrix.os == 'ubuntu-latest' && matrix.browser == 'webkit'
         run: npx playwright install-deps webkit
+
       - uses: actions/checkout@v4
         with:
           submodules: true
+
       - uses: leanprover/lean-action@v1
-        if: matrix.os != 'windows-latest'
         with:
           lake-package-directory: "demo/server/LeanProject"
           use-github-cache: false
@@ -76,26 +71,26 @@ jobs:
           build: false
           test: false
           lint: false
-      - name: Install elan (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf > elan-init.sh
-          bash elan-init.sh -y
-          echo "$(realpath ~/.elan/bin)" >> $GITHUB_PATH
+
       - uses: actions/setup-node@v4
+
       - run: npm install
+
       - run: npm run demo:setup
+      
       - name: Run tests
-        if: matrix.os != 'windows-latest'
         uses: cypress-io/github-action@v6
         with:
           start: npm start
           wait-on: 'http://localhost:5173'
           browser: ${{ matrix.browser }}
-      - name: Run tests (Windows)
-        run: |
-          npx concurrently --hide 0 --kill-others \
-            "npm start" \
-            "npx wait-on http://localhost:5173 && \
-            cypress run --browser ${{ matrix.browser }}" -n server,cypress -s command-cypress
-        if: matrix.os == 'windows-latest'
+
+      - name: Run tests (Windows User Agent)
+        if: matrix.browser == 'chromium'
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: 'http://localhost:5173'
+          browser: ${{ matrix.browser }}
+          env:
+            CYPRESS_USER_AGENT: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
