@@ -86,5 +86,11 @@ describe('Editor Test', () => {
     cy.visit('http://localhost:5173/')
     cy.contains('#print f0').click()
     cy.iframe().contains('def f0 : Nat → Nat := fun x ↦ x + 1')
+    
+    // Test in the 3rd editor that the settings also apply if no corresponding file exists on disk
+    cy.get('[data-cy="number-editors"]').type('{selectall}').type('3')
+    cy.contains('#print f2')
+    cy.contains('#print f2').click()
+    cy.iframe().contains('def f2 : Nat → Nat := fun x ↦ x + 1')
   })
 })
