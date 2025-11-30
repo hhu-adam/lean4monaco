@@ -9,5 +9,3 @@ package leanProject where
 @[default_target]
 lean_lib LeanProject where
   -- add library configuration options here
-  leanOptions := #[
-    ⟨`pp.unicode.fun, true⟩ ]

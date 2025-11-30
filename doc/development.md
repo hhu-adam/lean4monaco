@@ -7,13 +7,27 @@ To update the Infoview & Lean4 extension you should
 * update the npm packages `@leanprover/infoview`, `@leanprover/infoview-api`, `@leanprover/unicode-input` to their newest version
 * go to the git submodule `./src/vscode-lean4` and update the branch. (currently the fork is on a branch `monaco` and this has to be rebased to the upstream's `master` branch. Once all open PRs are addressed, this setup could change to directly load `vscode-lean4` as an `npm` package.)
 
-To test the setup you should use
+## Testing
+
+Run all tests with
 
 ```
 npm install
-npm run build
 npm test
-(cd demo/ && npm run build)
+```
+
+### Interactive Testing
+
+For interactive testing you need to start the demo server
+
+```
+npm start
+```
+
+and then open Cypress
+
+```
+npx cypress open
 ```
 
 # Versioning

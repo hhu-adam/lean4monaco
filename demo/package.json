@@ -19,7 +19,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@codingame/esbuild-import-meta-url-plugin": "file:../esbuild-import-meta-url-plugin",
+    "@codingame/esbuild-import-meta-url-plugin": "^1.0.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
@@ -27,7 +27,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
-    "npm": "^10.8.2",
     "typescript": "^5.2.2",
     "vite": "^6.2.0",
     "vite-plugin-node-polyfills": "^0.23.0",
