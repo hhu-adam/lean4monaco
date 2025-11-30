@@ -19,7 +19,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@codingame/esbuild-import-meta-url-plugin": "file:../esbuild-import-meta-url-plugin",
+    "@codingame/esbuild-import-meta-url-plugin": "^1.0.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.0.1",
