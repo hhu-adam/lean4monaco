@@ -229,7 +229,7 @@ If there are merge conflicts, resolve them.
 
 Make sure that the `@leanprover` packages (and possibly others?)
 listed under `dependencies` in `package.json` point to the same versions as the packages
-listed under `dependencies` in `src/vscode-lean4/package.json`. 
+listed under `dependencies` in `src/vscode-lean4/package.json`.
 
 Verify that the everything still works:
 ```
