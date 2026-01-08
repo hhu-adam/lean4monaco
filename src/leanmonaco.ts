@@ -19,6 +19,7 @@ import packageJson from './vscode-lean4/vscode-lean4/package.json'
 import { IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
 import { ExtensionKind } from 'vscode/vscode/vs/platform/environment/common/environment'
 import { registerLeanEditorProvider } from './vscode-lean4/vscode-lean4/src/utils/leanEditorProvider'
+import type { LanguageClientOptions } from 'vscode-languageclient/node'
 
 /** Options for LeanMonaco.
  *
@@ -37,6 +38,8 @@ export type LeanMonacoOptions = {
   vscode?: {
     [id: string]: any
   }
+  /** Options passed to the Lean language client */
+  clientOptions?: LanguageClientOptions
 }
 
 
@@ -158,10 +161,12 @@ export type LeanMonacoOptions = {
       {
         installChanged: () => {return {dispose: ()  => {}}},
         testLeanVersion: () => {return "lean4/stable"},
-        getElanDefaultToolchain: () => {return "lean4/stable"}} as any,
-        {appendLine: () => {}
+        getElanDefaultToolchain: () => {return "lean4/stable"}
       } as any,
-      setupMonacoClient(this.getWebSocketOptions(options)) as any // TODO: `as any` hack
+      {
+        appendLine: () => {}
+      } as any,
+      setupMonacoClient(this.getWebSocketOptions(options), options.clientOptions)
     )
 
     const asAbsolutePath = (path: string) => {

@@ -1,10 +1,13 @@
 import { LanguageClientWrapper, WorkerConfigDirect, WebSocketConfigOptions, WebSocketConfigOptionsUrl, WorkerConfigOptions } from 'monaco-editor-wrapper'
-import { ExtUri } from './vscode-lean4/vscode-lean4/src/utils/exturi'
 import { LanguageClientOptions } from 'vscode-languageclient/node'
 import { Message } from 'vscode-jsonrpc'
 import { displayNotification } from './vscode-lean4/vscode-lean4/src/utils/notifs'
+import merge from 'lodash/merge'
 
-export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketConfigOptionsUrl | WorkerConfigOptions | WorkerConfigDirect) => {
+export const setupMonacoClient = (
+  options: WebSocketConfigOptions | WebSocketConfigOptionsUrl | WorkerConfigOptions | WorkerConfigDirect,
+  moreClientOptions?: LanguageClientOptions
+) => {
   return async (clientOptions: LanguageClientOptions) => {
     const languageClientWrapper = new LanguageClientWrapper()
     await languageClientWrapper.init({
@@ -12,7 +15,7 @@ export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketCon
         languageId: 'lean4',
         options,
         clientOptions: {
-          ...clientOptions,
+          ...merge({}, clientOptions, moreClientOptions),
           connectionOptions: {
             ...clientOptions.connectionOptions,
             messageStrategy: {
@@ -31,8 +34,8 @@ export const setupMonacoClient = (options: WebSocketConfigOptions | WebSocketCon
       }
     })
     await languageClientWrapper?.start()
-    const client = languageClientWrapper.getLanguageClient()!
-    ;(client as any)._serverProcess = {stderr: {on: () => {}}}
+    const client = languageClientWrapper.getLanguageClient()!;
+    (client as any)._serverProcess = { stderr: { on: () => {} }}
     return client
   }
 }

@@ -269,6 +269,7 @@ npm test
 
 Publish:
 ```
+npm version patch
 npm publish
 ```
 
