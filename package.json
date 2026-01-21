@@ -42,7 +42,8 @@
     "test:bare": "wait-on http://localhost:5173 && cypress run",
     "test": "npm run demo:setup && concurrently --hide 0 --kill-others \"npm start\" \"npm run test:bare\" -n server,cypress -s command-cypress",
     "test:windows:bare": "wait-on http://localhost:5173 && CYPRESS_USER_AGENT_OS=\"Windows NT 10.0; Win64; x64\" cypress run --browser chromium",
-    "test:windows": "npm run demo:setup && concurrently --hide 0 --kill-others \"npm start\" \"npm run test:windows:bare\" -n server,cypress -s command-cypress"
+    "test:windows": "npm run demo:setup && concurrently --hide 0 --kill-others \"npm start\" \"npm run test:windows:bare\" -n server,cypress -s command-cypress",
+    "font:subset": "npx tsx scripts/subset-font.ts"
   },
   "dependencies": {
     "@leanprover/infoview": "~0.8.5",
@@ -66,7 +67,9 @@
     "cypress": "^15.8.2",
     "cypress-iframe": "^1.0.1",
     "nodemon": "^3.1.4",
+    "subset-font": "^2.4.0",
     "ts-loader": "^9.5.1",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.5",
     "wait-on": "^9.0.3",
     "webpack": "^5.93.0",

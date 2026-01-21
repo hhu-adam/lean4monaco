@@ -189,7 +189,7 @@ export type LeanMonacoOptions = {
       ),
       new FontFace(
         "Noto Color Emoji",
-        `url(${new URL("./fonts/NotoColorEmoji-Regular.ttf", import.meta.url)})`,
+        `url(${new URL("./fonts/NotoColorEmoji-Subset.ttf", import.meta.url)})`,
       ),
       // new FontFace(
       //   "LeanWeb",
