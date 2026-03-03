@@ -8,10 +8,9 @@ on:
   pull_request:
     branches:
       - "main"
-# # note: due to the low volume of pushes, it's currently preferred to not cancel previous runs
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 defaults:
   run:
     shell: bash
@@ -35,21 +34,30 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
+          - windows-latest
         browser:
           - electron
           - chrome
           - firefox
           - webkit
           - chromium
+          - edge
         exclude:
           - os: macos-latest
             browser: chromium
+          - os: windows-latest
+            browser: chromium
+          - os: ubuntu-latest
+            browser: edge
+          - os: macos-latest
+            browser: edge
         include:
           - os: ubuntu-latest
             name: Linux
           - os: macos-latest
             name: macOS
-
+          - os: windows-latest
+            name: Windows
     name: ${{ matrix.name }} - ${{ matrix.browser }}
     runs-on: ${{ matrix.os }}
     continue-on-error: false
@@ -79,7 +87,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - run: npm install
-      
+
       - name: Run tests
         run: npm run test
 
