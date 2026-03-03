@@ -40,11 +40,18 @@ jobs:
           - chrome
           - firefox
           - webkit
-        include:
-          - os: ubuntu-latest
+          - chromium
+          - edge
+        exclude:
+          - os: macos-latest
             browser: chromium
           - os: windows-latest
+            browser: chromium
+          - os: ubuntu-latest
             browser: edge
+          - os: macos-latest
+            browser: edge
+        include:
           - os: ubuntu-latest
             name: Linux
           - os: macos-latest
