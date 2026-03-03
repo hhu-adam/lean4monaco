@@ -40,11 +40,11 @@ jobs:
           - chrome
           - firefox
           - webkit
-          - chromium
-        exclude:
-          - os: macos-latest
-            browser: chromium
         include:
+          - os: ubuntu-latest
+            browser: chromium
+          - os: windows-latest
+            browser: edge
           - os: ubuntu-latest
             name: Linux
           - os: macos-latest
@@ -80,7 +80,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - run: npm install
-      
+
       - name: Run tests
         run: npm run test
 
