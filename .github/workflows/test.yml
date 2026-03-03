@@ -92,3 +92,15 @@ jobs:
       - name: Run tests (Windows User Agent)
         if: matrix.browser == 'chromium'
         run: npm run test:windows
+
+  all-test:
+    name: all
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - run: |
+          if [[ "${{ needs.test.result }}" != "success" ]]; then
+            echo "Matrix failed"
+            exit 1
+          fi
