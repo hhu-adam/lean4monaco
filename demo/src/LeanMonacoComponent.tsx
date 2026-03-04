@@ -1,10 +1,13 @@
 import { useRef, useEffect } from 'react'
-import LeanMonacoEditorComponent from './LeanMonacoEditor'
+import { LeanMonacoEditorComponent } from './LeanMonacoEditorComponent'
 import * as path from 'path'
 import { disposeLeanMonacoAtom, initLeanMonacoAtom, leanMonacoAtom, leanMonacoOptionsAtom } from './store/editor-atoms';
 import { useAtomValue, useSetAtom } from 'jotai';
 
-function LeanMonacoComponent({ numberEditors } : { numberEditors: number}) {
+/**
+ * Demo component with an infoview and multiple editors.
+ */
+export function LeanMonacoComponent({ numberEditors } : { numberEditors: number}) {
   const infoviewRef = useRef<HTMLDivElement>(null)
   const leanMonaco = useAtomValue(leanMonacoAtom)
   const LeanMonacoOptions = useAtomValue(leanMonacoOptionsAtom)
@@ -29,8 +32,7 @@ function LeanMonacoComponent({ numberEditors } : { numberEditors: number}) {
             /* note: The sample content here is used for the cypress tests. */
             value={`#check ${i}\ndef f${i} : Nat → Nat := fun x ↦ x + 1\n#print f${i}`}/>
         )}
-        <div className='infoview' ref={infoviewRef}></div>
-
+        <div className='infoview' ref={infoviewRef} />
       <div>
         <button onClick={() => {
           console.log('[LeanMonaco] restarting Lean')
@@ -40,5 +42,3 @@ function LeanMonacoComponent({ numberEditors } : { numberEditors: number}) {
     </>
   )
 }
-
-export default LeanMonacoComponent

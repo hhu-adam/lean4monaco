@@ -5,7 +5,10 @@ import { RpcConnectParams } from '@leanprover/infoview-api'
 import { useAtomValue } from 'jotai'
 import { leanMonacoAtom } from './store/editor-atoms'
 
-function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: string}) {
+/**
+ * Demo component with with an editor. You can start multiple `LeanMonacoEditor` instances.
+ */
+export function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: string}) {
   const codeviewRef = useRef<HTMLDivElement>(null)
   const leanMonaco = useAtomValue(leanMonacoAtom)
 
@@ -14,7 +17,7 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
   const [uri, setUri] = useState<Uri | null>(null)
   const [rpcSess, setRpcSess] = useState<RpcSessionAtPos|null>(null)
 
-  // You can start multiple `LeanMonacoEditor` instances
+  // Start the editor
   useEffect(() => {
     if (leanMonaco) {
       const leanMonacoEditor = new LeanMonacoEditor()
@@ -33,7 +36,7 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
     }
   }, [leanMonaco, fileName, value])
 
-// RPC example: wait until there is a `client`
+  // RPC example: wait until there is a `client`
   useEffect(() => {
     const updateClient = () => {
       const clients = leanMonaco?.clientProvider?.getClients()
@@ -123,5 +126,3 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
     }}>Sample Rpc Notification</button>
   </>
 }
-
-export default LeanMonacoEditorComponent
