@@ -1,34 +1,24 @@
-import { useEffect, useRef, createContext, useState } from 'react'
-import { LeanMonaco, LeanMonacoOptions } from 'lean4monaco'
+import { useRef, useEffect } from 'react'
 import LeanMonacoEditorComponent from './LeanMonacoEditor'
 import * as path from 'path'
+import { disposeLeanMonacoAtom, initLeanMonacoAtom, leanMonacoAtom, leanMonacoOptionsAtom } from './store/editor-atoms';
+import { useAtomValue, useSetAtom } from 'jotai';
 
-export const LeanMonacoContext = createContext<LeanMonaco|null>(null);
-
-function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOptions, numberEditors: number}) {
-  const [leanMonaco, setLeanMonaco] = useState<LeanMonaco|null>(null)
+function LeanMonacoComponent({ numberEditors } : { numberEditors: number}) {
   const infoviewRef = useRef<HTMLDivElement>(null)
+  const leanMonaco = useAtomValue(leanMonacoAtom)
+  const LeanMonacoOptions = useAtomValue(leanMonacoOptionsAtom)
+  const initLeanMonaco = useSetAtom(initLeanMonacoAtom)
+  const disposeLeanMonaco = useSetAtom(disposeLeanMonacoAtom)
 
   // You need to start one `LeanMonaco` instance once in your application using a `useEffect`
   useEffect(() => {
-    const _leanMonaco = new LeanMonaco()
-    setLeanMonaco(_leanMonaco)
-    _leanMonaco.setInfoviewElement(infoviewRef.current!)
-
-
-    ;(async () => {
-      await _leanMonaco.start(options)
-      console.debug('[demo]: leanMonaco started')
-    })()
-
-    return () => {
-      _leanMonaco.dispose()
-    }
-  }, [options])
+    initLeanMonaco({ infoviewElement: infoviewRef.current! })
+    return disposeLeanMonaco
+  }, [LeanMonacoOptions, disposeLeanMonaco, initLeanMonaco])
 
   return (
     <>
-      <LeanMonacoContext.Provider value={leanMonaco}>
         {[...Array(numberEditors)].map((_x, i) =>
           <LeanMonacoEditorComponent
             key={i}
@@ -40,7 +30,6 @@ function LeanMonacoComponent({options, numberEditors} : {options: LeanMonacoOpti
             value={`#check ${i}\ndef f${i} : Nat → Nat := fun x ↦ x + 1\n#print f${i}`}/>
         )}
         <div className='infoview' ref={infoviewRef}></div>
-      </LeanMonacoContext.Provider>
 
       <div>
         <button onClick={() => {
