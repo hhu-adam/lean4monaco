@@ -1,24 +1,34 @@
 import { useRef, useEffect } from 'react'
 import { LeanMonacoEditorComponent } from './LeanMonacoEditorComponent'
 import * as path from 'path'
-import { disposeLeanMonacoAtom, initLeanMonacoAtom, leanMonacoAtom, leanMonacoOptionsAtom } from './store/editor-atoms';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { leanMonacoAtom, leanMonacoOptionsAtom } from './store/editor-atoms';
+import { useAtom, useAtomValue } from 'jotai';
+import { LeanMonaco } from 'lean4monaco';
 
 /**
  * Demo component with an infoview and multiple editors.
  */
 export function LeanMonacoComponent({ numberEditors } : { numberEditors: number}) {
   const infoviewRef = useRef<HTMLDivElement>(null)
-  const leanMonaco = useAtomValue(leanMonacoAtom)
-  const LeanMonacoOptions = useAtomValue(leanMonacoOptionsAtom)
-  const initLeanMonaco = useSetAtom(initLeanMonacoAtom)
-  const disposeLeanMonaco = useSetAtom(disposeLeanMonacoAtom)
+  const [leanMonaco, setLeanMonaco] = useAtom(leanMonacoAtom)
+  const leanMonacoOptions = useAtomValue(leanMonacoOptionsAtom)
 
-  // You need to start one `LeanMonaco` instance once in your application using a `useEffect`
-  useEffect(() => {
-    initLeanMonaco({ infoviewElement: infoviewRef.current! })
-    return () => disposeLeanMonaco()
-  }, [LeanMonacoOptions, disposeLeanMonaco, initLeanMonaco])
+    // You need to start one `LeanMonaco` instance once in your application using a `useEffect`
+    useEffect(() => {
+    const _leanMonaco = new LeanMonaco()
+    setLeanMonaco(_leanMonaco)
+    _leanMonaco.setInfoviewElement(infoviewRef.current!)
+
+
+    ;(async () => {
+      await _leanMonaco.start(leanMonacoOptions)
+      console.debug('[demo]: leanMonaco started')
+    })()
+
+    return () => {
+      _leanMonaco.dispose()
+    }
+  }, [leanMonacoOptions, setLeanMonaco])
 
   return (
     <>

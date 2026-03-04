@@ -17,30 +17,3 @@ export const leanMonacoOptionsAtom = atom<LeanMonacoOptions>({
 
 /** The unique leanMonaco instance for the entire application */
 export const leanMonacoAtom = atom<LeanMonaco|null>(null)
-
-/** Method to initialise leanMonaco */
-export const initLeanMonacoAtom = atom(
-  null,
-  async (get, set, { infoviewElement } : { infoviewElement: HTMLDivElement}) => {
-    const previous = get(leanMonacoAtom)
-    previous?.dispose()
-    const options = get(leanMonacoOptionsAtom)
-    const leanMonaco = new LeanMonaco()
-    leanMonaco.setInfoviewElement(infoviewElement)
-    await leanMonaco.start(options)
-    console.debug('[demo]: leanMonaco started')
-    set(leanMonacoAtom, leanMonaco)
-  }
-)
-
-/** Method to discard the leanMonaco instance */
-export const disposeLeanMonacoAtom = atom(
-  null,
-  (get, set) => {
-    const leanMonaco = get(leanMonacoAtom)
-    if (leanMonaco) {
-      leanMonaco.dispose()
-      set(leanMonacoAtom, null)
-    }
-  }
-)
