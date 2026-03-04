@@ -49,10 +49,6 @@ jobs:
             browser: edge
           - os: macos-latest
             browser: edge
-          - os: windows
-            browser: webkit # TODO
-          - os: macos-latest
-            browser: electron # TODO
         include:
           - os: ubuntu-latest
             name: Linux
