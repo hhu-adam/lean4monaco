@@ -14,7 +14,7 @@ function App() {
 
   // Set the `mainContainer` of the monaco editor.
   useEffect(() => {
-    setOptions(prev => ({...prev, htmlElement:monacoRef.current ?? undefined}))
+    setOptions({...options, htmlElement:monacoRef.current ?? undefined})
   }, [monacoRef])
 
   return (

@@ -17,7 +17,7 @@ export function LeanMonacoComponent({ numberEditors } : { numberEditors: number}
   // You need to start one `LeanMonaco` instance once in your application using a `useEffect`
   useEffect(() => {
     initLeanMonaco({ infoviewElement: infoviewRef.current! })
-    return disposeLeanMonaco
+    return () => disposeLeanMonaco()
   }, [LeanMonacoOptions, disposeLeanMonaco, initLeanMonaco])
 
   return (
