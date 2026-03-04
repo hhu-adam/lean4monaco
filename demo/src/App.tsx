@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { LeanMonacoComponent } from './LeanMonaco'
+import { LeanMonacoComponent } from './LeanMonacoComponent'
 import './App.css'
 import { leanMonacoOptionsAtom } from './store/editor-atoms'
 import { useAtom } from 'jotai'
