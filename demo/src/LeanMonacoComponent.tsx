@@ -31,17 +31,17 @@ export function LeanMonacoComponent({ numberEditors } : { numberEditors: number}
 
   return (
     <>
-        {[...Array(numberEditors)].map((_x, i) =>
-          <LeanMonacoEditorComponent
-            key={i}
-            // fileName: must be a valid file inside the Lean project
-            // (or lake does not read the `leanOptions` in the `lakefile`), AND
-            // must be inside a folder, i.e. 'LeanProject.lean' does not work (monaco bug?) :(
-            fileName={path.join('LeanProject', `Test${i}.lean`)}
-            /* note: The sample content here is used for the cypress tests. */
-            value={`#check ${i}\ndef f${i} : Nat → Nat := fun x ↦ x + 1\n#print f${i}`}/>
-        )}
-        <div className='infoview' ref={infoviewRef} />
+      {[...Array(numberEditors)].map((_x, i) =>
+        <LeanMonacoEditorComponent
+          key={i}
+          // fileName: must be a valid file inside the Lean project
+          // (or lake does not read the `leanOptions` in the `lakefile`), AND
+          // must be inside a folder, i.e. 'LeanProject.lean' does not work (monaco bug?) :(
+          fileName={path.join('LeanProject', `Test${i}.lean`)}
+          /* note: The sample content here is used for the cypress tests. */
+          value={`#check ${i}\ndef f${i} : Nat → Nat := fun x ↦ x + 1\n#print f${i}`}/>
+      )}
+      <div className='infoview' ref={infoviewRef} />
       <div>
         <button onClick={() => {
           console.log('[LeanMonaco] restarting Lean')
