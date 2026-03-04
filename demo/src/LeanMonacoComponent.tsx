@@ -13,12 +13,11 @@ export function LeanMonacoComponent({ numberEditors } : { numberEditors: number}
   const [leanMonaco, setLeanMonaco] = useAtom(leanMonacoAtom)
   const leanMonacoOptions = useAtomValue(leanMonacoOptionsAtom)
 
-    // You need to start one `LeanMonaco` instance once in your application using a `useEffect`
-    useEffect(() => {
+  // You need to start one `LeanMonaco` instance once in your application using a `useEffect`
+  useEffect(() => {
     const _leanMonaco = new LeanMonaco()
     setLeanMonaco(_leanMonaco)
     _leanMonaco.setInfoviewElement(infoviewRef.current!)
-
 
     ;(async () => {
       await _leanMonaco.start(leanMonacoOptions)
