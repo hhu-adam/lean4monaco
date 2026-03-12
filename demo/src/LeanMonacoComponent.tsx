@@ -25,7 +25,7 @@ export function LeanMonacoComponent({ numberEditors } : { numberEditors: number}
     })()
 
     return () => {
-      _leanMonaco.dispose()
+      leanMonaco?.dispose()
     }
   }, [leanMonacoOptions, setLeanMonaco])
 
