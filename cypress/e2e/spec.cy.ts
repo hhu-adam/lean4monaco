@@ -9,7 +9,7 @@ describe('Editor Test', () => {
     cy.contains('#check 0')
       .should(($p: any) => {
         // ...
-        expect(getComputedStyle($p.get(0)).fontFamily).to.match(/^"?JuliaMono"?/)
+        expect(getComputedStyle($p.get(0)).fontFamily).to.match(/^"?Noto Color Emoji"?,\s*"?JuliaMono"?/)
       })
   })
 

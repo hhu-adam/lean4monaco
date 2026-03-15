@@ -189,12 +189,8 @@ export type LeanMonacoOptions = {
       ),
       new FontFace(
         "Noto Color Emoji",
-        `url(${new URL("./fonts/NotoColorEmoji-Regular.ttf", import.meta.url)})`,
+        `url(${new URL("./fonts/NotoColorEmoji-Subset.ttf", import.meta.url)})`,
       ),
-      // new FontFace(
-      //   "LeanWeb",
-      //   `url(${new URL("./fonts/LeanWeb-Regular.otf", import.meta.url)})`,
-      // )
     ]
     fontFiles.map(font => {
       document.fonts.add(font)
@@ -225,7 +221,7 @@ export type LeanMonacoOptions = {
 
       // other options
       "editor.renderWhitespace": "trailing",
-      "editor.fontFamily": "'JuliaMono', 'Noto Color Emoji'",
+      "editor.fontFamily": "'Noto Color Emoji', 'JuliaMono'",
       "editor.wordWrap": "on",
       "editor.wrappingStrategy": "advanced",
       "workbench.colorTheme": "Visual Studio Light",
