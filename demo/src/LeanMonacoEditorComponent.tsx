@@ -1,21 +1,23 @@
-import { useEffect, useRef, useContext, useState } from 'react'
-import { LeanMonacoEditor } from 'lean4monaco'
-import { LeanMonacoContext } from './LeanMonaco'
-import { RpcSessionAtPos } from 'lean4monaco/src/vscode-lean4/vscode-lean4/src/infoview'
-import { LeanClient } from 'lean4monaco/src/vscode-lean4/vscode-lean4/src/leanclient'
+import { useEffect, useRef, useState } from 'react'
+import { LeanMonacoEditor, RpcSessionAtPos, LeanClient } from 'lean4monaco'
 import { Uri } from 'vscode'
 import { RpcConnectParams } from '@leanprover/infoview-api'
+import { useAtomValue } from 'jotai'
+import { leanMonacoAtom } from './store/editor-atoms'
 
-function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: string}) {
+/**
+ * Demo component with with an editor. You can start multiple `LeanMonacoEditor` instances.
+ */
+export function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: string}) {
   const codeviewRef = useRef<HTMLDivElement>(null)
-  const leanMonaco = useContext(LeanMonacoContext)
-  
+  const leanMonaco = useAtomValue(leanMonacoAtom)
+
   const [leanMonacoEditor, setLeanMonacoEditor] = useState<LeanMonacoEditor|null>(null)
   const [client, setClient] = useState<LeanClient | null>(null)
   const [uri, setUri] = useState<Uri | null>(null)
   const [rpcSess, setRpcSess] = useState<RpcSessionAtPos|null>(null)
-  
-  // You can start multiple `LeanMonacoEditor` instances
+
+  // Start the editor
   useEffect(() => {
     if (leanMonaco) {
       const leanMonacoEditor = new LeanMonacoEditor()
@@ -34,12 +36,13 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
     }
   }, [leanMonaco, fileName, value])
 
-// RPC example: wait until there is a `client`
+  // RPC example: wait until there is a `client`
   useEffect(() => {
     const updateClient = () => {
       const clients = leanMonaco?.clientProvider?.getClients()
-      if (clients?.[0]) {
-        setClient(clients[0])
+      const firstClient: LeanClient | null = clients?.[0] ?? null
+      if (firstClient) {
+        setClient(firstClient)
         return true
       }
       return false
@@ -79,7 +82,6 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
       return false
     }
     updateUri()
-    console.log(uri) // TODO: remove me
     const interval = setInterval(() => {
       // try to get `uri` until successful
       if (updateUri()) {
@@ -124,5 +126,3 @@ function LeanMonacoEditorComponent({fileName, value}: {fileName: string, value: 
     }}>Sample Rpc Notification</button>
   </>
 }
-
-export default LeanMonacoEditorComponent

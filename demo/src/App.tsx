@@ -1,24 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import LeanMonacoComponent from './LeanMonaco'
-import { LeanMonacoOptions } from 'lean4monaco'
+import { LeanMonacoComponent } from './LeanMonacoComponent'
 import './App.css'
+import { leanMonacoOptionsAtom } from './store/editor-atoms'
+import { useAtom } from 'jotai'
 
 function App() {
 
   const monacoRef = useRef<HTMLDivElement>(null)
-  const socketUrl = 'ws://' + window.location.hostname + ':8080/'
-  console.log(`[demo]: socketUrl`, socketUrl)
-  const [options, setOptions] = useState<LeanMonacoOptions>({
-    websocket: {
-      url: socketUrl
-    },
-    vscode: {
-      // The default options are defined in `LeanMonaco.start` and can be overwritten here.
-      // See docstring of `LeanMonacoOptions`!
-      // For example:
-      // "editor.wordWrap": false,
-    }
-  })
+  const [options, setOptions] = useAtom(leanMonacoOptionsAtom)
 
   // state to keep track of the number of open editors
   const [numberEditors, setNumberEditors] = useState(1)
@@ -56,7 +45,7 @@ function App() {
         />
       </div>
       <div id="lean4monaco-wrapper" ref={monacoRef} >
-        <LeanMonacoComponent options={options} numberEditors={numberEditors} />
+        <LeanMonacoComponent numberEditors={numberEditors} />
       </div>
     </>
   )
