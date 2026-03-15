@@ -1,5 +1,0 @@
-{
-  "glyphs": ["🎉", "❌", "✅", "💥", "▼", "▶", "🎭", "✝", "⏳", "🟡️", "💡️", "🐙️", "🔍️", "🏁️"],
-  "inputFont": "../src/fonts/NotoColorEmoji-Regular.ttf",
-  "outputFont": "../src/fonts/NotoColorEmoji-Subset.ttf"
-}
