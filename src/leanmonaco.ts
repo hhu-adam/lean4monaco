@@ -224,7 +224,7 @@ export type LeanMonacoOptions = {
       "editor.fontFamily": "'Noto Color Emoji', 'JuliaMono'",
       "editor.wordWrap": "on",
       "editor.wrappingStrategy": "advanced",
-      "workbench.colorTheme": "Visual Studio Light",
+      "workbench.colorTheme": isBrowserDefaultDark() ? "Visual Studio Dark" : "Visual Studio Light",
       ...options.vscode
     })
 
@@ -332,4 +332,9 @@ export type LeanMonacoOptions = {
     this.abbreviationFeature?.dispose()
     this.abbreviationFeature = undefined
   }
+}
+
+/** Returns true if the browser wants dark mode */
+function isBrowserDefaultDark() {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
