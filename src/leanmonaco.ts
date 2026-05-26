@@ -264,7 +264,7 @@ export type LeanMonacoOptions = {
     return {
       ...packageJson,
       contributes: {
-        ...packageJson.contributes,
+        ...packageJson.contributes as any, 
         configuration: packageJson.contributes.configuration as any, // Apparently `IExtensionContributions.configuration` has type `any`
         // TODO: This is suspect, the thrid entry does not have "language", yet it doesn't complain
         // look into that.
