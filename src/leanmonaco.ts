@@ -18,7 +18,7 @@ import { DisposableStore } from 'vscode/monaco'
 import packageJson from './vscode-lean4/vscode-lean4/package.json'
 import { IGrammar } from 'vscode/vscode/vs/platform/extensions/common/extensions'
 import { ExtensionKind } from 'vscode/vscode/vs/platform/environment/common/environment'
-import { registerLeanEditorProvider } from './vscode-lean4/vscode-lean4/src/utils/leanEditorProvider'
+import { registerLeanEditorProviders } from './vscode-lean4/vscode-lean4/src/utils/leanEditorProvider'
 import type { LanguageClientOptions } from 'vscode-languageclient/node'
 
 /** Options for LeanMonaco.
@@ -153,16 +153,11 @@ export type LeanMonacoOptions = {
 
     this.updateVSCodeOptions(options.vscode ?? {})
 
-    registerLeanEditorProvider({subscriptions: []} as any)
+    registerLeanEditorProviders({subscriptions: []} as any)
 
     this.abbreviationFeature = new AbbreviationFeature({} as any)
 
     this.clientProvider = new LeanClientProvider(
-      {
-        installChanged: () => {return {dispose: ()  => {}}},
-        testLeanVersion: () => {return "lean4/stable"},
-        getElanDefaultToolchain: () => {return "lean4/stable"}
-      } as any,
       {
         appendLine: () => {}
       } as any,
