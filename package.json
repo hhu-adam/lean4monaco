@@ -46,8 +46,8 @@
     "font:subset": "source scripts/.python/bin/activate && scripts/subset-font.sh"
   },
   "dependencies": {
-    "@leanprover/infoview": "0.8.6",
-    "@leanprover/infoview-api": "0.8.0",
+    "@leanprover/infoview": "0.9.0",
+    "@leanprover/infoview-api": "0.9.0",
     "@leanprover/unicode-input": "0.1.9",
     "import-meta-resolve": "^4.1.0",
     "lodash": "^4.17.21",
