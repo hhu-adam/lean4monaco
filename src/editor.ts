@@ -14,10 +14,6 @@ export class LeanMonacoEditor {
   async start(editorEl: HTMLElement, fileName: string, code: string) {
     if (this.disposed) return
 
-    // Create file for clientProvider to find
-    fs.mkdirSync(path.dirname(fileName), {recursive: true})
-    fs.writeFileSync(fileName, '')
-
     // Create editor and model
     this.modelRef = await createModelReference(Uri.parse(fileName), code)
     this.editor = monaco.editor.create(editorEl, {
