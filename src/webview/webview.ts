@@ -14,7 +14,7 @@ window.addEventListener('message', e => {
   }
 })
 
-const editorApi: Editor(rpc.getApi<EditorRpcApi>())
+const editorApi: EditorApi = editorApiOfRpc(rpc.getApi<EditorRpcApi>())
 
 const div: HTMLElement | null = document.querySelector('#react_root')
 
