@@ -1,5 +1,5 @@
 import { EditorApi, InfoviewApi } from "@leanprover/infoview-api"
-import { editorApiOfRpc, EditorRpcApi, Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
+import { EditorRpcApi, Rpc } from "./vscode-lean4/vscode-lean4/src/rpc"
 import { ViewColumn, Disposable, EventEmitter } from "vscode"
 import { IColorTheme, IConfigurationService, IThemeService, IEditorOptions } from "vscode/services"
 import * as colorUtils from 'vscode/vscode/vs/platform/theme/common/colorUtils'
@@ -62,7 +62,7 @@ export class IFrameInfoWebviewFactory {
         // ignore any disposed object exceptions
       }
     })
-    rpc.register(editorApiOfRpc(editorRpcApi))
+    rpc.register(editorRpcApi)
 
     // Similarly, we can received data from the webview by listening to onDidReceiveMessage.
     document.defaultView!.addEventListener('message', m => {

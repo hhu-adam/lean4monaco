@@ -1,6 +1,6 @@
 import type { EditorApi } from '@leanprover/infoview'
 import { loadRenderInfoview } from '@leanprover/infoview/loader'
-import { Rpc } from '../vscode-lean4/vscode-lean4/src/rpc'
+import { editorApiOfRpc, EditorRpcApi, Rpc } from '../vscode-lean4/vscode-lean4/src/rpc'
 
 const vscodeApi = window.parent
 
@@ -14,7 +14,7 @@ window.addEventListener('message', e => {
   }
 })
 
-const editorApi: EditorApi = rpc.getApi()
+const editorApi: Editor(rpc.getApi<EditorRpcApi>())
 
 const div: HTMLElement | null = document.querySelector('#react_root')
 
