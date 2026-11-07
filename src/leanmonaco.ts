@@ -256,11 +256,9 @@ export type LeanMonacoOptions = {
 
   /** This basically returns the `package.json` of `vscode-lean4` with some ts-fixes and the custom themes. */
   protected getExtensionManifest(): IExtensionManifest {
-    // drop the tamasfe.even-better-toml extensionDependency
-    const { extensionDependencies: _, ...manifest } = packageJson
-
     return {
-      ...manifest,
+      ...packageJson,
+      extensionDependencies: undefined, // lean4monaco couldn't install marketplace extensions if it wanted tot
       contributes: {
         ...packageJson.contributes as any, 
         configuration: packageJson.contributes.configuration as any, // Apparently `IExtensionContributions.configuration` has type `any`
