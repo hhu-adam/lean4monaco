@@ -30,7 +30,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hhu-adam/lean4monaco"
+    "url": "git+https://github.com/hhu-adam/lean4monaco.git"
   },
   "scripts": {
     "demo:install": "(cd demo && npm install && npm run build:server)",
