@@ -258,6 +258,10 @@ export type LeanMonacoOptions = {
   protected getExtensionManifest(): IExtensionManifest {
     return {
       ...packageJson,
+      extensionDependencies:
+        // The TOML extension required by Lean isn't needed in lean4monaco's context.
+        // This override avoids throwing a console error complaining that this extension isn't present.
+        packageJson.extensionDependencies?.filter(dep => dep !== 'tamasfe.even-better-toml'),
       contributes: {
         ...packageJson.contributes as any, 
         configuration: packageJson.contributes.configuration as any, // Apparently `IExtensionContributions.configuration` has type `any`
