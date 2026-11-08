@@ -13,6 +13,7 @@ import getTextmateServiceOverride from '@codingame/monaco-vscode-textmate-servic
 import getThemeServiceOverride from '@codingame/monaco-vscode-theme-service-override'
 import getLanguagesServiceOverride from '@codingame/monaco-vscode-languages-service-override'
 import getModelServiceOverride from '@codingame/monaco-vscode-model-service-override'
+import getEditorServiceOverride from '@codingame/monaco-vscode-editor-service-override'
 import { ExtensionHostKind, IExtensionManifest, registerExtension } from 'vscode/extensions'
 import { DisposableStore } from 'vscode/monaco'
 import packageJson from './vscode-lean4/vscode-lean4/package.json'
@@ -103,7 +104,8 @@ export type LeanMonacoOptions = {
           ...getThemeServiceOverride(),
           ...getConfigurationServiceOverride(),
           ...getLanguagesServiceOverride(),
-          ...getModelServiceOverride()
+          ...getModelServiceOverride(),
+          ...getEditorServiceOverride(async () => undefined),
         },
         // The wrapper HTML element determines the extend of certain monaco features
         // such as the right-click context menu.
